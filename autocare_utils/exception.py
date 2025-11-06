@@ -3,7 +3,7 @@ import sys   # sys is used here to capture detailed exception information (stack
 
 
 # internal imports (importing the logger you defined earlier in logging/logger.py)
-from  utils import logging
+from  autocare_utils import logging
 
 
 # custom exception class for handling project-specific errors
