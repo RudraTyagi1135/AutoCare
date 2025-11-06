@@ -59,7 +59,7 @@ def get_requirements() -> List[str]:
 # This tells pip/setuptools how to install your project as a package.
 setup(
      # Metadata
-     name = "ETL_project",                         # package/project name
+     name = "AUTOCARE",                         # package/project name
      version = "1.0.0",                            # project version
      author = "Rudra Tyagi",                       # author name
      author_email = "rudratyagi777@gmail.com",     # author contact
