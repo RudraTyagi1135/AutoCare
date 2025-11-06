@@ -1,0 +1,22 @@
+Metadata-Version: 2.4
+Name: AUTOCARE
+Version: 1.0.0
+Author: Rudra Tyagi
+Author-email: rudratyagi777@gmail.com
+Requires-Dist: python-dotenv
+Requires-Dist: pandas
+Requires-Dist: numpy
+Requires-Dist: pymongo
+Requires-Dist: certifi
+Requires-Dist: pymongo[srv]
+Requires-Dist: scikit-learn
+Requires-Dist: mlflow
+Requires-Dist: pyaml
+Requires-Dist: dagshub
+Requires-Dist: fastapi
+Requires-Dist: uvicorn
+Requires-Dist: python-multipart
+Requires-Dist: dill
+Dynamic: author
+Dynamic: author-email
+Dynamic: requires-dist
