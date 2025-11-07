@@ -1,14 +1,14 @@
 python-dotenv
 pandas
 numpy
-pymongo
-certifi
 pymongo[srv]
+certifi
 scikit-learn
 mlflow
-pyaml
+PyYAML
 dagshub
 fastapi
 uvicorn
 python-multipart
 dill
+openpyxl

@@ -3,33 +3,34 @@
 # -------------------------------
 
 # Manage environment variables securely (API keys, DB creds, etc.)
-python-dotenv    
+python-dotenv
 
 # Data wrangling & preprocessing
-pandas           
-numpy            
+pandas
+numpy
 
 # MongoDB client (for storing data, logs, or model metadata)
-pymongo          
-certifi           # SSL certificates for secure MongoDB connections
-pymongo[srv]      # Enables MongoDB+SRV protocol for cloud clusters (Atlas, etc.)
+pymongo[srv]
+certifi
 
 # Machine Learning
-scikit-learn      # Training classical ML models, preprocessing, metrics
+scikit-learn
 
 # MLOps Tools
-mlflow            # Experiment tracking, model registry, deployment
-pyaml             # YAML parser for configs (e.g., pipeline configs, advice engine)
-dagshub           # Versioning & experiment tracking (DVC + MLflow integration)
+mlflow
+PyYAML
+dagshub
 
 # API Layer (serving ML models via REST APIs)
-fastapi           # High-performance API framework (async, production-ready)
-uvicorn           # ASGI server to run FastAPI apps
-python-multipart  # Support file uploads in FastAPI (e.g., CSV, Excel, PDFs)
+fastapi
+uvicorn
+python-multipart
 
 # Serialization
-dill              # For saving Python objects (models, pipelines) more flexibly than pickle
+dill
 
-# Local Project Setup
-#-e .              # Editable mode (installs your package from the current directory)
-                  # Useful when you structure your code as a Python package
+# Excel support for dataset uploads
+openpyxl
+
+# Local Project Setup - MUST BE LAST
+-e .
