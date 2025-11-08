@@ -1,0 +1,50 @@
+# ==========================================================
+# 🧬 AutoCare Diabetes Training Data Schema
+# ==========================================================
+# This schema defines the expected structure, column names,
+# and data types for validating the diabetes dataset.
+# The DataValidation component will load this file to ensure
+# all expected columns exist and match the defined types.
+# ==========================================================
+
+columns:
+  age_category: int              # Encoded age group (0–13 mapping)
+  gender: object                 # 'Male' or 'Female'
+  bmi: float                     # Body Mass Index
+  hypertension: int              # 1 = Yes, 0 = No
+  smoking: int                   # 1 = Yes, 0 = No
+  alcohol: int                   # 1 = Yes, 0 = No
+  highchol: int                  # High cholesterol (1 = Yes, 0 = No)
+  diffwalk: int                  # Difficulty in walking (1 = Yes, 0 = No)
+  stress_category: int           # Stress level (0 = No stress → 4 = Severe)
+  physactivity: int              # Regular physical activity (1 = Yes, 0 = No)
+  diabetes: int                  # Target column (1 = Diabetic, 0 = Non-diabetic)
+
+# ==========================================================
+# 🎯 Target Column
+# ==========================================================
+target_column: diabetes
+
+# ==========================================================
+# ⚙ Data Type Definitions
+# ==========================================================
+# - int    → Integer / categorical (encoded)
+# - float  → Continuous numeric
+# - object → String / categorical (non-encoded)
+# ==========================================================
+
+# ==========================================================
+# ✅ Example Row Format
+# ==========================================================
+# age_category: 8
+# gender: Male
+# bmi: 26.4
+# hypertension: 1
+# smoking: 0
+# alcohol: 1
+# highchol: 1
+# diffwalk: 0
+# stress_category: 3
+# physactivity: 1
+# diabetes: 1
+# ==========================================================

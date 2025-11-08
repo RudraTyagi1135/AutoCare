@@ -1,0 +1,67 @@
+[2025-11-08 13:09:28,013] 31 root - INFO - \u2705 MongoDB connection string loaded from environment successfully. 
+[2025-11-08 13:09:30,203] 35 root - INFO - ========================================================================================== 
+[2025-11-08 13:09:30,203] 36 root - INFO - \U0001f680 Starting AutoCare Diabetes ML Training Pipeline 
+[2025-11-08 13:09:30,203] 37 root - INFO - ========================================================================================== 
+[2025-11-08 13:09:30,203] 58 root - INFO - \u2705 DataIngestion instance created successfully. 
+[2025-11-08 13:09:30,203] 50 root - INFO - \U0001f4e5 Initiating Data Ingestion... 
+[2025-11-08 13:09:30,203] 165 root - INFO - \U0001f680 Starting Data Ingestion Process... 
+[2025-11-08 13:09:30,203] 77 root - INFO - \U0001f510 Connecting securely to MongoDB Atlas... 
+[2025-11-08 13:09:37,772] 90 root - INFO - \u2705 Fetched 73733 rows and 11 columns from MongoDB collection. 
+[2025-11-08 13:09:37,962] 123 root - INFO - \U0001f4e6 Raw data saved to feature store at: Artifacts\08_11_2025_13_09_28\data_ingestion\raw_data\Diabetes_73733 _Final_data.xlsx 
+[2025-11-08 13:09:37,962] 136 root - INFO - \u2702 Performing train-test split on dataset... 
+[2025-11-08 13:09:38,179] 150 root - INFO - \u2705 Train-Test Split Completed: Train((58986, 11)), Test((14747, 11)) 
+[2025-11-08 13:09:38,179] 182 root - INFO - \U0001f3c1 Data Ingestion Completed Successfully. 
+[2025-11-08 13:09:38,195] 52 root - INFO - \u2705 Data Ingestion Completed Successfully. 
+[2025-11-08 13:09:38,195] 50 root - INFO - Schema file loaded successfully from machine_learning\training\diabetes\diabetes_work\schema\diabetes_schema.yaml 
+[2025-11-08 13:09:38,195] 64 root - INFO - \U0001f50d Initiating Data Validation... 
+[2025-11-08 13:09:38,195] 150 root - INFO - \U0001f680 Initiating Data Validation Process... 
+[2025-11-08 13:09:38,195] 59 root - INFO - Reading dataset from: Artifacts\08_11_2025_13_09_28\data_ingestion\ingested\train.csv 
+[2025-11-08 13:09:38,246] 59 root - INFO - Reading dataset from: Artifacts\08_11_2025_13_09_28\data_ingestion\ingested\test.csv 
+[2025-11-08 13:09:38,262] 73 root - INFO - Schema requires 11 columns. 
+[2025-11-08 13:09:38,262] 74 root - INFO - DataFrame contains 11 columns. 
+[2025-11-08 13:09:38,262] 84 root - INFO - \u2705 Column validation successful. 
+[2025-11-08 13:09:38,262] 73 root - INFO - Schema requires 11 columns. 
+[2025-11-08 13:09:38,262] 74 root - INFO - DataFrame contains 11 columns. 
+[2025-11-08 13:09:38,263] 84 root - INFO - \u2705 Column validation successful. 
+[2025-11-08 13:09:38,263] 98 root - INFO - Starting dataset drift detection... 
+[2025-11-08 13:09:38,358] 134 root - INFO - \u2705 Drift report saved at: Artifacts\08_11_2025_13_09_28\data_validation\drift_store\report.yaml 
+[2025-11-08 13:09:38,551] 180 root - INFO - \u2705 Validated datasets saved successfully. 
+[2025-11-08 13:09:38,551] 192 root - INFO - \U0001f3af Data Validation Completed | Drift Status: True 
+[2025-11-08 13:09:38,553] 66 root - INFO - \u2705 Data Validation Completed Successfully. 
+[2025-11-08 13:09:38,554] 49 root - INFO - \u2705 DataTransformation instance created successfully. 
+[2025-11-08 13:09:38,554] 83 root - INFO - \u2699 Initiating Data Transformation... 
+[2025-11-08 13:09:38,554] 157 root - INFO - \U0001f680 Initiating data transformation... 
+[2025-11-08 13:09:38,619] 60 root - INFO - Loaded dataset: Artifacts\08_11_2025_13_09_28\data_validation\validated\train.csv, Shape: (58986, 11) 
+[2025-11-08 13:09:38,683] 60 root - INFO - Loaded dataset: Artifacts\08_11_2025_13_09_28\data_validation\validated\test.csv, Shape: (14747, 11) 
+[2025-11-08 13:09:38,899] 146 root - INFO - DataFrame processed. Final columns: ['age_category', 'gender', 'bmi', 'hypertension', 'smoking', 'alcohol', 'highchol', 'diffwalk', 'stress_category', 'physactivity', 'diabetes'] 
+[2025-11-08 13:09:38,946] 146 root - INFO - DataFrame processed. Final columns: ['age_category', 'gender', 'bmi', 'hypertension', 'smoking', 'alcohol', 'highchol', 'diffwalk', 'stress_category', 'physactivity', 'diabetes'] 
+[2025-11-08 13:09:39,009] 90 root - INFO - Entered the save object method of MainUtils class 
+[2025-11-08 13:09:39,009] 97 root - INFO - exited the save object method of MainUtils class 
+[2025-11-08 13:09:39,012] 194 root - INFO - Preprocessor object saved at: Artifacts\08_11_2025_13_09_28\data_transformation\transformed_object\preprocessing.pkl 
+[2025-11-08 13:09:39,018] 203 root - INFO - Transformed train/test arrays saved successfully. 
+[2025-11-08 13:09:39,018] 212 root - INFO - \u2705 Data Transformation completed successfully. 
+[2025-11-08 13:09:39,018] 85 root - INFO - \u2705 Data Transformation Completed Successfully. 
+[2025-11-08 13:09:39,018] 50 root - INFO - \u2705 ModelTrainer instance created successfully. 
+[2025-11-08 13:09:39,018] 97 root - INFO - \U0001f916 Initiating Model Training... 
+[2025-11-08 13:09:39,018] 101 root - INFO - \U0001f680 Initiating Model Training Process... 
+[2025-11-08 13:09:39,018] 59 root - INFO - Loading transformed train/test arrays... 
+[2025-11-08 13:09:39,025] 66 root - INFO - Train shape: (58986, 10), Test shape: (14747, 10) 
+[2025-11-08 13:09:39,025] 136 root - INFO - \U0001f539 Training model: LogisticRegression 
+[2025-11-08 13:09:42,885] 142 root - INFO - LogisticRegression | Train F1: 0.2380 | Test F1: 0.2357 
+[2025-11-08 13:09:42,885] 136 root - INFO - \U0001f539 Training model: RandomForest 
+[2025-11-08 13:10:13,573] 142 root - INFO - RandomForest | Train F1: 0.7152 | Test F1: 0.2065 
+[2025-11-08 13:10:13,573] 136 root - INFO - \U0001f539 Training model: GradientBoosting 
+[2025-11-08 13:10:41,927] 142 root - INFO - GradientBoosting | Train F1: 0.2997 | Test F1: 0.2979 
+[2025-11-08 13:10:41,927] 136 root - INFO - \U0001f539 Training model: XGBoost 
+[2025-11-08 13:10:52,037] 142 root - INFO - XGBoost | Train F1: 0.3111 | Test F1: 0.2907 
+[2025-11-08 13:10:52,037] 156 root - INFO - \U0001f3c6 Best Model: GradientBoosting | Test F1: 0.2979 
+[2025-11-08 13:10:52,037] 90 root - INFO - Entered the save object method of MainUtils class 
+[2025-11-08 13:10:52,053] 97 root - INFO - exited the save object method of MainUtils class 
+[2025-11-08 13:10:52,053] 90 root - INFO - Entered the save object method of MainUtils class 
+[2025-11-08 13:10:52,061] 97 root - INFO - exited the save object method of MainUtils class 
+[2025-11-08 13:10:52,061] 169 root - INFO - \u2705 Best model saved at: Artifacts\08_11_2025_13_09_28\model_trainer\trained_model\model.pkl 
+[2025-11-08 13:10:52,061] 180 root - INFO - \u2705 Model Training Completed Successfully. 
+[2025-11-08 13:10:52,070] 99 root - INFO - \u2705 Model Training Completed Successfully. 
+[2025-11-08 13:10:52,071] 105 root - INFO - ========================================================================================== 
+[2025-11-08 13:10:52,071] 106 root - INFO - \U0001f3c1 AutoCare Diabetes Training Pipeline Finished Successfully! 
+[2025-11-08 13:10:52,071] 107 root - INFO - ========================================================================================== 
