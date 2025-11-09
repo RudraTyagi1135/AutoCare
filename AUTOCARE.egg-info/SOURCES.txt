@@ -25,6 +25,9 @@ frontend/summarize/__init__.py
 frontend/user_upload/__init__.py
 machine_learning/__init__.py
 machine_learning/RRCF/__init__.py
+machine_learning/ml_utils/__init__.py
+machine_learning/ml_utils/main_utils/__init__.py
+machine_learning/ml_utils/main_utils/utils.py
 machine_learning/prediction_pipeline/__init__.py
 machine_learning/shap_values/__init__.py
 machine_learning/training/__init__.py
@@ -49,6 +52,7 @@ machine_learning/training/diabetes/diabetes_work/model_utils/model/__init__.py
 machine_learning/training/diabetes/diabetes_work/model_utils/model/estimator.py
 machine_learning/training/diabetes/diabetes_work/pipeline/__init__.py
 machine_learning/training/diabetes/diabetes_work/pipeline/training_pipeline.py
+machine_learning/training/diabetes/diabetes_work/schema/__init__.py
 machine_learning/training/heart/__init__.py
 machine_learning/training/heart/src/__init__.py
 machine_learning/training/heart/src/cloud/__init__.py

@@ -1,66 +1,51 @@
 # ================================
-# 📜 Logging Setup
+# 📜 Logging Setup (Pipeline-Aware)
 # ================================
 
-# Importing required libraries
-import logging                # Python's built-in logging module
-import os                     # To handle file paths and directories
-from datetime import datetime # To generate unique log filenames with timestamps
+import logging
+import os
+from datetime import datetime
 
 
+# ==========================================================
+# ⚙️ Dynamic Path Configuration Based on Pipeline (DIABETES)
+# ==========================================================
 
-# ================================
-# 🕒 Create log file name with timestamp
-# ================================
-# Example: "23_09_2025_11_55_30.log"
-LOG_FILE = f"{datetime.now().strftime('%d_%m_%Y_%H_%M_%S')}.log"
+# You can set these from your pipeline's test.py before importing this file:
+# os.environ["PIPELINE_ROOT"] = "machine_learning/training/diabetes/diabetes_work"
+# os.environ["PIPELINE_NAME"] = "diabetes"
 
-# Why? 
-# - Ensures every run of the pipeline has a unique log file.
-# - Helps in debugging later (logs are separated per run).
-# - Makes audit trail possible in production.
+PIPELINE_ROOT = os.getenv("PIPELINE_ROOT", os.getcwd())     # Default → current dir if not set
+PIPELINE_NAME = os.getenv("PIPELINE_NAME", "autocare")      # Default → generic name if not set
 
+# ---------------------------
+# 📂 Logs folder path
+# ---------------------------
+logs_dir = os.path.join(PIPELINE_ROOT, "logs")
+os.makedirs(logs_dir, exist_ok=True)
 
-
-# ================================
-# 📂 Create "logs" folder if not exists
-# ================================
-logs_path = os.path.join(os.getcwd(), "logs")   # "current_directory/logs"
-os.makedirs(logs_path, exist_ok=True)           # create folder, do nothing if already exists
-
-# Why?
-# - Keeps logs organized in a separate folder.
-# - `exist_ok=True` prevents error if folder already exists.
-
-
-
-# ================================
-# 📄 Full path for current log file
-# ================================
-LOG_FILE_PATH = os.path.join(logs_path, LOG_FILE)
+# ---------------------------
+# 🕒 Timestamped log file name
+# ---------------------------
+LOG_FILE = f"{PIPELINE_NAME}_training_{datetime.now().strftime('%d_%m_%Y_%H_%M_%S')}.log"
+LOG_FILE_PATH = os.path.join(logs_dir, LOG_FILE)
 
 # Example:
-# /home/rudra/project/logs/23_09_2025_11_55_30.log
+# For Diabetes:
+# machine_learning/training/diabetes/diabetes_work/logs/diabetes_training_08_11_2025_14_35_27.log
+#
+# For others (if not configured):
+# <current_working_dir>/logs/autocare_training_08_11_2025_14_35_27.log
 
 
-
-# ================================
-# ⚙️ Logging configuration
-# ================================
+# ==========================================================
+# 🧩 Configure Logging
+# ==========================================================
 logging.basicConfig(
-    filename = LOG_FILE_PATH,   # Where logs will be saved
-    format = "[%(asctime)s] %(lineno)d %(name)s - %(levelname)s - %(message)s ",
-    level = logging.INFO,       # Logging level: INFO and above (INFO, WARNING, ERROR, CRITICAL)
+    filename=LOG_FILE_PATH,
+    format="[%(asctime)s] %(levelname)s %(name)s:%(lineno)d - %(message)s",
+    level=logging.INFO,   # Default level: INFO → can be overridden using logging.getLogger().setLevel()
 )
 
-# Explanation of format:
-# - %(asctime)s → Timestamp of the log
-# - %(lineno)d  → Line number where the log was generated
-# - %(name)s    → Logger name (usually module/package name)
-# - %(levelname)s → Logging level (INFO, ERROR, etc.)
-# - %(message)s → The actual log message
-
-# Why?
-# - Logs provide visibility into your pipeline execution.
-# - In production, logs are critical for debugging issues.
-# - You’re setting INFO level (good default) → logs all important info without overwhelming debug noise.
+# Expose root logger for consistency
+logger = logging.getLogger()

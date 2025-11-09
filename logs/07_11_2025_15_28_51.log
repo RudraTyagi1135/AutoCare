@@ -1,5 +1,0 @@
-[2025-11-07 15:28:54,044] 20 root - INFO - Initiate the data ingestion 
-[2025-11-07 15:29:01,781] 126 root - INFO - Performed train-test split on dataset 
-[2025-11-07 15:29:01,781] 131 root - INFO - Exporting train-test split files 
-[2025-11-07 15:29:01,986] 143 root - INFO - Exported train-test split files successfully 
-[2025-11-07 15:29:02,001] 22 root - INFO - Data Initiation Completed 

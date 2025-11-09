@@ -1,9 +1,11 @@
 # ======================================================
-# 🧠 AutoCare Diabetes Model Trainer Component
+# 🧠 AutoCare Diabetes Model Trainer Component (Updated)
 # ======================================================
 
 import os
 import sys
+import time
+import json
 import numpy as np
 from typing import Dict
 
@@ -11,8 +13,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import f1_score, precision_score, recall_score
-
-from xgboost import XGBClassifier  # ✅ Added for better performance
+from xgboost import XGBClassifier
 
 from autocare_utils.exception import AutoCareException
 from autocare_utils.logging import logging
@@ -33,10 +34,10 @@ from machine_learning.ml_utils.main_utils.utils import (
 class ModelTrainer:
     """
     Trains multiple ML models for diabetes classification:
-    - Performs grid search hyperparameter tuning
-    - Evaluates on F1-score, precision, recall
-    - Saves the best model
-    - Returns ModelTrainerArtifact
+    ✅ Performs grid search hyperparameter tuning
+    ✅ Evaluates using F1-score, precision, recall
+    ✅ Logs details for each model
+    ✅ Saves best model + preprocessor into 'model_processor' folder
     """
 
     def __init__(
@@ -56,14 +57,14 @@ class ModelTrainer:
     # ======================================================
     def _load_data(self):
         try:
-            logging.info("Loading transformed train/test arrays...")
+            logging.info("📥 Loading transformed train/test arrays...")
             train_arr = load_numpy_array_data(self.data_transformation_artifact.transformed_train_file_path)
             test_arr = load_numpy_array_data(self.data_transformation_artifact.transformed_test_file_path)
 
             X_train, y_train = train_arr[:, :-1], train_arr[:, -1].astype(int)
             X_test, y_test = test_arr[:, :-1], test_arr[:, -1].astype(int)
 
-            logging.info(f"Train shape: {X_train.shape}, Test shape: {X_test.shape}")
+            logging.info(f"📊 Train shape: {X_train.shape}, Test shape: {X_test.shape}")
             return X_train, y_train, X_test, y_test
 
         except Exception as e:
@@ -123,54 +124,97 @@ class ModelTrainer:
                 "XGBoost": {"n_estimators": [100, 200], "learning_rate": [0.01, 0.1], "max_depth": [3, 5, 7]},
             }
 
-            # -------------------------------
-            # Training loop
-            # -------------------------------
+            results_summary = {}
             best_model = None
             best_model_name = None
             best_test_f1 = -1.0
             best_train_metrics = None
             best_test_metrics = None
 
+            # -------------------------------
+            # Training & Hyperparameter Tuning Loop
+            # -------------------------------
             for name, model in models.items():
-                logging.info(f"🔹 Training model: {name}")
-                grid = GridSearchCV(model, params[name], scoring="f1", cv=3, n_jobs=-1, verbose=1)
-                grid.fit(X_train, y_train)
-                candidate_model = grid.best_estimator_
+                logging.info(f"🔹 Starting GridSearchCV for: {name}")
+                start_time = time.time()
 
-                train_metrics, test_metrics = self._evaluate(candidate_model, X_train, y_train, X_test, y_test)
+                grid = GridSearchCV(model, params[name], scoring="f1", cv=3, n_jobs=-1, verbose=0)
+                grid.fit(X_train, y_train)
+                elapsed = time.time() - start_time
+
+                best_estimator = grid.best_estimator_
+                best_params = grid.best_params_
+                best_cv_score = grid.best_score_
+
+                logging.info(f"✅ {name} tuning completed in {elapsed:.1f} sec")
+                logging.info(f"   🔧 Best Params: {best_params}")
+                logging.info(f"   📈 CV Best F1: {best_cv_score:.4f}")
+
+                # Evaluate
+                train_metrics, test_metrics = self._evaluate(best_estimator, X_train, y_train, X_test, y_test)
                 logging.info(
-                    f"{name} | Train F1: {train_metrics.f1_score:.4f} | Test F1: {test_metrics.f1_score:.4f}"
+                    f"   📊 Train F1: {train_metrics.f1_score:.4f}, Test F1: {test_metrics.f1_score:.4f}"
                 )
 
+                results_summary[name] = {
+                    "cv_best_f1": best_cv_score,
+                    "best_params": best_params,
+                    "train_f1": train_metrics.f1_score,
+                    "test_f1": test_metrics.f1_score,
+                    "precision": test_metrics.precision_score,
+                    "recall": test_metrics.recall_score,
+                    "training_time_sec": elapsed,
+                }
+
+                # Track best model
                 if test_metrics.f1_score > best_test_f1:
                     best_test_f1 = test_metrics.f1_score
-                    best_model = candidate_model
+                    best_model = best_estimator
                     best_model_name = name
                     best_train_metrics = train_metrics
                     best_test_metrics = test_metrics
 
+            logging.info("📜 Model Comparison Summary:")
+            logging.info(json.dumps(results_summary, indent=2))
+
             if best_model is None:
-                raise Exception("❌ No suitable model found.")
+                raise Exception("❌ No suitable model found after tuning.")
 
             logging.info(f"🏆 Best Model: {best_model_name} | Test F1: {best_test_f1:.4f}")
 
-            # -------------------------------
-            # Save the best model
-            # -------------------------------
+            # ======================================================
+            # 🔹 Save best model & preprocessor inside model_processor folder
+            # ======================================================
+            os.makedirs(self.config.model_dir, exist_ok=True)
+
+            model_path = os.path.join(self.config.model_dir, "model.pkl")
+            preprocessor_path = os.path.join(self.config.model_dir, "preprocessor.pkl")
+
+            # Save trained model
+            save_object(model_path, best_model)
+            logging.info(f"✅ Best model saved at: {model_path}")
+
+            # Load preprocessor from transformation artifact and save copy
+            try:
+                preprocessor_obj = load_object(
+                    self.data_transformation_artifact.transformed_object_file_path
+                )
+                save_object(preprocessor_path, preprocessor_obj)
+                logging.info(f"✅ Preprocessor saved at: {preprocessor_path}")
+            except Exception as e:
+                logging.warning(f"⚠️ Could not save preprocessor object: {e}")
+
+            # ======================================================
+            # 🔹 Also Save Inside Artifacts Folder for Reference
+            # ======================================================
             trained_model_path = self.config.trained_model_file_path
             os.makedirs(os.path.dirname(trained_model_path), exist_ok=True)
             save_object(trained_model_path, best_model)
+            logging.info(f"📦 Model also stored under artifacts: {trained_model_path}")
 
-            # Also save under final_model for deployment
-            os.makedirs("final_model", exist_ok=True)
-            save_object(os.path.join("final_model", "diabetes_model.pkl"), best_model)
-
-            logging.info(f"✅ Best model saved at: {trained_model_path}")
-
-            # -------------------------------
-            # Return artifact
-            # -------------------------------
+            # ======================================================
+            # 🔹 Return Training Artifact
+            # ======================================================
             model_trainer_artifact = ModelTrainerArtifact(
                 trained_model_file_path=trained_model_path,
                 train_metric_artifact=best_train_metrics,
