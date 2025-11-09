@@ -1,50 +1,51 @@
 # ================================
 # 📦 Imports
 # ================================
-from datetime import datetime  # For generating timestamps for artifact folders
-import os                     # For directory and path operations
-from machine_learning.training.diabetes.diabetes_work.constant.training_pipeline import constant# Import your constants file
-
 
 # ================================
-# ⚙️ Training Pipeline Configuration
+# ⚙️ Training Pipeline Configuration (Diabetes-Specific)
 # ================================
+from datetime import datetime
+import os
+from machine_learning.training.diabetes.diabetes_work.constant.training_pipeline import constant
+
+
 class TrainingPipelineConfig:
     """
-    Configuration for the overall ML training pipeline.
+    Configuration for the overall ML training pipeline (Diabetes-specific version).
 
-    Responsibilities:
-    - Store the pipeline name and artifact root directory.
-    - Generate timestamped directories for each pipeline run to ensure reproducibility.
-
-    Attributes:
-    ----------
-    pipeline_name : str
-        Name of the pipeline (used in logging, artifact naming).
-    artifact_name : str
-        Root folder name for all artifacts.
-    artifact_dir : str
-        Full path to the artifact folder for this run.
-    timestamp : str
-        Timestamp string used for folder naming and logging.
+    Changes made:
+    ✅ Artifacts are now stored inside:
+        machine_learning/training/diabetes/diabetes_work/Artifacts/<timestamp>
+    ✅ Logs go into:
+        machine_learning/training/diabetes/diabetes_work/logs/
+    ✅ Models and preprocessors are stored inside:
+        machine_learning/training/diabetes/diabetes_work/model_processor/
     """
 
     def __init__(self, timestamp: datetime = datetime.now()):
-        # Convert timestamp to string format suitable for folder names
+        # Format timestamp for folder naming
         timestamp_str = timestamp.strftime("%d_%m_%Y_%H_%M_%S")
 
-        # Pipeline name from constants
+        # Base diabetes work directory
+        base_dir = os.path.join(
+            "machine_learning", "training", "diabetes", "diabetes_work"
+        )
+
+        # Pipeline name (from constants)
         self.pipeline_name: str = constant.PIPELINE_NAME
 
-        # Root artifact folder from constants
-        self.artifact_name: str = constant.ARTIFACT_DIR
+        # Artifacts directory (specific to diabetes)
+        self.artifact_name: str = os.path.join(base_dir, "Artifacts")
 
-        # Full artifact directory path for this pipeline run
+        # Final artifact folder for this specific pipeline run
         self.artifact_dir: str = os.path.join(self.artifact_name, timestamp_str)
 
-        self.model_dir=os.path.join("final_model")
+        # Model + Preprocessor directory (centralized for diabetes)
+        self.model_dir: str = os.path.join(base_dir, "model_processor")
+        os.makedirs(self.model_dir, exist_ok=True)
 
-        # Timestamp string for logging, reports, and model versioning
+        # Store timestamp for reference
         self.timestamp: str = timestamp_str
 
 
@@ -257,15 +258,24 @@ class ModelTrainerConfig:
     """
 
     def __init__(self, training_pipeline_config: TrainingPipelineConfig):
+        # Root model trainer artifact folder
         self.model_trainer_dir: str = os.path.join(
             training_pipeline_config.artifact_dir,
             constant.MODEL_TRAINER_DIR_NAME
         )
+        # Trained model artifact path (for logs/reference)
         self.trained_model_file_path: str = os.path.join(
             self.model_trainer_dir,
             constant.MODEL_TRAINER_TRAINED_MODEL_DIR,
             constant.MODEL_TRAINER_TRAINED_MODEL_NAME
         )
+        # ✅ NEW: Store models & preprocessor inside diabetes_work/model_processor/
+        self.model_dir: str = os.path.join(
+            "machine_learning", "training", "diabetes", "diabetes_work", "model_processor"
+        )
+        os.makedirs(self.model_dir, exist_ok=True)
+
+        #accuracy thresholds
         self.expected_accuracy: float = constant.MODEL_TRAINER_EXPECTED_SCORE
         self.overfitting_underfitting_threshold: float = constant.MODEL_TRAINER_OVERFITTING_UNDERFITTING_THRESHOLD
 
