@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AutoCare — Manual Entry (Themed)</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Local CSS -->
+  <link rel="stylesheet" href="CSS/Manual_form.css">
+</head>
+<body>
+  <!-- Top navigation (links back to your main app) -->
+  <header class="topbar" role="banner">
+    <div class="brand" style="gap:14px;align-items:center">
+      <div class="mark">AC</div>
+      <div class="app-title">
+        <strong>AutoCare</strong>
+        <div class="sub">Manual Entry · Data Upload</div>
+      </div>
+    </div>
+
+    <nav class="topnav" role="navigation" aria-label="Top navigation">
+      <a href="index.html">Dashboard</a>
+      <a href="index.html#upload" class="active">Data Upload</a>
+      <a href="index.html#advice">Advice</a>
+      <a href="index.html#chat">Chat</a>
+      <a href="index.html#reports">Reports</a>
+    </nav>
+
+    <div class="right-controls">
+      <div class="avatar" id="avatar">G</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="card" role="main" aria-labelledby="pageTitle">
+      <div class="card-head" id="pageTitle">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 7h-4V3h-2v4H9v2h4v4h2V9h4V7z" fill="white"/></svg>
+        <div>
+          <h1>Manual Entry — Health Assessment</h1>
+          <p>Enter patient vitals and history.</p>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <!-- LEFT: form -->
+        <form id="healthForm" autocomplete="off" novalidate>
+          <div class="section">
+            <h3>Basic Details</h3>
+
+            <label class="field">Gender
+              <select name="gender" id="gender">
+                <option value="">Select</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+              </select>
+            </label>
+
+            <label class="field">Age
+              <input type="number" name="age" id="age" min="0" max="120" placeholder="Years">
+            </label>
+
+            <label class="field">Height (cm)
+              <input type="number" name="height" id="height" placeholder="cm">
+            </label>
+
+            <label class="field">Weight (kg)
+              <input type="number" name="weight" id="weight" placeholder="kg">
+            </label>
+
+            <div class="bmi-row">
+              <div class="bmi-box" id="bmiBox">BMI: —</div>
+              <div style="flex:1; font-size:13px; color:var(--muted); align-self:center">BMI updates live as you type height & weight.</div>
+            </div>
+          </div>
+
+          <div class="section">
+            <h3>Health Metrics</h3>
+
+            <label class="field">Systolic BP (mmHg)
+              <input type="number" name="systolic" id="systolic" placeholder="e.g. 120">
+            </label>
+
+            <label class="field">Diastolic BP (mmHg)
+              <input type="number" name="diastolic" id="diastolic" placeholder="e.g. 80">
+            </label>
+
+            <label class="field">Sleep Time (hours)
+              <input type="number" name="sleep" id="sleep" placeholder="Average per night">
+            </label>
+          </div>
+
+          <div class="section">
+            <h3>Medical History</h3>
+
+            <div class="checks" role="group" aria-label="Medical history">
+              <label class="check"><input type="checkbox" id="chk_chest" /> Chest pain</label>
+              <label class="check"><input type="checkbox" id="chk_heart" /> Prior heart attack</label>
+              <label class="check"><input type="checkbox" id="chk_chol" /> High cholesterol</label>
+              <label class="check"><input type="checkbox" id="chk_walk" /> Walking difficulty</label>
+              <label class="check"><input type="checkbox" id="chk_activity" /> Regular physical activity</label>
+              <label class="check"><input type="checkbox" id="chk_alcohol" /> Alcohol consumption</label>
+            </div>
+
+            <label class="field">Smoking
+              <select name="smoking" id="smoking">
+                <option value="">Select</option>
+                <option value="current">Yes (current)</option>
+                <option value="former">Former</option>
+                <option value="no">No</option>
+                <option value="noinfo">No information</option>
+              </select>
+            </label>
+
+            <label class="field">Stress level
+              <select name="stress" id="stress">
+                <option value="">Select</option>
+                <option value="0">No Stress</option>
+                <option value="0.5">Mild</option>
+                <option value="1">Moderate</option>
+                <option value="1.5">High</option>
+                <option value="2">Severe</option>
+              </select>
+            </label>
+          </div>
+
+          <div style="margin-top:8px; display:flex; gap:8px">
+            <button type="button" class="btn" id="calcNow">Update & Preview</button>
+            <button type="submit" class="btn secondary" id="submitBtn">Submit Assessment</button>
+          </div>
+        </form>
+
+        <!-- RIGHT: General Health panel + summary + legend -->
+        <aside class="side">
+          <div id="generalPanel" class="emoji-panel" role="region" aria-label="General health">
+            <div>
+              <h4>General Health</h4>
+              <div style="font-size:13px; color:var(--muted)" id="genScale">Combined measure from vitals & history</div>
+            </div>
+            <div style="text-align:center">
+              <div id="genEmoji" class="emoji-big" aria-hidden="true">💖</div>
+              <div style="font-size:12px;color:var(--muted);margin-top:6px" id="genText">Excellent</div>
+            </div>
+          </div>
+
+          <div class="summary" id="summaryCard" aria-live="polite">
+            <h4>Live Summary</h4>
+            <div class="summary-row">
+              <div class="pill" id="s_bmi">BMI: —</div>
+              <div class="pill" id="s_bp">BP: —</div>
+              <div class="pill" id="s_alcohol">Alcohol: —</div>
+            </div>
+
+            <div style="margin-top:10px; display:flex; gap:8px; align-items:center;">
+              <div style="flex:1">
+                <div style="font-size:13px; color:var(--muted)">Health</div>
+                <div style="font-weight:700; font-size:15px" id="s_general">—</div>
+              </div>
+              <div style="flex:1">
+                <div style="font-size:13px; color:var(--muted)">Drivers</div>
+                <div style="font-weight:700; font-size:13px; color:var(--muted);">metrics + history</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="legend">
+            <h4>Emoji explanation</h4>
+            <div id="legend0" class="legend-row">
+              <div class="legend-emoji">💖</div>
+              <div class="legend-text">Excellent</div>
+              <div class="legend-desc">Vitals near-normal; history low-risk.</div>
+            </div>
+            <div id="legend1" class="legend-row">
+              <div class="legend-emoji">❤️</div>
+              <div class="legend-text">Good</div>
+              <div class="legend-desc">Minor deviations or manageable history.</div>
+            </div>
+            <div id="legend2" class="legend-row">
+              <div class="legend-emoji">💓</div>
+              <div class="legend-text">Moderate</div>
+              <div class="legend-desc">Some measures out of range; follow-up suggested.</div>
+            </div>
+            <div id="legend3" class="legend-row">
+              <div class="legend-emoji">💔</div>
+              <div class="legend-text">Poor</div>
+              <div class="legend-desc">Multiple concerning signs; clinical review advised.</div>
+            </div>
+            <div id="legend4" class="legend-row">
+              <div class="legend-emoji">🚨</div>
+              <div class="legend-text">Serious</div>
+              <div class="legend-desc">High-risk values — urgent evaluation recommended.</div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- Local JS -->
+  <script src="js/Manual_form.js"></script>
+</body>
+</html>
