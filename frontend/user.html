@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>AutoCare — Clinical AI Dashboard (Final)</title>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Inter font (used site-wide) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- App CSS -->
+  <link rel="stylesheet" href="../style/CSS/user.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" width="26" height="26" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C10.8954 2 10 2.89543 10 4V5.2C8.34315 5.71159 7.2 7.23903 7.2 9C7.2 11.4853 9.51472 13.2 12 13.2C14.4853 13.2 16.8 11.4853 16.8 9C16.8 7.23903 15.6569 5.71159 14 5.2V4C14 2.89543 13.1046 2 12 2Z" fill="white" opacity="0.95"/>
+        </svg>
+      </div>
+      <div class="app-title"><strong>AutoCare</strong><div class="sub small">Clinical AI · Risk · Reports</div></div>
+    </div>
+
+    <nav class="topnav" role="navigation" aria-label="Top navigation">
+      <button class="active" data-target="dashboard" onclick="nav(this)">Dashboard</button>
+      <button data-target="upload" onclick="nav(this)">Data Upload</button>
+      <button data-target="advice" onclick="nav(this)">Advice</button>
+      <button data-target="chat" onclick="nav(this)">Chat</button>
+      <button data-target="reports" onclick="nav(this)">Reports</button>
+    </nav>
+
+    <div class="right-controls">
+      <div class="dropdown" style="margin-right:8px">
+        <button id="settingsToggle" class="icon-btn" title="Settings" aria-label="Settings">⚙️</button>
+        <div id="settingsMenu" class="dropdown-menu" role="menu" aria-hidden="true">
+          <div class="item" data-action="signin">Sign in</div>
+          <div class="item" data-action="switch">Switch account</div>
+          <div class="item" data-action="signout">Sign out</div>
+        </div>
+      </div>
+
+      <div class="auth-container" style="position:relative">
+        <button id="authBox" class="box-dash" aria-haspopup="true" aria-expanded="false" title="Account">--</button>
+        <div id="authMenu" class="dropdown-menu" role="menu" aria-hidden="true" style="right:0;top:64px">
+          <div class="item" data-action="signin">Sign in</div>
+          <div class="item" data-action="switch">Switch account</div>
+          <div class="item" data-action="signout">Sign out</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <main class="workspace">
+      <!-- DASHBOARD -->
+      <section id="dashboard" class="dashboard-only" aria-label="Dashboard">
+        <div class="three-columns" role="main">
+          <div class="panel" id="col-diabetes">
+            <div class="panel-header">
+              <div class="panel-title"><h3>Diabetes</h3><div id="risk-diabetes" class="risk-badge">--%</div></div>
+              <div class="method">Prediction model: Ensemble gradient-boosted trees.</div>
+            </div>
+            <div class="panel-body">
+              <div class="panel-info"><div style="font-weight:800;margin-bottom:8px">Why this decision? (Top 5 contributors)</div><div class="reasons"><ol id="reasons-diabetes"></ol></div></div>
+              <div class="panel-graph"><div class="chart-box"><canvas id="chart-diabetes-canvas" aria-label="Diabetes trend chart"></canvas></div></div>
+            </div>
+          </div>
+
+          <div class="panel" id="col-heart">
+            <div class="panel-header">
+              <div class="panel-title"><h3>Heart Disease</h3><div id="risk-heart" class="risk-badge">--%</div></div>
+              <div class="method">Prediction model: XGBoost using demographics, labs, BP and ECG flags.</div>
+            </div>
+            <div class="panel-body">
+              <div class="panel-info"><div style="font-weight:800;margin-bottom:8px">Why this decision? (Top 5 contributors)</div><div class="reasons"><ol id="reasons-heart"></ol></div></div>
+              <div class="panel-graph"><div class="chart-box"><canvas id="chart-heart-canvas" aria-label="Heart disease trend chart"></canvas></div></div>
+            </div>
+          </div>
+
+          <div class="panel" id="col-stroke">
+            <div class="panel-header">
+              <div class="panel-title"><h3>Stroke</h3><div id="risk-stroke" class="risk-badge">--%</div></div>
+              <div class="method">Prediction: hybrid logistic + tree ensemble using BP trends, AF flags and smoking status.</div>
+            </div>
+            <div class="panel-body">
+              <div class="panel-info"><div style="font-weight:800;margin-bottom:8px">Why this decision? (Top 5 contributors)</div><div class="reasons"><ol id="reasons-stroke"></ol></div></div>
+              <div class="panel-graph"><div class="chart-box"><canvas id="chart-stroke-canvas" aria-label="Stroke trend chart"></canvas></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- UPLOAD -->
+      <section id="upload" style="display:none">
+        <div class="card upload-area">
+          <h2>Data Upload</h2>
+          <div id="largeDropzone" class="drop-large" tabindex="0" aria-label="Drop files here">
+            <div class="title">Drop patient data here</div>
+            <div class="subtitle">Drag & drop PDF, CSV or Excel files.</div>
+            <div style="margin-top:8px"><input id="fileInput" type="file" accept=".pdf,.csv,.xlsx,.xls" style="display:none" /><button class="result-btn" id="browseBtn">Browse files</button></div>
+            <div class="small" style="margin-top:6px">Max file size 20MB · CSV with headers recommended</div>
+          </div>
+
+          <div style="text-align:center;margin-top:12px"><button class="manual-btn" id="openManual">Fill patient values manually</button></div>
+
+          <div id="upload-preview" style="margin-top:14px;text-align:center;color:var(--muted)"></div>
+          <div id="analysis-preview" class="card" style="margin-top:10px;min-height:120px;display:none">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div><div style="font-weight:700">Analysis result</div><div class="small" id="analysis-summary">Results will appear here after uploading a file.</div></div>
+              <div class="small">Verified · fast</div>
+            </div>
+          </div>
+
+          <div style="margin-top:14px;text-align:center"><button id="resultBtn" class="result-btn" disabled>Show Results</button></div>
+        </div>
+      </section>
+
+      <!-- ADVICE -->
+      <section id="advice" style="display:none">
+        <div class="adv-root">
+          <div class="adv-app">
+            <aside id="advSidebar" class="adv-sidebar" aria-label="Advice history">
+              <div class="adv-toggle"><div style="font-weight:800">History</div><div><button id="advToggleBtn" aria-pressed="false" title="Collapse/Expand history">⇤</button></div></div>
+              <div id="advHistory" class="adv-history" aria-live="polite">
+                <div class="adv-item" data-q="Recent lipid guidance"><div class="icon" aria-hidden="true" style="width:36px;height:36;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#f3f6fb;border:1px solid var(--line);color:var(--accent)">L</div><div class="title">Recent lipid guidance</div></div>
+                <div class="adv-item" data-q="Hypertension follow-up"><div class="icon" aria-hidden="true" style="width:36px;height:36;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#f3f6fb;border:1px solid var(--line);color:var(--accent)">H</div><div class="title">Hypertension follow-up</div></div>
+                <div class="adv-item" data-q="Diabetes plan"><div class="icon" aria-hidden="true" style="width:36px;height:36;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#f3f6fb;border:1px solid var(--line);color:var(--accent)">D</div><div class="title">Diabetes plan</div></div>
+              </div>
+              <footer style="margin-top:auto;font-size:0.86rem;color:var(--muted)">Saved suggestions</footer>
+            </aside>
+
+            <main class="adv-panel" role="main">
+              <div class="adv-upper" role="region" aria-label="Patient summary">
+                <div class="adv-summary"><div class="patient-mark">PT</div><div class="meta"><div class="name">Patient: Mr. A. Kumar</div><div class="sub">Age 58 · Male · Last visit: 2025-10-28</div><div class="sub">Known: T2DM, HTN</div></div></div>
+                <div class="adv-actions"><button class="btn" id="advEditContext">Edit</button><button class="btn primary" id="advRunAssessment">Run quick assessment</button><button class="btn" id="advToggleSummary" title="Show/Hide patient summary">▲</button></div>
+              </div>
+
+              <div id="advMessages" class="adv-messages"><div class="adv-msg assistant"><div class="meta">Assistant</div><div>👋 I can provide personalized guidance based on the uploaded data.</div></div></div>
+
+              <form id="advComposer" class="adv-composer" onsubmit="return false;"><input id="advInput" type="text" placeholder="Ask for guidance (e.g. 'weight management plan')..." autocomplete="off" aria-label="Advice input"/><button id="advSendBtn" type="button" class="primary">Ask</button></form>
+            </main>
+          </div>
+        </div>
+      </section>
+
+      <!-- CHAT -->
+      <section id="chat" style="display:none">
+        <div class="polished-root">
+          <div class="app" role="application">
+            <aside class="sidebar" aria-label="Conversations">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+                <button id="polNewChat" class="new-chat">New chat</button>
+                <button id="polToggleSidebar" class="icon-btn" aria-pressed="false" title="Toggle conversations">≡</button>
+              </div>
+              <div id="polChatList" class="chats">
+                <div class="chat-item" data-q="Hello">
+                  <div class="icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.1"/></svg></div>
+                  <div class="title">Hello</div>
+                </div>
+              </div>
+              <footer style="margin-top:auto;font-size:0.86rem;color:var(--muted)">Logged in as <strong>Paras</strong></footer>
+            </aside>
+
+            <main class="panel" role="main">
+              <div id="polMessages" class="messages"><div class="msg assistant"><div class="meta">Assistant</div><div>👋 Hello! I'm AutoCare assistant — ask about workflows, uploads, or patient guidance.</div><div class="time">--</div></div></div>
+              <form id="polComposer" class="composer" onsubmit="return false;"><input id="polUserInput" type="text" placeholder="Send a message..." autocomplete="off" aria-label="Message input"/><button id="polSendBtn" type="button" class="send-btn">Send</button></form>
+            </main>
+          </div>
+        </div>
+      </section>
+
+      <!-- REPORTS & SETTINGS -->
+      <section id="reports" style="display:none"><div class="card"><h2>Reports</h2><p class="small">Generate PDF summaries of risk analysis and recommendations.</p><div style="display:flex;gap:8px;margin-top:8px;align-items:center"><button class="result-btn" id="genReport">Generate PDF</button><button class="manual-btn" id="dlReport">Download (simulated)</button></div></div></section>
+      <section id="settings" style="display:none"><div class="card"><h2>Settings & Account</h2><div style="margin-top:12px"><div style="font-weight:700" id="settings-account">Guest</div><div class="small">Not signed in</div></div></div></section>
+
+    </main>
+  </div>
+
+  <!-- App JS -->
+  <script src="../style/js/app.js"></script>
+</body>
+</html>
