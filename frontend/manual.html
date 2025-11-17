@@ -9,36 +9,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
   <!-- Local CSS -->
-  <link rel="stylesheet" href="CSS/Manual_form.css">
+  <link rel="stylesheet" href="css/manual.css">
 </head>
 <body>
-  <!-- Top navigation (links back to your main app) -->
-  <header class="topbar" role="banner">
-    <div class="brand" style="gap:14px;align-items:center">
-      <div class="mark">AC</div>
-      <div class="app-title">
-        <strong>AutoCare</strong>
-        <div class="sub">Manual Entry · Data Upload</div>
-      </div>
-    </div>
-
-    <nav class="topnav" role="navigation" aria-label="Top navigation">
-      <a href="index.html">Dashboard</a>
-      <a href="index.html#upload" class="active">Data Upload</a>
-      <a href="index.html#advice">Advice</a>
-      <a href="index.html#chat">Chat</a>
-      <a href="index.html#reports">Reports</a>
-    </nav>
-
-    <div class="right-controls">
-      <div class="avatar" id="avatar">G</div>
-    </div>
-  </header>
-
   <div class="container">
     <div class="card" role="main" aria-labelledby="pageTitle">
       <div class="card-head" id="pageTitle">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M19 7h-4V3h-2v4H9v2h4v4h2V9h4V7z" fill="white"/></svg>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M19 7h-4V3h-2v4H9v2h4v4h2V9h4V7z" fill="white"/>
+        </svg>
         <div>
           <h1>Manual Entry — Health Assessment</h1>
           <p>Enter patient vitals and history.</p>
@@ -56,7 +35,6 @@
                 <option value="">Select</option>
                 <option>Male</option>
                 <option>Female</option>
-                <option>Other</option>
               </select>
             </label>
 
@@ -74,7 +52,9 @@
 
             <div class="bmi-row">
               <div class="bmi-box" id="bmiBox">BMI: —</div>
-              <div style="flex:1; font-size:13px; color:var(--muted); align-self:center">BMI updates live as you type height & weight.</div>
+              <div style="flex:1; font-size:13px; color:var(--muted); align-self:center">
+                BMI updates live as you type height & weight.
+              </div>
             </div>
           </div>
 
@@ -106,14 +86,9 @@
               <label class="check"><input type="checkbox" id="chk_alcohol" /> Alcohol consumption</label>
             </div>
 
-            <label class="field">Smoking
-              <select name="smoking" id="smoking">
-                <option value="">Select</option>
-                <option value="current">Yes (current)</option>
-                <option value="former">Former</option>
-                <option value="no">No</option>
-                <option value="noinfo">No information</option>
-              </select>
+            <!-- Smoking changed to a tick/untick checkbox -->
+            <label class="field check" style="margin-top:8px;">
+              <input type="checkbox" name="smoking" id="smoking" /> Smoking 
             </label>
 
             <label class="field">Stress level
@@ -139,7 +114,9 @@
           <div id="generalPanel" class="emoji-panel" role="region" aria-label="General health">
             <div>
               <h4>General Health</h4>
-              <div style="font-size:13px; color:var(--muted)" id="genScale">Combined measure from vitals & history</div>
+              <div style="font-size:13px; color:var(--muted)" id="genScale">
+                Combined measure from vitals & history
+              </div>
             </div>
             <div style="text-align:center">
               <div id="genEmoji" class="emoji-big" aria-hidden="true">💖</div>
@@ -162,7 +139,9 @@
               </div>
               <div style="flex:1">
                 <div style="font-size:13px; color:var(--muted)">Drivers</div>
-                <div style="font-weight:700; font-size:13px; color:var(--muted);">metrics + history</div>
+                <div style="font-weight:700; font-size:13px; color:var(--muted);">
+                  metrics + history
+                </div>
               </div>
             </div>
           </div>
@@ -201,6 +180,6 @@
   </div>
 
   <!-- Local JS -->
-  <script src="js/Manual_form.js"></script>
+  <script src="js/manual.js"></script>
 </body>
 </html>
