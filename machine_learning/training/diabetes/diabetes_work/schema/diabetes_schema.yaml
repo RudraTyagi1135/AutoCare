@@ -8,7 +8,7 @@
 # ==========================================================
 
 columns:
-  age_category: int              # Encoded age group (0–13 mapping)
+  age_category: int              # Encoded age group (1–13 mapping)
   gender: object                 # 'Male' or 'Female'
   bmi: float                     # Body Mass Index
   hypertension: int              # 1 = Yes, 0 = No
