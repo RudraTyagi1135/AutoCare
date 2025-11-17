@@ -24,7 +24,7 @@ PIPELINE_NAME: str = "AutoCare"
 ARTIFACT_DIR: str = "Artifacts"
 
 # Raw dataset filename
-FILE_NAME: str = "Diabetes_73733 _Final_data.xlsx"
+FILE_NAME: str = "Stroke_Final_data.xlsx"
 
 # Output filenames for train/test splits
 TRAIN_FILE_NAME: str = "train.csv"
