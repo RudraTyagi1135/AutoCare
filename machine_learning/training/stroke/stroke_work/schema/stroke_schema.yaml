@@ -1,0 +1,82 @@
+# ==========================================================
+# 🧬 AutoCare Clinical Risk Prediction – Data Schema (v4)
+# ==========================================================
+# Defines expected dataset structure, column names, and types
+# Used by: DataValidation component before model training
+# ==========================================================
+
+columns:
+
+
+  # -------------------------------
+  # 🧑 Demographics
+  # -------------------------------
+  age_category: int               # Encoded age bucket (1–13)
+  gender: object                  # Raw categorical: Male/Female/Other
+
+  # -------------------------------
+  # ⚕️ Clinical Indicators
+  # -------------------------------
+  bmi: float                      # Body Mass Index (continuous)
+  diabetes: int                   # 1 = diabetic, 0 = non-diabetic
+  heart_disease: int              # 1 = yes, 0 = no
+
+  # -------------------------------
+  # 🧠 Neurological / Vascular
+  # -------------------------------
+  stroke: int                     # 1 = stroke, 0 = no-stroke (CURRENT TARGET)
+
+  # -------------------------------
+  # 🧬 Lifestyle Factors
+  # -------------------------------
+  smoking: int                    # 1 = smoker, 0 = non-smoker
+  alcohol: int                    # 1 = yes, 0 = no
+  physactivity: int               # 1 = active, 0 = inactive
+  sleeptime: int                  # Hours of sleep (0–24)
+
+  # -------------------------------
+  # 🧠 Behavioral / Emotional Health
+  # -------------------------------
+  stress_category: int            # 0 = none → 4 = severe stress
+
+
+# ==========================================================
+# 🎯 Target Column (for this training run)
+# ==========================================================
+target_column: stroke
+
+
+# ==========================================================
+# ⚙ Allowed Data Types
+# ==========================================================
+# int     → Numeric / encoded categorical
+# float   → Continuous numeric
+# object  → Raw categorical (requires encoding)
+# ==========================================================
+
+# ==========================================================
+# 📌 Notes / Pipeline Rules
+# ----------------------------------------------------------
+# 1. 'gender' stays as object → OneHotEncoder applies here.
+# 2. All other categoricals must be int-encoded before training.
+# 3. 'stroke' is the target for this run, but can be swapped.
+# 4. Schema supports AutoCare v4 multi-condition prediction.
+# 5. BMI kept as float (more clinically meaningful than category bins).
+# 6. No unused fields (cleaned for production readiness).
+# ==========================================================
+
+# ==========================================================
+# 🧪 Example Valid Row (aligned with schema)
+# ==========================================================
+# age_category: 6
+# gender: Female
+# bmi: 27.8
+# diabetes: 1
+# heart_disease: 0
+# stroke: 0
+# smoking: 1
+# alcohol: 0
+# physactivity: 1
+# sleeptime: 7
+# stress_category: 2
+# ==========================================================
