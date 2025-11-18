@@ -1,5 +1,4 @@
 autocare_utils
 backend
 chatbot
-frontend
 machine_learning

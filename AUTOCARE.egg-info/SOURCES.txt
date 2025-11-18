@@ -15,14 +15,6 @@ chatbot/__init__.py
 chatbot/advice_engine_chat/__init__.py
 chatbot/general_talk_chat/__init__.py
 chatbot/summarize_chat/__init__.py
-frontend/__init__.py
-frontend/Dashboard/__init__.py
-frontend/advice_engine/__init__.py
-frontend/general_talking/__init__.py
-frontend/login_page/__init__.py
-frontend/setting/__init__.py
-frontend/summarize/__init__.py
-frontend/user_upload/__init__.py
 machine_learning/__init__.py
 machine_learning/RRCF/__init__.py
 machine_learning/ml_utils/__init__.py
@@ -55,7 +47,6 @@ machine_learning/training/diabetes/diabetes_work/schema/__init__.py
 machine_learning/training/heart/__init__.py
 machine_learning/training/heart/heart_work/__init__.py
 machine_learning/training/heart/heart_work/heart_push_data.py
-machine_learning/training/heart/heart_work/test.py
 machine_learning/training/heart/heart_work/cloud/__init__.py
 machine_learning/training/heart/heart_work/components/__init__.py
 machine_learning/training/heart/heart_work/components/data_ingestion.py
@@ -77,7 +68,6 @@ machine_learning/training/heart/heart_work/schema/__init__.py
 machine_learning/training/stroke/__init__.py
 machine_learning/training/stroke/stroke_work/__init__.py
 machine_learning/training/stroke/stroke_work/stroke_push_data.py
-machine_learning/training/stroke/stroke_work/test.py
 machine_learning/training/stroke/stroke_work/cloud/__init__.py
 machine_learning/training/stroke/stroke_work/components/__init__.py
 machine_learning/training/stroke/stroke_work/components/data_ingestion.py
