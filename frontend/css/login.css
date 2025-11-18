@@ -15,7 +15,8 @@
 
 
 * { margin:0; padding:0; box-sizing:border-box; font-family:var(--font); }
-body { background: linear-gradient(to bottom, #0b1220, #111827); color: var(--text); height: 100vh; display: flex; align-items: center; justify-content: center; }
+html, body { height:100%; }
+body { background: linear-gradient(to bottom, #0b1220, #111827); color: var(--text); display: flex; align-items: center; justify-content: center; padding: 24px; }
 
 
 .login-card { background: var(--card); width: min(90vw, 380px); border-radius: 20px; box-shadow: var(--shadow); padding: 30px 25px; display: flex; flex-direction: column; gap: 16px; animation: fadeIn 0.7s ease; }
@@ -48,3 +49,8 @@ body { background: linear-gradient(to bottom, #0b1220, #111827); color: var(--te
 .btn { padding:14px; border:none; border-radius:var(--radius); background: linear-gradient(135deg, var(--accent), var(--blue)); color:#fff; font-weight:600; font-size:16px; cursor:pointer; transition:0.2s ease; margin-top:10px; }
 .btn:hover { opacity:0.9; transform:translateY(-1px); }
 .footer-text { text-align:center; font-size:12px; color:var(--muted); margin-top:10px; }
+
+
+.link { font-size: 13px; text-align: center; margin-top: 6px; }
+.link a { color: var(--accent); text-decoration: none; font-weight: 500; }
+.link a:hover { text-decoration: underline; }
