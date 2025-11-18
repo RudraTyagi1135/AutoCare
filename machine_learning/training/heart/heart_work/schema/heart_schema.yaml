@@ -12,12 +12,12 @@ columns:
   # 🧑 Demographics
   # -------------------------------
   age_category: int               # Encoded age group (1–13)
-  gender: object                  # 'Male' / 'Female' / 'Other'
+  gender: object                  # 'Male' / 'Female'
 
   # -------------------------------
   # ⚕️ Clinical Indicators
   # -------------------------------
-  obesity: int                    # BMI category (0–5)
+  obesity: int                    # int (0,1)
   hypertension: int               # 1 = yes, 0 = no
   highchol: int                   # 1 = yes, 0 = no
   diabetes: int                   # 1 = yes, 0 = no
@@ -26,7 +26,7 @@ columns:
   # 🩺 Cardiac & Chest Symptoms
   # -------------------------------
   heart_attack_history: int       # Past MI (1 = yes, 0 = no)
-  chest_pain: int                 # Encoded pain category (0–3)
+  chest_pain: int                 # Encoded pain category (0,12)
   heart_disease: int              # Target-related condition (not the target)
 
   # -------------------------------

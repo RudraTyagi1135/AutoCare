@@ -100,7 +100,7 @@ class DataExtract():
 # ---------------- Main Script Execution ----------------
 if __name__ == "__main__":
     # Input CSV file path
-    FILE_PATH = "machine_learning/training/diabetes/data/Diabetes_73733 _Final_data.xlsx"
+    FILE_PATH = "machine_learning/training/stroke/data/Stroke_Final_data.xlsx"
     # Target MongoDB database
     DATABASE = "Stroke"
     # Target MongoDB collection
