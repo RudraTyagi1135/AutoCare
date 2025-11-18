@@ -16,15 +16,15 @@ from autocare_utils.logging import logging
 from machine_learning.ml_utils.main_utils.utils import read_yaml_file, write_yaml_file
 
 # -------- Config / Entity Imports --------
-from machine_learning.training.diabetes.diabetes_work.entity.config_entity import DataValidationConfig
-from machine_learning.training.diabetes.diabetes_work.entity.artifact_entity import (
+from machine_learning.training.heart.heart_work.entity.config_entity import DataValidationConfig
+from machine_learning.training.heart.heart_work.entity.artifact_entity import (
     DataIngestionArtifact,
     DataValidationArtifact
 )
 
 # -------- Schema Path --------
 SCHEMA_FILE_PATH = os.path.join(
-    "machine_learning", "training", "diabetes", "diabetes_work", "schema", "diabetes_schema.yaml"
+    "machine_learning", "training", "heart", "heart_work", "schema", "diabetes_schema.yaml"
 )
 
 

@@ -7,7 +7,7 @@
 # ================================
 from datetime import datetime
 import os
-from machine_learning.training.diabetes.diabetes_work.constant.training_pipeline import constant
+from machine_learning.training.heart.heart_work.constant.training_pipeline import constant
 
 
 class TrainingPipelineConfig:
@@ -29,7 +29,7 @@ class TrainingPipelineConfig:
 
         # Base diabetes work directory
         base_dir = os.path.join(
-            "machine_learning", "training", "diabetes", "diabetes_work"
+            "machine_learning", "training", "heart", "heart_work"
         )
 
         # Pipeline name (from constants)
@@ -271,7 +271,7 @@ class ModelTrainerConfig:
         )
         # ✅ NEW: Store models & preprocessor inside diabetes_work/model_processor/
         self.model_dir: str = os.path.join(
-            "machine_learning", "training", "diabetes", "diabetes_work", "model_processor"
+            "machine_learning", "training", "heart", "heart_work", "model_processor"
         )
         os.makedirs(self.model_dir, exist_ok=True)
 
