@@ -47,7 +47,13 @@ function toggleSettings(ev){
   menu.style.display = isOpen ? 'none' : 'block';
   menu.setAttribute('aria-hidden', isOpen ? 'true' : 'false');
 }
-function closeSettings(){ const menu = by('settingsMenu'); if(menu){ menu.style.display='none'; menu.setAttribute('aria-hidden','true'); } }
+function closeSettings(){
+  const menu = by('settingsMenu');
+  if(menu){
+    menu.style.display='none';
+    menu.setAttribute('aria-hidden','true');
+  }
+}
 function toggleAuthMenu(ev){
   ev && ev.stopPropagation();
   const menu = by('authMenu'); const box = by('authBox');
@@ -57,7 +63,15 @@ function toggleAuthMenu(ev){
   menu.setAttribute('aria-hidden', isOpen ? 'true' : 'false');
   box.setAttribute('aria-expanded', String(!isOpen));
 }
-function closeAuthMenu(){ const menu = by('authMenu'); const box = by('authBox'); if(menu){ menu.style.display='none'; menu.setAttribute('aria-hidden','true'); } if(box) box.setAttribute('aria-expanded','false'); }
+function closeAuthMenu(){
+  const menu = by('authMenu');
+  const box = by('authBox');
+  if(menu){
+    menu.style.display='none';
+    menu.setAttribute('aria-hidden','true');
+  }
+  if(box) box.setAttribute('aria-expanded','false');
+}
 
 /* ---------- Charts & Panels ---------- */
 let diabetesChart, heartChart, strokeChart;
@@ -95,17 +109,25 @@ function syncPanelWithChart(chart, riskElId, reasonsElId, featureCandidates){
     const data = chart.data.datasets[0].data;
     const risk = computeRiskFromData(data);
     const riskEl = by(riskElId);
-    if(riskEl){ riskEl.textContent = risk + '%'; riskEl.className = 'risk-badge '+ riskClass(risk); }
+    if(riskEl){
+      riskEl.textContent = risk + '%';
+      riskEl.className = 'risk-badge '+ riskClass(risk);
+    }
 
     const reasonsEl = by(reasonsElId);
     if(!reasonsEl) return;
 
-    const features = (featureCandidates && featureCandidates.length) ? featureCandidates.slice() : ['Elevated lab value','Abnormal vitals','Relevant med history','Imaging flag','Age/comorbidity'];
+    const features = (featureCandidates && featureCandidates.length)
+      ? featureCandidates.slice()
+      : ['Elevated lab value','Abnormal vitals','Relevant med history','Imaging flag','Age/comorbidity'];
     const last = data[data.length-1] || 0;
     const mid = data[Math.floor(data.length/2)] || 0;
     const variance = Math.round(Math.abs(last - mid)) || 5;
 
-    const scored = features.map((f,i)=>({f,score: Math.round((Math.random()*20) + (last/3) - (i*2) + variance/3)}));
+    const scored = features.map((f,i)=>({
+      f,
+      score: Math.round((Math.random()*20) + (last/3) - (i*2) + variance/3)
+    }));
     scored.sort((a,b)=>b.score-a.score);
 
     let html = '';
@@ -113,7 +135,9 @@ function syncPanelWithChart(chart, riskElId, reasonsElId, featureCandidates){
       const item = scored[i];
       const short = item.f;
       const detail = `relative importance ${item.score}`;
-      const color = i===0 ? (getComputedStyle(document.body).getPropertyValue('--accent').trim() || '#0b5ecf') : (i===1 ? '#d9534f' : (i===2 ? '#6f42c1' : '#b0b0b0'));
+      const color = i===0
+        ? (getComputedStyle(document.body).getPropertyValue('--accent').trim() || '#0b5ecf')
+        : (i===1 ? '#d9534f' : (i===2 ? '#6f42c1' : '#b0b0b0'));
       html += `<li><span class="dot" style="background:${color}"></span><div class="reason-text">${short}<span class="reason-sub">${detail}</span></div></li>`;
     }
     reasonsEl.innerHTML = html;
@@ -170,8 +194,29 @@ function initCharts(){
     const hCtx = hCtxEl.getContext('2d');
     heartChart = new Chart(hCtx, {
       type:'line',
-      data:{ labels: Array.from({length:30},(_,i)=>i+1), datasets:[{ label:'Heart risk (%)', data: randomSeries(30,10,70), borderColor: '#d9534f', tension:0.35, pointRadius:0, fill:true, backgroundColor: function(context){ const chart = context.chart; const {ctx, chartArea} = chart; if(!chartArea) return null; return createGradient(ctx, chartArea, '#d9534f'); } }] },
-      options:{ responsive:true, maintainAspectRatio:false, scales:{ x:{ display:false}, y:{ display:false, min:0, max:100 } }, plugins:{ legend:{ display:false }, tooltip:{ mode:'index', intersect:false } } }
+      data:{
+        labels: Array.from({length:30},(_,i)=>i+1),
+        datasets:[{
+          label:'Heart risk (%)',
+          data: randomSeries(30,10,70),
+          borderColor: '#d9534f',
+          tension:0.35,
+          pointRadius:0,
+          fill:true,
+          backgroundColor: function(context){
+            const chart = context.chart;
+            const {ctx, chartArea} = chart;
+            if(!chartArea) return null;
+            return createGradient(ctx, chartArea, '#d9534f');
+          }
+        }]
+      },
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        scales:{ x:{ display:false}, y:{ display:false, min:0, max:100 } },
+        plugins:{ legend:{ display:false }, tooltip:{ mode:'index', intersect:false } }
+      }
     });
   }
 
@@ -181,14 +226,53 @@ function initCharts(){
     const sCtx = sCtxEl.getContext('2d');
     strokeChart = new Chart(sCtx, {
       type:'line',
-      data:{ labels: Array.from({length:30},(_,i)=>i+1), datasets:[{ label:'Stroke risk (%)', data: randomSeries(30,5,60), borderColor: '#6f42c1', tension:0.35, pointRadius:0, fill:true, backgroundColor: function(context){ const chart = context.chart; const {ctx, chartArea} = chart; if(!chartArea) return null; return createGradient(ctx, chartArea, '#6f42c1'); } }] },
-      options:{ responsive:true, maintainAspectRatio:false, scales:{ x:{ display:false}, y:{ display:false, min:0, max:100 } }, plugins:{ legend:{ display:false }, tooltip:{ mode:'index', intersect:false } } }
+      data:{
+        labels: Array.from({length:30},(_,i)=>i+1),
+        datasets:[{
+          label:'Stroke risk (%)',
+          data: randomSeries(30,5,60),
+          borderColor: '#6f42c1',
+          tension:0.35,
+          pointRadius:0,
+          fill:true,
+          backgroundColor: function(context){
+            const chart = context.chart;
+            const {ctx, chartArea} = chart;
+            if(!chartArea) return null;
+            return createGradient(ctx, chartArea, '#6f42c1');
+          }
+        }]
+      },
+      options:{
+        responsive:true,
+        maintainAspectRatio:false,
+        scales:{ x:{ display:false}, y:{ display:false, min:0, max:100 } },
+        plugins:{ legend:{ display:false }, tooltip:{ mode:'index', intersect:false } }
+      }
     });
   }
 
-  if(diabetesChart) syncPanelWithChart(diabetesChart,'risk-diabetes','reasons-diabetes', ['High HbA1c','Elevated fasting glucose','High BMI','Family history of diabetes','Certain medications']);
-  if(heartChart) syncPanelWithChart(heartChart,'risk-heart','reasons-heart', ['High LDL cholesterol','Elevated systolic blood pressure','ECG abnormalities','Smoking history','Diabetes']);
-  if(strokeChart) syncPanelWithChart(strokeChart,'risk-stroke','reasons-stroke', ['Chronic hypertension','Atrial fibrillation flagged','Prior TIA','Smoking','High cholesterol']);
+  if(diabetesChart)
+    syncPanelWithChart(
+      diabetesChart,
+      'risk-diabetes',
+      'reasons-diabetes',
+      ['High HbA1c','Elevated fasting glucose','High BMI','Family history of diabetes','Certain medications']
+    );
+  if(heartChart)
+    syncPanelWithChart(
+      heartChart,
+      'risk-heart',
+      'reasons-heart',
+      ['High LDL cholesterol','Elevated systolic blood pressure','ECG abnormalities','Smoking history','Diabetes']
+    );
+  if(strokeChart)
+    syncPanelWithChart(
+      strokeChart,
+      'risk-stroke',
+      'reasons-stroke',
+      ['Chronic hypertension','Atrial fibrillation flagged','Prior TIA','Smoking','High cholesterol']
+    );
 }
 
 function updateCharts(){
@@ -204,10 +288,24 @@ function updateCharts(){
 function wireUpload(){
   const largeDropzone = by('largeDropzone');
   if(!largeDropzone) return;
-  largeDropzone.addEventListener('dragover', e=>{ e.preventDefault(); largeDropzone.classList.add('dragover'); });
-  largeDropzone.addEventListener('dragleave', e=>{ largeDropzone.classList.remove('dragover'); });
-  largeDropzone.addEventListener('drop', e=>{ e.preventDefault(); largeDropzone.classList.remove('dragover'); handleFile({target:{files:e.dataTransfer.files}}); });
-  largeDropzone.addEventListener('keydown', e=>{ if(e.key === 'Enter'){ const fi = by('fileInput'); if(fi) fi.click(); } });
+  largeDropzone.addEventListener('dragover', e=>{
+    e.preventDefault();
+    largeDropzone.classList.add('dragover');
+  });
+  largeDropzone.addEventListener('dragleave', e=>{
+    largeDropzone.classList.remove('dragover');
+  });
+  largeDropzone.addEventListener('drop', e=>{
+    e.preventDefault();
+    largeDropzone.classList.remove('dragover');
+    handleFile({target:{files:e.dataTransfer.files}});
+  });
+  largeDropzone.addEventListener('keydown', e=>{
+    if(e.key === 'Enter'){
+      const fi = by('fileInput');
+      if(fi) fi.click();
+    }
+  });
 
   const fileInput = by('fileInput');
   if(fileInput) fileInput.addEventListener('change', handleFile);
@@ -218,22 +316,52 @@ function wireUpload(){
 function handleFile(event){
   const file = event.target.files && event.target.files[0];
   if(!file) return;
-  const up = by('upload-preview'); if(up) up.innerText = `Uploaded: ${file.name} — running analysis...`;
-  const ap = by('analysis-preview'); if(ap) ap.style.display = 'block';
-  const summary = by('analysis-summary'); if(summary) summary.innerText = 'Summary: Processing complete. Click Show Results to reveal the detailed panel.';
-  const resultBtn = by('resultBtn'); if(resultBtn){ resultBtn.disabled = false; resultBtn.focus(); }
+  const up = by('upload-preview');
+  if(up) up.innerText = `Uploaded: ${file.name} — running analysis...`;
+  const ap = by('analysis-preview');
+  if(ap) ap.style.display = 'block';
+  const summary = by('analysis-summary');
+  if(summary) summary.innerText = 'Summary: Processing complete. Click Show Results to reveal the detailed panel.';
+  const resultBtn = by('resultBtn');
+  if(resultBtn){
+    resultBtn.disabled = false;
+    resultBtn.focus();
+  }
   updateCharts();
 }
 
 /* ---------- Reports / misc ---------- */
 function generateReport(){ alert('Report generated (simulated).'); }
 function downloadReport(){ alert('Download initiated (simulated).'); }
-function openManualPage(){ alert('Open manual-entry page (simulated)'); }
+
+/* THIS is the important change: actually go to Flask route */
+function openManualPage(){
+  // Redirect to the Flask route that serves manual.html (which itself redirects to /manual-entry)
+  window.location.href = "/manual.html";
+}
 
 /* ---------- Account placeholders ---------- */
-function simulateSignIn(){ const sa = by('settings-account'); if(sa) sa.innerText = 'Dr. User'; alert('Sign-in simulated'); closeAuthMenu(); closeSettings(); }
-function simulateSwitch(){ const sa = by('settings-account'); if(sa) sa.innerText = 'Nurse A'; alert('Switch account simulated'); closeAuthMenu(); closeSettings(); }
-function simulateSignOut(){ const sa = by('settings-account'); if(sa) sa.innerText = 'Guest'; alert('Signed out (simulated)'); closeAuthMenu(); closeSettings(); }
+function simulateSignIn(){
+  const sa = by('settings-account');
+  if(sa) sa.innerText = 'Dr. User';
+  alert('Sign-in simulated');
+  closeAuthMenu();
+  closeSettings();
+}
+function simulateSwitch(){
+  const sa = by('settings-account');
+  if(sa) sa.innerText = 'Nurse A';
+  alert('Switch account simulated');
+  closeAuthMenu();
+  closeSettings();
+}
+function simulateSignOut(){
+  const sa = by('settings-account');
+  if(sa) sa.innerText = 'Guest';
+  alert('Signed out (simulated)');
+  closeAuthMenu();
+  closeSettings();
+}
 
 /* ---------- Sidebar collapse helpers (chat + advice) ---------- */
 function setSidebarCollapsed(sidebarEl, collapsed){
@@ -253,7 +381,8 @@ function toggleChatSidebar(){
   if(!chatSidebar) return;
   const isCollapsed = chatSidebar.classList.toggle('collapsed');
   chatSidebar.setAttribute('aria-hidden', isCollapsed ? 'true' : 'false');
-  const btn = by('polToggleSidebar'); if(btn) btn.setAttribute('aria-pressed', String(!isCollapsed));
+  const btn = by('polToggleSidebar');
+  if(btn) btn.setAttribute('aria-pressed', String(!isCollapsed));
   // if chat opened, collapse advice
   if(!isCollapsed && advSidebar) setSidebarCollapsed(advSidebar, true);
 }
@@ -264,37 +393,55 @@ function toggleAdvSidebar(){
   if(!advSidebar) return;
   const isCollapsed = advSidebar.classList.toggle('collapsed');
   advSidebar.setAttribute('aria-hidden', isCollapsed ? 'true' : 'false');
-  const btn = by('advToggleBtn'); if(btn) btn.setAttribute('aria-pressed', String(!isCollapsed));
+  const btn = by('advToggleBtn');
+  if(btn) btn.setAttribute('aria-pressed', String(!isCollapsed));
   // if advice opened, collapse chat
   if(!isCollapsed && chatSidebar) setSidebarCollapsed(chatSidebar, true);
 }
 
 function closeBothSidebarsIfOpen(e){
   // if click inside sidebars or on their toggles, do nothing
-  if(e && (e.target.closest && (e.target.closest('#chat .sidebar') || e.target.closest('#advSidebar') || e.target.closest('#polToggleSidebar') || e.target.closest('#advToggleBtn') || e.target.closest('.topnav button[data-target="chat"]') || e.target.closest('.topnav button[data-target="advice"]')))){
+  if(e && (e.target.closest && (
+    e.target.closest('#chat .sidebar') ||
+    e.target.closest('#advSidebar') ||
+    e.target.closest('#polToggleSidebar') ||
+    e.target.closest('#advToggleBtn') ||
+    e.target.closest('.topnav button[data-target="chat"]') ||
+    e.target.closest('.topnav button[data-target="advice"]')
+  ))){
     return;
   }
   const chatSidebar = document.querySelector('#chat .sidebar');
   const advSidebar = document.getElementById('advSidebar');
   if(chatSidebar && !chatSidebar.classList.contains('collapsed')) setSidebarCollapsed(chatSidebar, true);
   if(advSidebar && !advSidebar.classList.contains('collapsed')) setSidebarCollapsed(advSidebar, true);
-  const polBtn = by('polToggleSidebar'); if(polBtn) polBtn.setAttribute('aria-pressed','false');
-  const advBtn = by('advToggleBtn'); if(advBtn) advBtn.setAttribute('aria-pressed','false');
+  const polBtn = by('polToggleSidebar');
+  if(polBtn) polBtn.setAttribute('aria-pressed','false');
+  const advBtn = by('advToggleBtn');
+  if(advBtn) advBtn.setAttribute('aria-pressed','false');
 }
 
 /* Wire sidebar handlers */
 function wireSidebarBehavior(){
   const polToggle = by('polToggleSidebar');
-  if(polToggle) polToggle.addEventListener('click', (ev)=>{ ev.stopPropagation(); toggleChatSidebar(); });
+  if(polToggle) polToggle.addEventListener('click', (ev)=>{
+    ev.stopPropagation();
+    toggleChatSidebar();
+  });
 
   const advToggle = by('advToggleBtn');
-  if(advToggle) advToggle.addEventListener('click', (ev)=>{ ev.stopPropagation(); toggleAdvSidebar(); });
+  if(advToggle) advToggle.addEventListener('click', (ev)=>{
+    ev.stopPropagation();
+    toggleAdvSidebar();
+  });
 
   // close sidebars when clicking outside
   document.addEventListener('click', (e)=>{ closeBothSidebarsIfOpen(e); });
 
   // ESC to close
-  document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeBothSidebarsIfOpen(); });
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape') closeBothSidebarsIfOpen();
+  });
 }
 
 /* ---------- Polished Chat ---------- */
@@ -305,18 +452,35 @@ function initPolishedChat(){
   const chatList = by('polChatList');
   const newChatBtn = by('polNewChat');
 
-  function timeNow(){ const d = new Date(); return d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}); }
-  function escapeHtml(unsafe){ return String(unsafe || '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;'); }
+  function timeNow(){
+    const d = new Date();
+    return d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  }
+  function escapeHtml(unsafe){
+    return String(unsafe || '')
+      .replaceAll('&','&amp;')
+      .replaceAll('<','&lt;')
+      .replaceAll('>','&gt;')
+      .replaceAll('"','&quot;')
+      .replaceAll("'",'&#039;');
+  }
 
   userInput && userInput.focus();
 
   function addMessage(text, role='assistant'){
     const el = document.createElement('div');
     el.className = 'msg ' + (role === 'user' ? 'user' : 'assistant');
-    const meta = document.createElement('div'); meta.className = 'meta'; meta.textContent = role === 'user' ? 'You' : 'Assistant';
-    const body = document.createElement('div'); body.innerHTML = escapeHtml(text).replace(/\n/g,'<br>');
-    const tm = document.createElement('div'); tm.className = 'time'; tm.textContent = timeNow();
-    el.appendChild(meta); el.appendChild(body); el.appendChild(tm);
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+    meta.textContent = role === 'user' ? 'You' : 'Assistant';
+    const body = document.createElement('div');
+    body.innerHTML = escapeHtml(text).replace(/\n/g,'<br>');
+    const tm = document.createElement('div');
+    tm.className = 'time';
+    tm.textContent = timeNow();
+    el.appendChild(meta);
+    el.appendChild(body);
+    el.appendChild(tm);
     messages.appendChild(el);
     el.scrollIntoView({behavior:'smooth', block:'end'});
   }
@@ -363,7 +527,8 @@ function initPolishedChat(){
       const item = document.createElement('div');
       item.className = 'chat-item';
       item.setAttribute('data-q', text);
-      item.innerHTML = '<div class="icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.1"/></svg></div>'
+      item.innerHTML =
+        '<div class="icon" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.1"/></svg></div>'
         + '<div class="title">' + escapeHtml(text) + '</div>';
       chatList.prepend(item);
     } catch(err){
@@ -373,9 +538,21 @@ function initPolishedChat(){
     }
   }
 
-  sendBtn && sendBtn.addEventListener('click', (e)=>{ e.preventDefault(); sendMessage(); });
-  userInput && userInput.addEventListener('keydown', (e)=>{ if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendMessage(); } });
-  newChatBtn && newChatBtn.addEventListener('click', ()=>{ messages.innerHTML = ''; userInput.value = ''; userInput.focus(); });
+  sendBtn && sendBtn.addEventListener('click', (e)=>{
+    e.preventDefault();
+    sendMessage();
+  });
+  userInput && userInput.addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter' && !e.shiftKey){
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+  newChatBtn && newChatBtn.addEventListener('click', ()=>{
+    messages.innerHTML = '';
+    userInput.value = '';
+    userInput.focus();
+  });
 
   // click conversation history to reuse query
   document.addEventListener('click', (e)=>{
@@ -418,18 +595,25 @@ function initPolishedAdvice(){
 
   function mockAdviceReply(q){
     const ql = String(q || '').toLowerCase();
-    if(ql.includes('assessment') || ql.includes('run')) return 'Quick assessment: BP elevated, consider home BP monitoring and review antihypertensives. Recommend follow-up in 2 weeks.';
-    if(ql.includes('lipid')) return 'Lipid guidance: consider high-intensity statin if ASCVD risk >20% and LDL > 70 mg/dL. Check LFTs baseline.';
-    if(ql.includes('diabetes')) return 'Diabetes plan: suggest HbA1c, optimize metformin dose, recommend lifestyle referral. Consider SGLT2 if CV disease present.';
+    if(ql.includes('assessment') || ql.includes('run'))
+      return 'Quick assessment: BP elevated, consider home BP monitoring and review antihypertensives. Recommend follow-up in 2 weeks.';
+    if(ql.includes('lipid'))
+      return 'Lipid guidance: consider high-intensity statin if ASCVD risk >20% and LDL > 70 mg/dL. Check LFTs baseline.';
+    if(ql.includes('diabetes'))
+      return 'Diabetes plan: suggest HbA1c, optimize metformin dose, recommend lifestyle referral. Consider SGLT2 if CV disease present.';
     return 'This is an advice demo. Connect a backend or knowledge source for evidence-cited recommendations.';
   }
 
   function addAdvMessage(text, role='assistant'){
     const el = document.createElement('div');
     el.className = 'adv-msg ' + (role === 'user' ? 'user' : 'assistant');
-    const meta = document.createElement('div'); meta.className = 'meta'; meta.textContent = role === 'user' ? 'You' : 'Assistant';
-    const body = document.createElement('div'); body.innerHTML = text.replace(/\n/g,'<br>');
-    el.appendChild(meta); el.appendChild(body);
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+    meta.textContent = role === 'user' ? 'You' : 'Assistant';
+    const body = document.createElement('div');
+    body.innerHTML = text.replace(/\n/g,'<br>');
+    el.appendChild(meta);
+    el.appendChild(body);
     advMessages.appendChild(el);
     el.scrollIntoView({behavior:'smooth', block:'end'});
   }
@@ -454,7 +638,8 @@ function initPolishedAdvice(){
       const item = document.createElement('div');
       item.className = 'adv-item';
       item.setAttribute('data-q', q);
-      item.innerHTML = '<div class="icon" aria-hidden="true" style="width:36px;height:36;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#f3f6fb;border:1px solid var(--line);color:var(--accent)">•</div>'
+      item.innerHTML =
+        '<div class="icon" aria-hidden="true" style="width:36px;height:36;border-radius:8px;display:flex;align-items:center;justify-content:center;background:#f3f6fb;border:1px solid var(--line);color:var(--accent)">•</div>'
         + '<div class="title">' + (q.length > 42 ? q.slice(0,40) + '…' : q) + '</div>';
       history.prepend(item);
     }, 600 + Math.random()*400);
@@ -464,7 +649,10 @@ function initPolishedAdvice(){
     advRunBtn.addEventListener('click', ()=>{
       addAdvMessage('Running quick assessment...', 'user');
       setTimeout(()=>{
-        addAdvMessage('Quick assessment: Estimated 10-year ASCVD risk ~18%. Recommend statin initiation and BP control. Order HbA1c and fasting lipid panel.', 'assistant');
+        addAdvMessage(
+          'Quick assessment: Estimated 10-year ASCVD risk ~18%. Recommend statin initiation and BP control. Order HbA1c and fasting lipid panel.',
+          'assistant'
+        );
       }, 800);
     });
   }
@@ -495,8 +683,16 @@ function initPolishedAdvice(){
     });
   }
 
-  advSendBtn && advSendBtn.addEventListener('click', (e)=>{ e.preventDefault(); sendAdvice(); });
-  advInput && advInput.addEventListener('keydown', (e)=>{ if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); sendAdvice(); } });
+  advSendBtn && advSendBtn.addEventListener('click', (e)=>{
+    e.preventDefault();
+    sendAdvice();
+  });
+  advInput && advInput.addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter' && !e.shiftKey){
+      e.preventDefault();
+      sendAdvice();
+    }
+  });
 
   advInput && advInput.focus();
 }
@@ -540,6 +736,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   // wire small buttons
   const openManual = by('openManual');
   if(openManual) openManual.addEventListener('click', openManualPage);
+
   const resultBtn = by('resultBtn');
   if(resultBtn) resultBtn.addEventListener('click', showResults);
   const genReport = by('genReport');
@@ -558,15 +755,21 @@ document.addEventListener('DOMContentLoaded', ()=>{
     btn.addEventListener('click', (e)=>{
       const target = btn.dataset.target;
       if(target === 'chat'){
-        const cs = document.querySelector('#chat .sidebar'); if(cs) setSidebarCollapsed(cs, false);
-        const as = by('advSidebar'); if(as) setSidebarCollapsed(as, true);
+        const cs = document.querySelector('#chat .sidebar');
+        if(cs) setSidebarCollapsed(cs, false);
+        const as = by('advSidebar');
+        if(as) setSidebarCollapsed(as, true);
       } else if(target === 'advice'){
-        const as = by('advSidebar'); if(as) setSidebarCollapsed(as, false);
-        const cs = document.querySelector('#chat .sidebar'); if(cs) setSidebarCollapsed(cs, true);
+        const as = by('advSidebar');
+        if(as) setSidebarCollapsed(as, false);
+        const cs = document.querySelector('#chat .sidebar');
+        if(cs) setSidebarCollapsed(cs, true);
       } else {
         // collapse both for other views
-        const cs = document.querySelector('#chat .sidebar'); if(cs) setSidebarCollapsed(cs, true);
-        const as = by('advSidebar'); if(as) setSidebarCollapsed(as, true);
+        const cs = document.querySelector('#chat .sidebar');
+        if(cs) setSidebarCollapsed(cs, true);
+        const as = by('advSidebar');
+        if(as) setSidebarCollapsed(as, true);
       }
     });
   });
@@ -576,8 +779,11 @@ document.addEventListener('DOMContentLoaded', ()=>{
 function showResults(){
   updateCharts();
   const analysisSummary = by('analysis-summary');
-  if(analysisSummary) analysisSummary.innerHTML = '<strong>Key findings:</strong> Simulated cohort shows elevated cardiometabolic risk — recommend follow-up testing.';
-  const rb = by('resultBtn'); if(rb) rb.disabled = false;
+  if(analysisSummary)
+    analysisSummary.innerHTML =
+      '<strong>Key findings:</strong> Simulated cohort shows elevated cardiometabolic risk — recommend follow-up testing.';
+  const rb = by('resultBtn');
+  if(rb) rb.disabled = false;
 }
 
 /* ---------- End of file ---------- */
