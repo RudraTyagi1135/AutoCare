@@ -6,6 +6,7 @@ Author-email: rudratyagi777@gmail.com
 Requires-Dist: python-dotenv
 Requires-Dist: pandas
 Requires-Dist: numpy
+Requires-Dist: xgboost
 Requires-Dist: pymongo[srv]
 Requires-Dist: certifi
 Requires-Dist: scikit-learn
