@@ -8,6 +8,7 @@ python-dotenv
 # Data wrangling & preprocessing
 pandas
 numpy
+xgboost
 
 # MongoDB client (for storing data, logs, or model metadata)
 pymongo[srv]
