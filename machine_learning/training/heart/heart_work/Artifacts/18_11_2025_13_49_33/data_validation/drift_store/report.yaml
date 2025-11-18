@@ -1,0 +1,55 @@
+age_category:
+  drift_detected: &id001 !!python/object/apply:numpy._core.multiarray.scalar
+  - !!python/object/apply:numpy.dtype
+    args:
+    - b1
+    - false
+    - true
+    state: !!python/tuple
+    - 3
+    - '|'
+    - null
+    - null
+    - null
+    - -1
+    - -1
+    - 0
+  - !!binary |
+    AA==
+  p_value: 0.9573809065568579
+alcohol:
+  drift_detected: *id001
+  p_value: 0.9999687015375466
+chest_pain:
+  drift_detected: *id001
+  p_value: 0.9998531108366628
+diabetes:
+  drift_detected: *id001
+  p_value: 0.9814888047792638
+gender:
+  drift_detected: *id001
+  p_value: 0.9984123970971139
+heart_attack_history:
+  drift_detected: *id001
+  p_value: 0.7427567880987016
+heart_disease:
+  drift_detected: *id001
+  p_value: 1.0
+highchol:
+  drift_detected: *id001
+  p_value: 1.0
+hypertension:
+  drift_detected: *id001
+  p_value: 0.7280172203678243
+obesity:
+  drift_detected: *id001
+  p_value: 0.9814891460919218
+physactivity:
+  drift_detected: *id001
+  p_value: 0.9993930035445241
+smoking:
+  drift_detected: *id001
+  p_value: 1.0
+stress_category:
+  drift_detected: *id001
+  p_value: 0.1613244339580986
