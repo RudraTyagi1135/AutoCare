@@ -1,6 +1,6 @@
-# ============================ #
-#   Stroke Model Data Transformation
-# ============================ #
+# =============================================== #
+#               Stroke Data Transformation
+# =============================================== #
 
 import os
 import sys
@@ -23,12 +23,30 @@ class DataTransformation:
 
     TARGET_COLUMN = "stroke"
 
-    def __init__(self, data_validation_artifact: DataValidationArtifact, data_transformation_config: DataTransformationConfig):
+    # ======================================
+    # Stroke uses these features ONLY
+    # ======================================
+    REQUIRED_FEATURES = [
+        "gender",
+        "age_category",
+        "bmi",
+        "diabetes",
+        "heart_disease",
+        "sleep_time",
+        "diffwalk",
+        "physactivity",
+        "alcohol",
+        "smoking",
+        "stress_category",
+    ]
+
+    def __init__(self, data_validation_artifact: DataValidationArtifact,
+                 data_transformation_config: DataTransformationConfig):
         try:
             self.config = data_transformation_config
             self.data_validation_artifact = data_validation_artifact
 
-            # final age mapping used across all 3 models
+            # age mapping
             self.age_mapping = {
                 '0-24': 1, '25-29': 2, '30-34': 3, '35-39': 4, '40-44': 5,
                 '45-49': 6, '50-54': 7, '55-59': 8, '60-64': 9, '65-69': 10,
@@ -41,9 +59,9 @@ class DataTransformation:
             raise AutoCareException(e, sys)
 
     # -----------------------------
-    # Load CSV
+    # Helpers
     # -----------------------------
-    def _load_csv(self, path):
+    def _load_csv(self, path: str) -> pd.DataFrame:
         try:
             df = pd.read_csv(path)
             logging.info(f"Loaded dataset: {path}, Shape: {df.shape}")
@@ -51,106 +69,125 @@ class DataTransformation:
         except Exception as e:
             raise AutoCareException(e, sys)
 
-    # -----------------------------
-    # MAP FUNCTIONS
-    # -----------------------------
     def _map_gender(self, df):
-        df["gender"] = df["gender"].apply(lambda x: 1 if str(x).lower() in ["male", "m"] else 0)
+        if "gender" in df.columns:
+            df["gender"] = df["gender"].map(lambda x: 1 if str(x).lower() in ["male", "m"] else 0)
         return df
 
-    def _map_age(self, df):
-        df["age_category"] = df["age_category"].map(self.age_mapping)
+    def _map_age_category(self, df):
+        if "age_category" in df.columns:
+            df["age_category"] = df["age_category"].map(
+                lambda x: self.age_mapping.get(str(x).strip(), np.nan)
+            )
         return df
 
-    def _compute_bmi_if_needed(self, df):
-        # stroke uses BMI directly
-        if "bmi" not in df.columns and "height" in df.columns and "weight" in df.columns:
-            df["bmi"] = df["weight"] / ((df["height"] / 100) ** 2)
-        return df
-
-    def _map_yes_no(self, df, column):
-        df[column] = df[column].apply(lambda x: 1 if str(x).lower() in ["yes", "y", "1", "true"] else 0)
+    def _map_boolean(self, df, col):
+        if col in df.columns:
+            df[col] = df[col].apply(
+                lambda x: 1 if str(x).lower() in ["yes", "y", "1", "true"] else 0
+            )
         return df
 
     def _map_stress(self, df):
-        mapping = {"no stress": 0, "mild": 1, "moderate": 2, "high": 3, "severe": 4}
-        df["stress_category"] = df["stress_category"].map(lambda x: mapping.get(str(x).lower(), np.nan))
+        if "stress_category" in df.columns:
+            mapping = {
+                "no stress": 0, "mild": 1, "moderate": 2, "high": 3, "severe": 4
+            }
+            df["stress_category"] = df["stress_category"].map(
+                lambda x: mapping.get(str(x).lower(), np.nan)
+            )
         return df
 
     # -----------------------------
-    # PREPARE DATAFRAME
+    # Main DF Preparation
     # -----------------------------
-    def _prepare_dataframe(self, df):
+    def _prepare_dataframe(self, df: pd.DataFrame) -> pd.DataFrame:
         try:
             df = df.copy()
 
-            df = self._compute_bmi_if_needed(df)
+            # convert categorical → numeric
             df = self._map_gender(df)
-            df = self._map_age(df)
+            df = self._map_age_category(df)
 
-            # Stroke includes these boolean features:
-            df = self._map_yes_no(df, "smoking")
-            df = self._map_yes_no(df, "alcohol")
-            df = self._map_yes_no(df, "physactivity")
-            df = self._map_yes_no(df, "diffwalk")
+            df = self._map_boolean(df, "diffwalk")
+            df = self._map_boolean(df, "physactivity")
+            df = self._map_boolean(df, "alcohol")
+            df = self._map_boolean(df, "smoking")
 
             df = self._map_stress(df)
 
-            # Remove unnecessary columns:
-            drop_cols = ["Unnamed: 0", "height", "weight"]
+            # Ensure target is integer
+            if self.TARGET_COLUMN in df.columns:
+                df[self.TARGET_COLUMN] = df[self.TARGET_COLUMN].astype(int)
+
+            # Drop unused columns safely
+            drop_cols = [
+                "Unnamed: 0",
+                "height",
+                "weight",
+                "hypertension",
+                "highchol",
+                "obesity",
+                "chest_pain",
+                "prior_heart_attack"
+            ]
             df.drop(columns=[c for c in drop_cols if c in df.columns], inplace=True)
 
-            # Ensure target is integer
-            df[self.TARGET_COLUMN] = df[self.TARGET_COLUMN].astype(int)
-
-            logging.info(f"Processed Stroke DF Columns: {df.columns}")
+            logging.info(f"Processed DF Columns: {list(df.columns)}")
             return df
 
         except Exception as e:
             raise AutoCareException(e, sys)
 
     # -----------------------------
-    # MAIN FUNCTION
+    # Transformation pipeline
     # -----------------------------
     def initiate_data_transformation(self) -> DataTransformationArtifact:
         try:
             logging.info("🚀 Starting STROKE data transformation...")
 
-            # Load
+            # Load validated data
             train_df = self._load_csv(self.data_validation_artifact.valid_train_file_path)
             test_df = self._load_csv(self.data_validation_artifact.valid_test_file_path)
 
-            # Prepare
+            # Clean + encode
             train_df = self._prepare_dataframe(train_df)
             test_df = self._prepare_dataframe(test_df)
 
-            # Features
-            feature_cols = [c for c in train_df.columns if c != self.TARGET_COLUMN]
+            # Final feature list (exclude target)
+            feature_cols = [c for c in self.REQUIRED_FEATURES if c in train_df.columns]
 
+            # Separate X, y
             X_train = train_df[feature_cols].values
             y_train = train_df[self.TARGET_COLUMN].values
+
             X_test = test_df[feature_cols].values
             y_test = test_df[self.TARGET_COLUMN].values
 
-            # Missing value handling
+            # Missing values
             imputer = SimpleImputer(strategy="median")
             X_train = imputer.fit_transform(X_train)
             X_test = imputer.transform(X_test)
 
-            # Scaling
+            # Scaler
             scaler = StandardScaler()
             X_train_scaled = scaler.fit_transform(X_train)
             X_test_scaled = scaler.transform(X_test)
 
             # Save preprocessor
-            preprocessor = {"imputer": imputer, "scaler": scaler, "feature_columns": feature_cols}
-            save_object(self.config.transformed_object_file_path, preprocessor)
+            preprocessor = {
+                "imputer": imputer,
+                "scaler": scaler,
+                "feature_columns": feature_cols
+            }
 
-            # Merge arrays
+            save_object(self.config.transformed_object_file_path, preprocessor)
+            logging.info(f"Preprocessor saved at: {self.config.transformed_object_file_path}")
+
+            # Combine features + target
             train_arr = np.c_[X_train_scaled, y_train]
             test_arr = np.c_[X_test_scaled, y_test]
 
-            # Save transformed data
             save_numpy_array_data(self.config.transformed_train_file_path, train_arr)
             save_numpy_array_data(self.config.transformed_test_file_path, test_arr)
 
@@ -164,4 +201,4 @@ class DataTransformation:
             return artifact
 
         except Exception as e:
-            raise AutoCareException(e, sys)
+            raise AutoCareException(e, sys)         
