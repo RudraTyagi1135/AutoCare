@@ -1,6 +1,7 @@
 python-dotenv
 pandas
 numpy
+xgboost
 pymongo[srv]
 certifi
 scikit-learn
