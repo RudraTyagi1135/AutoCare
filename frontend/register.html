@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AutoCare - Register</title>
+
+  <!-- Correct CSS path -->
+  <link rel="stylesheet" href="css/register.css" />
+</head>
+<body>
+  <form id="registerForm" class="login-card" action="{{ url_for('register') }}" method="POST">
+    <div class="brand">
+      <div class="logo-mark">AC</div>
+      <h1 class="title">Create Account</h1>
+    </div>
+
+    <p class="subtitle">Register to get started with AutoCare</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+          <p class="flash {{ category }}">{{ msg }}</p>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="role-toggle">
+      <div class="toggle-option active" id="userToggle" data-role="user">User</div>
+      <div class="toggle-option" id="doctorToggle" data-role="doctor">Doctor</div>
+    </div>
+    <input type="hidden" name="role" id="roleInput" value="user">
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="text" id="email" name="email" placeholder="you@example.com" required />
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" placeholder="Create a password" required />
+    </div>
+
+    <div class="form-group">
+      <label for="confirm_password">Confirm Password</label>
+      <input type="password" id="confirm_password" name="confirm_password" placeholder="Re-enter password" required />
+    </div>
+
+    <button type="submit" class="btn">Register</button>
+
+    <p class="link">
+      Already have an account?
+      <a href="{{ url_for('login') }}">Login</a>
+    </p>
+
+    <p class="footer-text">© 2025 AutoCare. All rights reserved.</p>
+  </form>
+
+  <!-- Correct JS path -->
+  <script src="js/register.js" defer></script>
+</body>
+</html>
