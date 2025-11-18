@@ -24,7 +24,7 @@ PIPELINE_NAME: str = "AutoCare"
 ARTIFACT_DIR: str = "Artifacts"
 
 # Raw dataset filename
-FILE_NAME: str = "Diabetes_73733 _Final_data.xlsx"
+FILE_NAME: str = "Heart_73733 _Final_data.xlsx"
 
 # Output filenames for train/test splits
 TRAIN_FILE_NAME: str = "train.csv"
@@ -46,8 +46,8 @@ Constants specific to the Data Ingestion stage.
 """
 
 # MongoDB configuration
-DATA_INGESTION_COLLECTION_NAME: str = "diabetes_raw"
-DATA_INGESTION_DATABASE_NAME: str = "Diabetes"
+DATA_INGESTION_COLLECTION_NAME: str = "heart_raw"
+DATA_INGESTION_DATABASE_NAME: str = "Heart"
 
 # Folder structure within artifacts for data ingestion
 DATA_INGESTION_DIR_NAME: str = "data_ingestion"
@@ -126,4 +126,4 @@ Constants for cloud storage and deployment.
 """
 
 # S3 bucket name for storing artifacts and trained models
-TRAINING_BUCKET_NAME: str = "Autocare_diabetes_bucket"
+TRAINING_BUCKET_NAME: str = "Autocare_heart_bucket"

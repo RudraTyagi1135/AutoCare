@@ -5,8 +5,8 @@
 import sys
 import os
 
-os.environ["PIPELINE_ROOT"] = "machine_learning/training/diabetes/diabetes_work"
-os.environ["PIPELINE_NAME"] = "diabetes"
+os.environ["PIPELINE_ROOT"] = "machine_learning/training/heart/heart_work"
+os.environ["PIPELINE_NAME"] = "heart"
 
 from autocare_utils.exception import AutoCareException
 from autocare_utils.logging import logging
@@ -18,13 +18,13 @@ from autocare_utils.logging import logging
 
 
 # -------- Component Imports --------
-from machine_learning.training.diabetes.diabetes_work.components.data_ingestion import DataIngestion
-from machine_learning.training.diabetes.diabetes_work.components.data_validation import DataValidation
-from machine_learning.training.diabetes.diabetes_work.components.data_transformation import DataTransformation
-from machine_learning.training.diabetes.diabetes_work.components.model_trainer import ModelTrainer
+from machine_learning.training.heart.heart_work.components.data_ingestion import DataIngestion
+from machine_learning.training.heart.heart_work.components.data_validation import DataValidation
+from machine_learning.training.heart.heart_work.components.data_transformation import DataTransformation
+from machine_learning.training.heart.heart_work.components.model_trainer import ModelTrainer
 
 # -------- Config Entity Imports --------
-from machine_learning.training.diabetes.diabetes_work.entity.config_entity import (
+from machine_learning.training.heart.heart_work.entity.config_entity import (
     TrainingPipelineConfig,
     DataIngestionConfig,
     DataValidationConfig,
@@ -50,7 +50,7 @@ def pretty_print(title: str, obj) -> None:
 if __name__ == "__main__":
     try:
         logging.info("=" * 90)
-        logging.info("🚀 Starting AutoCare Diabetes ML Training Pipeline")
+        logging.info("🚀 Starting AutoCare heart ML Training Pipeline")
         logging.info("=" * 90)
 
         # ===========================================================

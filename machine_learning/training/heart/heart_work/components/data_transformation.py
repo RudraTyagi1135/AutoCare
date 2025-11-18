@@ -13,8 +13,8 @@ from sklearn.impute import SimpleImputer
 # -------- Internal Imports --------
 from autocare_utils.exception import AutoCareException
 from autocare_utils.logging import logging
-from machine_learning.training.diabetes.diabetes_work.entity.config_entity import DataTransformationConfig
-from machine_learning.training.diabetes.diabetes_work.entity.artifact_entity import (
+from machine_learning.training.heart.heart_work.entity.config_entity import DataTransformationConfig
+from machine_learning.training.heart.heart_work.entity.artifact_entity import (
     DataTransformationArtifact,
     DataValidationArtifact,
 )
@@ -29,7 +29,7 @@ class DataTransformation:
     - Saves transformed numpy arrays and preprocessor object
     """
 
-    TARGET_COLUMN = "diabetes"
+    TARGET_COLUMN = "heart"
 
     # Columns that represent boolean-like categories
     BOOLEAN_COLUMNS = ["alcohol", "smoking", "physactivity", "diffwalk", "highchol"]

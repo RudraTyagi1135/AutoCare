@@ -1,6 +1,6 @@
 #import
 import sys
-from machine_learning.training.diabetes.diabetes_work.entity.artifact_entity import ClassificationMetricArtifact
+from machine_learning.training.heart.heart_work.entity.artifact_entity import ClassificationMetricArtifact
 from autocare_utils.exception import AutoCareException
 from sklearn.metrics import f1_score,precision_score,recall_score,accuracy_score
 

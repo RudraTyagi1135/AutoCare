@@ -2,7 +2,7 @@
 import os
 import sys
 
-from machine_learning.training.diabetes.diabetes_work.constant.training_pipeline.constant import SAVED_MODEL_DIR , MODEL_FILE_NAME
+from machine_learning.training.stroke.stroke_work.constant.training_pipeline.constant import SAVED_MODEL_DIR , MODEL_FILE_NAME
 
 
 from autocare_utils.exception import AutoCareException

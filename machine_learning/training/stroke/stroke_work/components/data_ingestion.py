@@ -31,8 +31,8 @@ if not MONGO_DB_URL:
 logging.info("✅ MongoDB connection string loaded from environment successfully.")
 
 # -------- Config / Entity Imports --------
-from machine_learning.training.diabetes.diabetes_work.entity.config_entity import DataIngestionConfig
-from machine_learning.training.diabetes.diabetes_work.entity.artifact_entity import DataIngestionArtifact
+from machine_learning.training.stroke.stroke_work.entity.config_entity import DataIngestionConfig
+from machine_learning.training.stroke.stroke_work.entity.artifact_entity import DataIngestionArtifact
 
 
 # ============================================================ #

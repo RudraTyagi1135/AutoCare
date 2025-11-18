@@ -19,8 +19,8 @@ from xgboost import XGBClassifier
 from autocare_utils.exception import AutoCareException
 from autocare_utils.logging import logging
 
-from machine_learning.training.diabetes.diabetes_work.entity.config_entity import ModelTrainerConfig
-from machine_learning.training.diabetes.diabetes_work.entity.artifact_entity import (
+from machine_learning.training.heart.heart_work.entity.config_entity import ModelTrainerConfig
+from machine_learning.training.heart.heart_work.entity.artifact_entity import (
     ModelTrainerArtifact,
     DataTransformationArtifact,
     ClassificationMetricArtifact,

@@ -13,8 +13,8 @@ from sklearn.impute import SimpleImputer
 # -------- Internal Imports --------
 from autocare_utils.exception import AutoCareException
 from autocare_utils.logging import logging
-from machine_learning.training.diabetes.diabetes_work.entity.config_entity import DataTransformationConfig
-from machine_learning.training.diabetes.diabetes_work.entity.artifact_entity import (
+from machine_learning.training.stroke.stroke_work.entity.config_entity import DataTransformationConfig
+from machine_learning.training.stroke.stroke_work.entity.artifact_entity import (
     DataTransformationArtifact,
     DataValidationArtifact,
 )
