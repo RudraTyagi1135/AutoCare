@@ -24,7 +24,7 @@ from machine_learning.training.heart.heart_work.entity.artifact_entity import (
 
 # -------- Schema Path --------
 SCHEMA_FILE_PATH = os.path.join(
-    "machine_learning", "training", "heart", "heart_work", "schema", "diabetes_schema.yaml"
+    "machine_learning", "training", "heart", "heart_work", "schema", "heart_schema.yaml"
 )
 
 
