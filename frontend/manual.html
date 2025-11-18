@@ -43,15 +43,15 @@
             </label>
 
             <label class="field">Height (cm)
-              <input type="number" name="height" id="height" placeholder="cm">
+              <input type="number" name="height" id="height" placeholder="cm" aria-describedby="bmiBox">
             </label>
 
             <label class="field">Weight (kg)
-              <input type="number" name="weight" id="weight" placeholder="kg">
+              <input type="number" name="weight" id="weight" placeholder="kg" aria-describedby="bmiBox">
             </label>
 
             <div class="bmi-row">
-              <div class="bmi-box" id="bmiBox">BMI: —</div>
+              <div class="bmi-box" id="bmiBox" role="status" aria-live="polite">BMI: —</div>
               <div style="flex:1; font-size:13px; color:var(--muted); align-self:center">
                 BMI updates live as you type height & weight.
               </div>
@@ -179,7 +179,7 @@
     </div>
   </div>
 
-  <!-- Local JS -->
-  <script src="js/manual.js"></script>
+  <!-- Local JS (deferred) -->
+  <script src="js/manual.js" defer></script>
 </body>
 </html>
