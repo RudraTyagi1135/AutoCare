@@ -36,6 +36,7 @@ openpyxl
 dvc
 dvc[gdrive]
 mlflow
+dvc[s3]
 
 # Local Project Setup - MUST BE LAST
 -e .
