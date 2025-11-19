@@ -38,6 +38,8 @@ columns:
   # 🧠 Behavioral / Emotional Health
   # -------------------------------
   stress_category: int            # 0 = none → 4 = severe stress
+  diffwalk: int                  # Difficulty in walking (1 = Yes, 0 = No)
+
 
 
 # ==========================================================
