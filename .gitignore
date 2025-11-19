@@ -1,2 +1,48 @@
+# -----------------------------------------
+# Virtual Environments
+# -----------------------------------------
 venv/
 .venv/
+
+# -----------------------------------------
+# Python Cache
+# -----------------------------------------
+__pycache__/
+*.pyc
+
+# -----------------------------------------
+# IDE / Editor Files
+# -----------------------------------------
+.vscode/
+.idea/
+
+# -----------------------------------------
+# DVC Cache (do NOT delete files under .dvc/)
+# -----------------------------------------
+.dvc/cache/
+
+# -----------------------------------------
+# Project Temporary / Large Files (NOT tracked directly)
+# DVC will track these folders using .dvc pointer files
+# -----------------------------------------
+machine_learning/training/*/*_work/Artifacts/
+machine_learning/training/*/*_work/model_processor/
+
+# -----------------------------------------
+# File Types Usually Stored in DVC
+# (ensure these are NOT directly committed)
+# -----------------------------------------
+*.pkl
+*.npy
+*.xlsx
+*.csv
+*.json
+
+# BUT allow the DVC metafiles:
+# (IMPORTANT — these must NOT be ignored)
+!important*.dvc
+
+# -----------------------------------------
+# Log Files
+# -----------------------------------------
+
