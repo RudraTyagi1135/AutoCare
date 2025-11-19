@@ -1,0 +1,8 @@
+[core]
+    remote = stroke_remote
+['remote "diabetes_remote"']
+    url = s3://autocare-ml-bucket/diabetes
+['remote "heart_remote"']
+    url = s3://autocare-ml-bucket/heart
+['remote "stroke_remote"']
+    url = s3://autocare-ml-bucket/stroke
