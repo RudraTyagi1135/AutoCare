@@ -2,53 +2,61 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, g
 from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
+from pymongo import MongoClient
 import random
 from datetime import datetime
 import os
 
-# Resolve frontend directory relative to this file
+# ===========================
+# Resolve Frontend Directory
+# ===========================
 THIS_DIR = os.path.dirname(__file__)
 FRONTEND_DIR = os.path.abspath(os.path.join(THIS_DIR, "..", "frontend"))
 
-# Use the frontend folder for templates and static files
 app = Flask(
     __name__,
     template_folder=FRONTEND_DIR,
     static_folder=FRONTEND_DIR,
-    static_url_path=""  # serve static files at root (e.g. /css/, /js/, /login.html)
+    static_url_path=""
 )
-app.secret_key = "autocare_secret_key"  # change this to a secure random key in production
+app.secret_key = "autocare_secret_key"  # Change for production
+
 
 # ===========================
-# Dummy users database (email -> { password: hashed, role: "user"|"doctor" })
+# MongoDB Setup
 # ===========================
-USERS = {
-    "user@example.com": {"password": generate_password_hash("password"), "role": "user"},
-    "doctor@example.com": {"password": generate_password_hash("password"), "role": "doctor"},
-}
+MONGO_URI = "mongodb+srv://rudratyagi777_db_user:rudra1135@autocare.gilugwr.mongodb.net/?appName=AutoCare"  # Replace if using Atlas
+client = MongoClient(MONGO_URI)
+db = client["History"]
+
+users_col = db["users"]             # Registered users
+register_log_col = db["register_logs"]  # Registration history
+login_log_col = db["login_logs"]    # Login history
+manual_col = db["manual_history"]   # Manual form submissions
+
 
 # ===========================
-# Helper & Decorators
+# LOGIN PROTECTION DECORATOR
 # ===========================
 def login_required(role=None):
-    """Decorator to protect routes. Optionally checks for role."""
     def wrapper(fn):
         @wraps(fn)
         def decorated_view(*args, **kwargs):
             if "user" not in session:
-                flash("Please log in to access this page.", "error")
+                flash("Please log in.", "error")
                 return redirect(url_for("login"))
             if role and session.get("role") != role:
-                flash("You do not have permission to access this page.", "error")
-                return redirect(url_for("login"))
+                flash("Access denied.", "error")
+                return redirect(url_for("dashboard"))
             g.user = session.get("user")
             g.role = session.get("role")
             return fn(*args, **kwargs)
         return decorated_view
     return wrapper
 
+
 # ===========================
-# ROUTES
+# HOME → LOGIN REDIRECT
 # ===========================
 @app.route("/")
 def home():
@@ -56,161 +64,161 @@ def home():
         return redirect(url_for("dashboard"))
     return redirect(url_for("login"))
 
-# Convenience endpoints you can link from frontend for switching pages
-@app.route("/go-register")
-def go_register():
-    """Simple redirect endpoint — useful if you want a backend link to the register page."""
-    return redirect(url_for("register"))
 
-@app.route("/go-login")
-def go_login():
-    """Simple redirect endpoint — useful if you want a backend link to the login page."""
-    return redirect(url_for("login"))
-
-# Serve login page and handle login POST
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    # If already logged in, go to dashboard
-    if "user" in session:
-        return redirect(url_for("dashboard"))
-
-    if request.method == "POST":
-        email = request.form.get("email", "").strip().lower()
-        password = request.form.get("password", "").strip()
-        role = request.form.get("role", "user").strip()
-
-        if not email or not password:
-            flash("Please fill in both fields.", "error")
-            return render_template("login.html")
-
-        user = USERS.get(email)
-        # authenticate against USERS dict (passwords are hashed)
-        if user and check_password_hash(user["password"], password) and user["role"] == role:
-            session["user"] = email
-            session["role"] = role
-            flash(f"Welcome, {email}!", "success")
-            return redirect(url_for("dashboard"))
-        else:
-            flash("Invalid credentials or role. Please try again.", "error")
-            return render_template("login.html")
-
-    # GET -> show login
-    return render_template("login.html")
-
-# Serve register page and handle registration POST
+# ===========================
+# REGISTER ROUTE (MongoDB)
+# ===========================
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    # If already logged in, sent to dashboard
     if "user" in session:
         flash("You are already logged in.", "info")
         return redirect(url_for("dashboard"))
 
     if request.method == "POST":
-        email = request.form.get("email", "").strip().lower()
-        password = request.form.get("password", "")
-        confirm_password = request.form.get("confirm_password", "")
+        email = request.form.get("email", "").lower().strip()
+        password = request.form.get("password", "").strip()
+        confirm_password = request.form.get("confirm_password", "").strip()
         role = request.form.get("role", "user").strip()
 
-        # basic validation
-        if not email or not password or not confirm_password or not role:
-            flash("Please fill all fields.", "error")
+        if not email or not password or not confirm_password:
+            flash("Fill all fields.", "error")
             return render_template("register.html")
 
         if password != confirm_password:
             flash("Passwords do not match.", "error")
             return render_template("register.html")
 
-        if email in USERS:
-            flash("Account already exists for this email.", "error")
+        if users_col.find_one({"email": email}):
+            flash("User already exists!", "error")
             return render_template("register.html")
 
-        # create user (demo; in production use a DB)
-        USERS[email] = {
+        # Insert new user
+        users_col.insert_one({
+            "email": email,
             "password": generate_password_hash(password),
-            "role": role
-        }
+            "role": role,
+            "created_at": datetime.utcnow()
+        })
 
-        flash("Account created successfully. Please login.", "success")
+        # Save registration history
+        register_log_col.insert_one({
+            "email": email,
+            "role": role,
+            "registered_at": datetime.utcnow()
+        })
+
+        flash("Registration successful. Login now.", "success")
         return redirect(url_for("login"))
 
-    # GET -> show register
     return render_template("register.html")
 
-# Dashboard — picks template based on role
+
+# ===========================
+# LOGIN ROUTE (MongoDB)
+# ===========================
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if "user" in session:
+        return redirect(url_for("dashboard"))
+
+    if request.method == "POST":
+        email = request.form.get("email", "").lower().strip()
+        password = request.form.get("password", "").strip()
+        role = request.form.get("role", "user").strip()
+
+        if not email or not password:
+            flash("Enter email and password.", "error")
+            return render_template("login.html")
+
+        user = users_col.find_one({"email": email})
+
+        if user and check_password_hash(user["password"], password) and user["role"] == role:
+            session["user"] = email
+            session["role"] = role
+
+            login_log_col.insert_one({
+                "email": email,
+                "role": role,
+                "login_timestamp": datetime.utcnow()
+            })
+
+            flash("Login successful!", "success")
+            return redirect(url_for("dashboard"))
+        else:
+            flash("Invalid credentials or role.", "error")
+            return render_template("login.html")
+
+    return render_template("login.html")
+
+
+# ===========================
+# DASHBOARD ROUTE
+# ===========================
 @app.route("/dashboard")
 @login_required()
 def dashboard():
     role = session.get("role", "user")
     template_name = f"{role}.html"
-    # check if the template file exists in the frontend folder
+
     if not os.path.exists(os.path.join(FRONTEND_DIR, template_name)):
-        flash(f"Template '{template_name}' not found — showing user view instead.", "info")
-        template_name = "user.html"
+        template_name = "user.html"  # fallback
+
     last_manual = session.get("last_manual")
     return render_template(template_name, user=session.get("user"), last_manual=last_manual)
 
-@app.route("/logout")
-@login_required()
-def logout():
-    session.clear()
-    flash("You have been logged out.", "info")
-    return redirect(url_for("login"))
 
 # ===========================
-# Manual Entry Route
+# MANUAL ENTRY (MongoDB)
 # ===========================
 @app.route("/manual-entry", methods=["GET", "POST"])
 @login_required()
 def manual_entry():
     if request.method == "POST":
         inputs = {k: v for k, v in request.form.items()}
+
         if not inputs:
-            flash("Please submit the manual form with at least one value.", "error")
-            return render_template("manual.html", values={})
+            flash("Please fill at least one value.", "error")
+            return render_template("manual.html")
 
-        heart_score = int(random.random() * 50 + 30)       # 30–79%
-        stroke_score = int(random.random() * 40 + 10)      # 10–49%
-        diabetes_score = int(random.random() * 30 + 5)     # 5–34%
+        # Generate Demo Scores
+        heart_score = random.randint(30, 79)
+        stroke_score = random.randint(10, 49)
+        diabetes_score = random.randint(5, 34)
 
-        result = {
-            "submitted_by": session.get("user"),
-            "timestamp": datetime.utcnow().isoformat() + "Z",
-            "inputs": inputs,
+        record = {
+            "email": session.get("user"),
+            "role": session.get("role"),
+            "timestamp": datetime.utcnow(),
+            "input_values": inputs,
             "scores": {
                 "heart": f"{heart_score}%",
                 "stroke": f"{stroke_score}%",
                 "diabetes": f"{diabetes_score}%"
-            },
-            "drivers": {
-                "heart": ["Age", "Cholesterol"],
-                "stroke": ["BP", "Smoking"],
-                "diabetes": ["Glucose", "Weight"]
             }
         }
 
-        session["last_manual"] = result
-        flash("Manual entry submitted — analysis saved and will appear on the dashboard.", "success")
+        manual_col.insert_one(record)
+        session["last_manual"] = record
+
+        flash("Form submitted & saved successfully.", "success")
         return redirect(url_for("dashboard"))
 
     return render_template("manual.html")
 
-# Keep compatibility route if something links to manual.html specifically
-@app.route("/manual.html")
-def manual_html_redirect():
-    return redirect(url_for("manual_entry"))
-
-# Optional: convenience routes to directly serve html files (if you want /login.html etc.)
-@app.route("/<page>.html")
-def serve_page(page):
-    allowed = {"login", "register", "manual", "user"}
-    filename = f"{page}.html"
-    if page in allowed and os.path.exists(os.path.join(FRONTEND_DIR, filename)):
-        return render_template(filename)
-    return "Not found", 404
 
 # ===========================
-# RUN APP
+# LOGOUT
+# ===========================
+@app.route("/logout")
+@login_required()
+def logout():
+    session.clear()
+    flash("Logged out.", "info")
+    return redirect(url_for("login"))
+
+
+# ===========================
+# Run App
 # ===========================
 if __name__ == "__main__":
-    # Run on localhost:5000
     app.run(debug=True, host="127.0.0.1", port=5000)
