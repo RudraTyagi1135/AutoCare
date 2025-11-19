@@ -1,5 +1,5 @@
 [core]
-    remote = heart_remote
+    remote = stroke_remote
 ['remote "diabetes_remote"']
     url = s3://autocare-ml-bucket/diabetes
 ['remote "heart_remote"']
