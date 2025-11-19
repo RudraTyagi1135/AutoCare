@@ -1,0 +1,56 @@
+[2025-11-19 11:41:25,913] INFO root:31 - \u2705 MongoDB connection string loaded from environment successfully.
+[2025-11-19 11:41:26,574] INFO root:52 - ==========================================================================================
+[2025-11-19 11:41:26,574] INFO root:53 - \U0001f680 Starting AutoCare Diabetes ML Training Pipeline
+[2025-11-19 11:41:26,574] INFO root:54 - ==========================================================================================
+[2025-11-19 11:41:26,574] INFO root:60 - \u2699 Training Pipeline Configuration Initialized.
+[2025-11-19 11:41:26,574] INFO root:65 - \U0001f4e5 Initiating Data Ingestion...
+[2025-11-19 11:41:26,574] INFO root:58 - \u2705 DataIngestion instance created successfully.
+[2025-11-19 11:41:26,574] INFO root:165 - \U0001f680 Starting Data Ingestion Process...
+[2025-11-19 11:41:26,574] INFO root:77 - \U0001f510 Connecting securely to MongoDB Atlas...
+[2025-11-19 11:41:47,525] ERROR root:128 - \u274c Exception occurred during pipeline execution.
+Traceback (most recent call last):
+  File "D:\AutoCare\machine_learning\training\stroke\stroke_work\components\data_ingestion.py", line 78, in export_collection_as_dataframe
+    self.mongo_client = pymongo.MongoClient(MONGO_DB_URL, tlsCAFile=ca)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\pymongo\synchronous\mongo_client.py", line 891, in __init__
+    self._get_topology()  # type: ignore[unused-coroutine]
+    ^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\pymongo\synchronous\mongo_client.py", line 1758, in _get_topology
+    self._resolve_srv()
+  File "D:\AutoCare\.venv\Lib\site-packages\pymongo\synchronous\mongo_client.py", line 910, in _resolve_srv
+    res = uri_parser._parse_srv(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\pymongo\synchronous\uri_parser.py", line 168, in _parse_srv
+    nodes = dns_resolver.get_hosts()
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\pymongo\synchronous\srv_resolver.py", line 157, in get_hosts
+    _, nodes = self._get_srv_response_and_hosts(True)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\pymongo\synchronous\srv_resolver.py", line 131, in _get_srv_response_and_hosts
+    results = self._resolve_uri(encapsulate_errors)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\pymongo\synchronous\srv_resolver.py", line 125, in _resolve_uri
+    raise ConfigurationError(str(exc)) from None
+pymongo.errors.ConfigurationError: The resolution lifetime expired after 20.015 seconds: Server Do53:192.168.29.1@53 answered The DNS operation timed out.; Server Do53:8.8.8.8@53 answered The DNS operation timed out.; Server Do53:8.8.4.4@53 answered The DNS operation timed out.; Server Do53:127.0.0.1@53 answered [WinError 10054] An existing connection was forcibly closed by the remote host; Server Do53:192.168.29.1@53 answered The DNS operation timed out.; Server Do53:8.8.8.8@53 answered The DNS operation timed out.; Server Do53:8.8.4.4@53 answered The DNS operation timed out.; Server Do53:192.168.29.1@53 answered The DNS operation timed out.; Server Do53:8.8.8.8@53 answered The DNS operation timed out.; Server Do53:8.8.4.4@53 answered The DNS operation timed out.; Server Do53:192.168.29.1@53 answered The DNS operation timed out.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\AutoCare\machine_learning\training\stroke\stroke_work\components\data_ingestion.py", line 168, in initiate_data_ingestion
+    dataframe = self.export_collection_as_dataframe()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\machine_learning\training\stroke\stroke_work\components\data_ingestion.py", line 102, in export_collection_as_dataframe
+    raise AutoCareException(
+autocare_utils.exception.AutoCareException: Error occurred in python script name [D:\AutoCare\machine_learning\training\stroke\stroke_work\components\data_ingestion.py] line number [78] error message [\u274c MongoDB configuration error. Please check your URI or cluster setup.
+The resolution lifetime expired after 20.015 seconds: Server Do53:192.168.29.1@53 answered The DNS operation timed out.; Server Do53:8.8.8.8@53 answered The DNS operation timed out.; Server Do53:8.8.4.4@53 answered The DNS operation timed out.; Server Do53:127.0.0.1@53 answered [WinError 10054] An existing connection was forcibly closed by the remote host; Server Do53:192.168.29.1@53 answered The DNS operation timed out.; Server Do53:8.8.8.8@53 answered The DNS operation timed out.; Server Do53:8.8.4.4@53 answered The DNS operation timed out.; Server Do53:192.168.29.1@53 answered The DNS operation timed out.; Server Do53:8.8.8.8@53 answered The DNS operation timed out.; Server Do53:8.8.4.4@53 answered The DNS operation timed out.; Server Do53:192.168.29.1@53 answered The DNS operation timed out.]
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "d:\AutoCare\machine_learning\training\stroke\stroke_work\pipeline\training_pipeline.py", line 69, in <module>
+    data_ingestion_artifact = data_ingestion.initiate_data_ingestion()
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\machine_learning\training\stroke\stroke_work\components\data_ingestion.py", line 186, in initiate_data_ingestion
+    raise AutoCareException(e, sys)
+autocare_utils.exception.AutoCareException: Error occurred in python script name [D:\AutoCare\machine_learning\training\stroke\stroke_work\components\data_ingestion.py] line number [168] error message [Error occurred in python script name [D:\AutoCare\machine_learning\training\stroke\stroke_work\components\data_ingestion.py] line number [78] error message [\u274c MongoDB configuration error. Please check your URI or cluster setup.
+The resolution lifetime expired after 20.015 seconds: Server Do53:192.168.29.1@53 answered The DNS operation timed out.; Server Do53:8.8.8.8@53 answered The DNS operation timed out.; Server Do53:8.8.4.4@53 answered The DNS operation timed out.; Server Do53:127.0.0.1@53 answered [WinError 10054] An existing connection was forcibly closed by the remote host; Server Do53:192.168.29.1@53 answered The DNS operation timed out.; Server Do53:8.8.8.8@53 answered The DNS operation timed out.; Server Do53:8.8.4.4@53 answered The DNS operation timed out.; Server Do53:192.168.29.1@53 answered The DNS operation timed out.; Server Do53:8.8.8.8@53 answered The DNS operation timed out.; Server Do53:8.8.4.4@53 answered The DNS operation timed out.; Server Do53:192.168.29.1@53 answered The DNS operation timed out.]]

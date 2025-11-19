@@ -13,6 +13,7 @@ xgboost
 # MongoDB client (for storing data, logs, or model metadata)
 pymongo[srv]
 certifi
+awscli 
 
 # Machine Learning
 scikit-learn
@@ -32,6 +33,9 @@ dill
 
 # Excel support for dataset uploads
 openpyxl
+dvc
+dvc[gdrive]
+mlflow
 
 # Local Project Setup - MUST BE LAST
 -e .
