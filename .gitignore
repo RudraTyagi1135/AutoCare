@@ -1,21 +1,48 @@
+# -----------------------------------------
+# Virtual Environments
+# -----------------------------------------
 venv/
 .venv/
 
-# Ignore pipeline artifacts
-machine_learning/training/*/*_work/Artifacts/
-machine_learning/training/*/*_work/model_processor/
-*.pkl
-*.npy
-.venv/
-
-# DVC cache & env
-/.dvc/cache/
-/.vscode/
+# -----------------------------------------
+# Python Cache
+# -----------------------------------------
 __pycache__/
 *.pyc
-*.pkl
-*.xlsx
-*.npy
 
-# But do not ignore Artifacts/ entirely here if you plan to track them with DVC.
-# We'll keep the pointer files (.dvc) in git while the real files go to DVC remote.
+# -----------------------------------------
+# IDE / Editor Files
+# -----------------------------------------
+.vscode/
+.idea/
+
+# -----------------------------------------
+# DVC Cache (do NOT delete files under .dvc/)
+# -----------------------------------------
+.dvc/cache/
+
+# -----------------------------------------
+# Project Temporary / Large Files (NOT tracked directly)
+# DVC will track these folders using .dvc pointer files
+# -----------------------------------------
+machine_learning/training/*/*_work/Artifacts/
+machine_learning/training/*/*_work/model_processor/
+
+# -----------------------------------------
+# File Types Usually Stored in DVC
+# (ensure these are NOT directly committed)
+# -----------------------------------------
+*.pkl
+*.npy
+*.xlsx
+*.csv
+*.json
+
+# BUT allow the DVC metafiles:
+# (IMPORTANT — these must NOT be ignored)
+!important*.dvc
+
+# -----------------------------------------
+# Log Files
+# -----------------------------------------
+
