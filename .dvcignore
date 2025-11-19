@@ -1,14 +1,72 @@
-# Add patterns of files dvc should ignore, which could improve
-# the performance. Learn more at
-# https://dvc.org/doc/user-guide/dvcignore
+# -----------------------------------------
+# Virtual Environments (never track)
+# -----------------------------------------
+venv/
+.venv/
 
+# -----------------------------------------
+# Python cache / temp files
+# -----------------------------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
 
-# Ignore code (we don't want DVC to try tracking code files)
-*.py
-*.md
-*.yaml
-*.yml
+# -----------------------------------------
+# IDE / Editor files
+# -----------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
 
-# Ignore small logs and temp files
-logs/
+# -----------------------------------------
+# Git internal folders (avoid loops)
+# -----------------------------------------
+.git/
+.gitignore
+
+# -----------------------------------------
+# Node / Frontend (your HTML/CSS/JS UI)
+# -----------------------------------------
+node_modules/
+dist/
+build/
+
+# -----------------------------------------
+# Logs
+# -----------------------------------------
 *.log
+logs/
+
+# -----------------------------------------
+# Temporary or generated files
+# -----------------------------------------
+*.tmp
+*.temp
+*.bak
+
+# -----------------------------------------
+# Do NOT index DVC cache
+# -----------------------------------------
+.dvc/cache/
+
+# -----------------------------------------
+# Avoid scanning large training data already tracked through DVC
+# -----------------------------------------
+machine_learning/training/*/*_work/Artifacts/
+machine_learning/training/*/*_work/model_processor/
+
+# -----------------------------------------
+# Ignore other build artifacts
+# -----------------------------------------
+*.zip
+*.tar
+*.gz
+*.rar
+*.7z
+
+# -----------------------------------------
+# Jupyter
+# -----------------------------------------
+.ipynb_checkpoints/
