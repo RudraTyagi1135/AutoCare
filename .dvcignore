@@ -54,8 +54,7 @@ logs/
 # -----------------------------------------
 # Avoid scanning large training data already tracked through DVC
 # -----------------------------------------
-machine_learning/training/*/*_work/Artifacts/
-machine_learning/training/*/*_work/model_processor/
+
 
 # -----------------------------------------
 # Ignore other build artifacts
