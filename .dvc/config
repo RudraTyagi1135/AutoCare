@@ -1,4 +1,9 @@
 [core]
-    remote = gdrive_remote
+    remote = autocare_s3
 ['remote "gdrive_remote"']
     url = gdrive://1aOeemRdMgP1cE6mm2Ut1-XticO4UaTNp
+['remote "autocare_s3"']
+    url = s3://autocare-ml-bucket
+    access_key_id = AKIASLOWJDVWKFJAVFH3
+    secret_access_key = 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
+    region = ap-south-1
