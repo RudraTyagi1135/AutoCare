@@ -1,3 +1,14 @@
 # Add patterns of files dvc should ignore, which could improve
 # the performance. Learn more at
 # https://dvc.org/doc/user-guide/dvcignore
+
+
+# Ignore code (we don't want DVC to try tracking code files)
+*.py
+*.md
+*.yaml
+*.yml
+
+# Ignore small logs and temp files
+logs/
+*.log
