@@ -4,8 +4,18 @@ venv/
 # Ignore pipeline artifacts
 machine_learning/training/*/*_work/Artifacts/
 machine_learning/training/*/*_work/model_processor/
-machine_learning/training/*/*_work/logs/
 *.pkl
 *.npy
 .venv/
 
+# DVC cache & env
+/.dvc/cache/
+/.vscode/
+__pycache__/
+*.pyc
+*.pkl
+*.xlsx
+*.npy
+
+# But do not ignore Artifacts/ entirely here if you plan to track them with DVC.
+# We'll keep the pointer files (.dvc) in git while the real files go to DVC remote.
