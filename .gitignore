@@ -1,2 +1,11 @@
 venv/
 .venv/
+
+# Ignore pipeline artifacts
+machine_learning/training/*/*_work/Artifacts/
+machine_learning/training/*/*_work/model_processor/
+machine_learning/training/*/*_work/logs/
+*.pkl
+*.npy
+.venv/
+
