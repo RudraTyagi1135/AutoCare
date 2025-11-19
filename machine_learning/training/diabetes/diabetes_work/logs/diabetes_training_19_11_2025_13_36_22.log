@@ -1,0 +1,139 @@
+[2025-11-19 13:36:30,060] INFO root:31 - \u2705 MongoDB connection string loaded from environment successfully.
+[2025-11-19 13:36:32,011] INFO root:52 - ==========================================================================================
+[2025-11-19 13:36:32,011] INFO root:53 - \U0001f680 Starting AutoCare Diabetes ML Training Pipeline
+[2025-11-19 13:36:32,011] INFO root:54 - ==========================================================================================
+[2025-11-19 13:36:32,011] INFO root:60 - \u2699 Training Pipeline Configuration Initialized.
+[2025-11-19 13:36:32,011] INFO root:65 - \U0001f4e5 Initiating Data Ingestion...
+[2025-11-19 13:36:32,011] INFO root:58 - \u2705 DataIngestion instance created successfully.
+[2025-11-19 13:36:32,011] INFO root:165 - \U0001f680 Starting Data Ingestion Process...
+[2025-11-19 13:36:32,011] INFO root:77 - \U0001f510 Connecting securely to MongoDB Atlas...
+[2025-11-19 13:36:39,787] INFO root:90 - \u2705 Fetched 73733 rows and 11 columns from MongoDB collection.
+[2025-11-19 13:36:40,009] INFO root:123 - \U0001f4e6 Raw data saved to feature store at: machine_learning\training\diabetes\diabetes_work\Artifacts\19_11_2025_13_36_30\data_ingestion\raw_data\Diabetes_Final_data.xlsx
+[2025-11-19 13:36:40,009] INFO root:136 - \u2702 Performing train-test split on dataset...
+[2025-11-19 13:36:40,211] INFO root:150 - \u2705 Train-Test Split Completed: Train((58986, 11)), Test((14747, 11))
+[2025-11-19 13:36:40,211] INFO root:182 - \U0001f3c1 Data Ingestion Completed Successfully.
+[2025-11-19 13:36:40,226] INFO root:70 - \u2705 Data Ingestion Completed Successfully.
+[2025-11-19 13:36:40,226] INFO root:76 - \U0001f50d Initiating Data Validation...
+[2025-11-19 13:36:40,226] INFO root:50 - Schema file loaded successfully from machine_learning\training\diabetes\diabetes_work\schema\diabetes_schema.yaml
+[2025-11-19 13:36:40,226] INFO root:150 - \U0001f680 Initiating Data Validation Process...
+[2025-11-19 13:36:40,226] INFO root:59 - Reading dataset from: machine_learning\training\diabetes\diabetes_work\Artifacts\19_11_2025_13_36_30\data_ingestion\ingested\train.csv
+[2025-11-19 13:36:40,293] INFO root:59 - Reading dataset from: machine_learning\training\diabetes\diabetes_work\Artifacts\19_11_2025_13_36_30\data_ingestion\ingested\test.csv
+[2025-11-19 13:36:40,309] INFO root:73 - Schema requires 11 columns.
+[2025-11-19 13:36:40,309] INFO root:74 - DataFrame contains 11 columns.
+[2025-11-19 13:36:40,309] INFO root:84 - \u2705 Column validation successful.
+[2025-11-19 13:36:40,309] INFO root:73 - Schema requires 11 columns.
+[2025-11-19 13:36:40,309] INFO root:74 - DataFrame contains 11 columns.
+[2025-11-19 13:36:40,309] INFO root:84 - \u2705 Column validation successful.
+[2025-11-19 13:36:40,309] INFO root:98 - Starting dataset drift detection...
+[2025-11-19 13:36:40,492] INFO root:134 - \u2705 Drift report saved at: machine_learning\training\diabetes\diabetes_work\Artifacts\19_11_2025_13_36_30\data_validation\drift_store\report.yaml
+[2025-11-19 13:36:40,643] INFO root:180 - \u2705 Validated datasets saved successfully.
+[2025-11-19 13:36:40,643] INFO root:192 - \U0001f3af Data Validation Completed | Drift Status: True
+[2025-11-19 13:36:40,643] INFO root:84 - \u2705 Data Validation Completed Successfully.
+[2025-11-19 13:36:40,643] INFO root:95 - \u2699 Initiating Data Transformation...
+[2025-11-19 13:36:40,643] INFO root:49 - \u2705 DataTransformation instance created successfully.
+[2025-11-19 13:36:40,643] INFO root:157 - \U0001f680 Initiating data transformation...
+[2025-11-19 13:36:40,710] INFO root:60 - Loaded dataset: machine_learning\training\diabetes\diabetes_work\Artifacts\19_11_2025_13_36_30\data_validation\validated\train.csv, Shape: (58986, 11)
+[2025-11-19 13:36:40,727] INFO root:60 - Loaded dataset: machine_learning\training\diabetes\diabetes_work\Artifacts\19_11_2025_13_36_30\data_validation\validated\test.csv, Shape: (14747, 11)
+[2025-11-19 13:36:41,080] INFO root:146 - DataFrame processed. Final columns: ['age_category', 'gender', 'bmi', 'hypertension', 'smoking', 'alcohol', 'highchol', 'diffwalk', 'stress_category', 'physactivity', 'diabetes']
+[2025-11-19 13:36:41,142] INFO root:146 - DataFrame processed. Final columns: ['age_category', 'gender', 'bmi', 'hypertension', 'smoking', 'alcohol', 'highchol', 'diffwalk', 'stress_category', 'physactivity', 'diabetes']
+[2025-11-19 13:36:41,216] INFO root:90 - Entered the save object method of MainUtils class
+[2025-11-19 13:36:41,216] INFO root:97 - exited the save object method of MainUtils class
+[2025-11-19 13:36:41,216] INFO root:194 - Preprocessor object saved at: machine_learning\training\diabetes\diabetes_work\Artifacts\19_11_2025_13_36_30\data_transformation\transformed_object\preprocessing.pkl
+[2025-11-19 13:36:41,227] INFO root:203 - Transformed train/test arrays saved successfully.
+[2025-11-19 13:36:41,227] INFO root:212 - \u2705 Data Transformation completed successfully.
+[2025-11-19 13:36:41,233] INFO root:103 - \u2705 Data Transformation Completed Successfully.
+[2025-11-19 13:36:41,234] INFO root:109 - \U0001f916 Initiating Model Training...
+[2025-11-19 13:36:41,234] INFO root:52 - \u2705 ModelTrainer instance created successfully.
+[2025-11-19 13:36:41,234] INFO root:106 - \U0001f680 Initiating Model Training Process...
+[2025-11-19 13:36:41,234] INFO root:61 - \U0001f4e5 Loading transformed train/test arrays...
+[2025-11-19 13:36:41,243] INFO root:68 - \U0001f4ca Train shape: (58986, 10), Test shape: (14747, 10)
+[2025-11-19 13:36:41,243] INFO root:142 - \U0001f539 Starting GridSearchCV for: LogisticRegression
+[2025-11-19 13:36:46,527] INFO root:153 - \u2705 LogisticRegression tuning completed in 5.3 sec
+[2025-11-19 13:36:46,527] INFO root:154 -    \U0001f527 Best Params: {'C': 0.1}
+[2025-11-19 13:36:46,527] INFO root:155 -    \U0001f4c8 CV Best F1: 0.2511
+[2025-11-19 13:36:46,562] INFO root:159 -    \U0001f4ca Train F1: 0.2527, Test F1: 0.2335
+[2025-11-19 13:36:46,562] INFO root:142 - \U0001f539 Starting GridSearchCV for: RandomForest
+[2025-11-19 13:37:21,400] INFO root:153 - \u2705 RandomForest tuning completed in 34.8 sec
+[2025-11-19 13:37:21,401] INFO root:154 -    \U0001f527 Best Params: {'max_depth': 10, 'n_estimators': 100}
+[2025-11-19 13:37:21,401] INFO root:155 -    \U0001f4c8 CV Best F1: 0.2596
+[2025-11-19 13:37:21,796] INFO root:159 -    \U0001f4ca Train F1: 0.2837, Test F1: 0.2378
+[2025-11-19 13:37:21,796] INFO root:142 - \U0001f539 Starting GridSearchCV for: GradientBoosting
+[2025-11-19 13:38:03,754] INFO root:153 - \u2705 GradientBoosting tuning completed in 42.0 sec
+[2025-11-19 13:38:03,754] INFO root:154 -    \U0001f527 Best Params: {'learning_rate': 0.1, 'n_estimators': 200}
+[2025-11-19 13:38:03,754] INFO root:155 -    \U0001f4c8 CV Best F1: 0.3019
+[2025-11-19 13:38:04,083] INFO root:159 -    \U0001f4ca Train F1: 0.3090, Test F1: 0.2919
+[2025-11-19 13:38:04,086] INFO root:142 - \U0001f539 Starting GridSearchCV for: XGBoost
+[2025-11-19 13:38:19,946] INFO root:153 - \u2705 XGBoost tuning completed in 15.9 sec
+[2025-11-19 13:38:19,946] INFO root:154 -    \U0001f527 Best Params: {'learning_rate': 0.1, 'max_depth': 5, 'n_estimators': 200}
+[2025-11-19 13:38:19,946] INFO root:155 -    \U0001f4c8 CV Best F1: 0.3076
+[2025-11-19 13:38:20,191] INFO root:159 -    \U0001f4ca Train F1: 0.3264, Test F1: 0.2892
+[2025-11-19 13:38:20,191] INFO root:182 - \U0001f4dc Model Comparison Summary:
+[2025-11-19 13:38:20,192] INFO root:183 - {
+  "LogisticRegression": {
+    "cv_best_f1": 0.25114651917234404,
+    "best_params": {
+      "C": 0.1
+    },
+    "train_f1": 0.25265364958721004,
+    "test_f1": 0.23345195729537366,
+    "test_accuracy_percent": 70.9948123283491,
+    "precision": 0.5065637065637065,
+    "recall": 0.1516763005780347,
+    "training_time_sec": 5.284030914306641
+  },
+  "RandomForest": {
+    "cv_best_f1": 0.2595869818540559,
+    "best_params": {
+      "max_depth": 10,
+      "n_estimators": 100
+    },
+    "train_f1": 0.28372215400806877,
+    "test_f1": 0.2378125562151466,
+    "test_accuracy_percent": 72.3086834164039,
+    "precision": 0.5356564019448946,
+    "recall": 0.15283236994219654,
+    "training_time_sec": 34.83703422546387
+  },
+  "GradientBoosting": {
+    "cv_best_f1": 0.3018822390442111,
+    "best_params": {
+      "learning_rate": 0.1,
+      "n_estimators": 200
+    },
+    "train_f1": 0.3089892329521743,
+    "test_f1": 0.29189920514121426,
+    "test_accuracy_percent": 71.92893228901774,
+    "precision": 0.5434508816120907,
+    "recall": 0.19953757225433527,
+    "training_time_sec": 41.95781970024109
+  },
+  "XGBoost": {
+    "cv_best_f1": 0.30763354762959866,
+    "best_params": {
+      "learning_rate": 0.1,
+      "max_depth": 5,
+      "n_estimators": 200
+    },
+    "train_f1": 0.32639117550214025,
+    "test_f1": 0.2892132192585137,
+    "test_accuracy_percent": 72.25443325534873,
+    "precision": 0.5268948655256723,
+    "recall": 0.1993063583815029,
+    "training_time_sec": 15.859516859054565
+  }
+}
+[2025-11-19 13:38:20,192] INFO root:188 - \U0001f3c6 Best Model: GradientBoosting | Test F1: 0.2919
+[2025-11-19 13:38:20,193] INFO root:90 - Entered the save object method of MainUtils class
+[2025-11-19 13:38:20,204] INFO root:97 - exited the save object method of MainUtils class
+[2025-11-19 13:38:20,206] INFO root:200 - \u2705 Best model saved at: machine_learning\training\diabetes\diabetes_work\model_processor\model.pkl
+[2025-11-19 13:38:20,208] INFO root:90 - Entered the save object method of MainUtils class
+[2025-11-19 13:38:20,209] INFO root:97 - exited the save object method of MainUtils class
+[2025-11-19 13:38:20,209] INFO root:208 - \u2705 Preprocessor saved at: machine_learning\training\diabetes\diabetes_work\model_processor\preprocessor.pkl
+[2025-11-19 13:38:20,210] INFO root:90 - Entered the save object method of MainUtils class
+[2025-11-19 13:38:20,221] INFO root:97 - exited the save object method of MainUtils class
+[2025-11-19 13:38:20,222] INFO root:218 - \U0001f4e6 Model also stored under artifacts: machine_learning\training\diabetes\diabetes_work\Artifacts\19_11_2025_13_36_30\model_trainer\trained_model\model.pkl
+[2025-11-19 13:38:20,222] INFO root:229 - \u2705 Model Training Completed Successfully.
+[2025-11-19 13:38:20,224] INFO root:117 - \u2705 Model Training Completed Successfully.
+[2025-11-19 13:38:20,225] INFO root:123 - ==========================================================================================
+[2025-11-19 13:38:20,225] INFO root:124 - \U0001f3c1 AutoCare Diabetes Training Pipeline Finished Successfully!
+[2025-11-19 13:38:20,226] INFO root:125 - ==========================================================================================
