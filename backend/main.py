@@ -173,39 +173,55 @@ def dashboard():
 @app.route("/manual-entry", methods=["GET", "POST"])
 @login_required()
 def manual_entry():
-    if request.method == "POST":
-        inputs = {k: v for k, v in request.form.items()}
+   if request.method == "POST":
+    inputs = {k: v for k, v in request.form.items()}
 
-        if not inputs:
-            flash("Please fill at least one value.", "error")
-            return render_template("manual.html")
+    if not inputs:
+        flash("Please fill at least one value.", "error")
+        return render_template("manual.html")
 
-        # Generate Demo Scores
-        heart_score = random.randint(30, 79)
-        stroke_score = random.randint(10, 49)
-        diabetes_score = random.randint(5, 34)
+    # Generate Demo Scores
+    heart_score = random.randint(30, 79)
+    stroke_score = random.randint(10, 49)
+    diabetes_score = random.randint(5, 34)
 
-        record = {
-            "email": session.get("user"),
-            "role": session.get("role"),
-            "timestamp": datetime.utcnow(),
-            "input_values": inputs,
-            "scores": {
-                "heart": f"{heart_score}%",
-                "stroke": f"{stroke_score}%",
-                "diabetes": f"{diabetes_score}%"
-            }
+    record = {
+        "email": session.get("user"),
+        "role": session.get("role"),
+        "timestamp": datetime.utcnow(),
+        "input_values": {
+            "gender": inputs.get("gender"),
+            "age": inputs.get("age"),
+            "height": inputs.get("height"),
+            "weight": inputs.get("weight"),
+            "systolic": inputs.get("systolic"),
+            "diastolic": inputs.get("diastolic"),
+            "sleep": inputs.get("sleep"),
+            "chest_pain": "yes" if inputs.get("chest_pain") else "no",
+            "heart_attack": "yes" if inputs.get("heart_attack") else "no",
+            "cholesterol": "yes" if inputs.get("cholesterol") else "no",
+            "walking_difficulty": "yes" if inputs.get("walking_difficulty") else "no",
+            "physical_activity": "yes" if inputs.get("physical_activity") else "no",
+            "alcohol": "yes" if inputs.get("alcohol") else "no",
+            "smoking": "yes" if inputs.get("smoking") else "no",
+            "stress": inputs.get("stress")
+        },
+        "scores": {
+            "heart": f"{heart_score}%",
+            "stroke": f"{stroke_score}%",
+            "diabetes": f"{diabetes_score}%"
         }
+    }
 
-        manual_col.insert_one(record)
-        session["last_manual"] = record
+    inserted_id = manual_col.insert_one(record).inserted_id
+    session["last_manual"] = str(inserted_id)
 
-        flash("Form submitted & saved successfully.", "success")
-        return redirect(url_for("dashboard"))
-
-    return render_template("manual.html")
+    flash("Form submitted & saved successfully.", "success")
+    return redirect(url_for("dashboard"))
 
 
+
+ 
 # ===========================
 # LOGOUT
 # ===========================
