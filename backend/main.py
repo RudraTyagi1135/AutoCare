@@ -6,6 +6,7 @@ from pymongo import MongoClient
 import random
 from datetime import datetime
 import os
+from dotenv import load_dotenv
 
 # ===========================
 # Resolve Frontend Directory
@@ -13,19 +14,29 @@ import os
 THIS_DIR = os.path.dirname(__file__)
 FRONTEND_DIR = os.path.abspath(os.path.join(THIS_DIR, "..", "frontend"))
 
+# Load .env file
+load_dotenv()
+
 app = Flask(
     __name__,
     template_folder=FRONTEND_DIR,
     static_folder=FRONTEND_DIR,
     static_url_path=""
 )
-app.secret_key = "autocare_secret_key"  # Change for production
+app.secret_key = os.getenv("FLASK_SECRET_KEY")  # Change for production
+if not app.secret_key:
+    raise Exception("secret key not found. Set it inside .env")
+
+
 
 
 # ===========================
 # MongoDB Setup
 # ===========================
-MONGO_URI = "mongodb+srv://rudratyagi777_db_user:rudra1135@autocare.gilugwr.mongodb.net/?appName=AutoCare"  # Replace if using Atlas
+MONGO_URI = os.getenv("MONGO_DB_URL")
+if not MONGO_URI:
+    raise Exception("MongoDB URI not found. Set it inside .env")
+
 client = MongoClient(MONGO_URI)
 db = client["History"]
 
