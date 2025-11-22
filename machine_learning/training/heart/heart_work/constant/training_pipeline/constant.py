@@ -15,10 +15,10 @@ These constants are shared across the entire ML pipeline.
 """
 
 # Column to be predicted by the ML model
-TARGET_COLUMN: str = "Result"
+TARGET_COLUMN: str = "heart_disease"
 
 # ML pipeline/project name (used in logs, artifact folders, S3 paths)
-PIPELINE_NAME: str = "AutoCare"
+PIPELINE_NAME: str = "AutoCare_Heart_Prediction"
 
 # Root folder for all pipeline artifacts (data, models, logs, reports)
 ARTIFACT_DIR: str = "Artifacts"
