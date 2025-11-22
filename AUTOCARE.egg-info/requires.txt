@@ -13,3 +13,10 @@ uvicorn
 python-multipart
 dill
 openpyxl
+fastapi==0.95.2
+uvicorn[standard]==0.22.0
+python-dotenv==1.2.1
+pydantic==1.10.12
+motor==3.7.1
+google-generativeai==0.8.5
+httpx==0.24.1

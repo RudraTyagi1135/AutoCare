@@ -12,9 +12,7 @@ backend/main.py
 backend/database/__init__.py
 backend/routes/__init__.py
 chatbot/__init__.py
-chatbot/advice_engine_chat/__init__.py
-chatbot/general_talk_chat/__init__.py
-chatbot/summarize_chat/__init__.py
+chatbot/main.py
 machine_learning/__init__.py
 machine_learning/RRCF/__init__.py
 machine_learning/ml_utils/__init__.py
