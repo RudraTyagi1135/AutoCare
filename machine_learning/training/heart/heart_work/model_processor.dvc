@@ -1,6 +1,6 @@
 outs:
-- md5: 9f9541b8fc02572e4fd9ce86c9159301.dir
-  size: 537132
+- md5: 8f2a67360a44330cc2862bbe91e653ce.dir
+  size: 537089
   nfiles: 2
   hash: md5
   path: model_processor
