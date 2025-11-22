@@ -1,0 +1,22 @@
+[2025-11-22 12:14:54,272] INFO root:82 - Starting retrain_heart.py
+[2025-11-22 12:14:54,272] INFO root:84 - Loading Diabetes model and preprocessor...
+[2025-11-22 12:14:54,332] INFO root:94 - Loading heart dataset from: machine_learning/training/heart/data/Heart_Final_data.xlsx
+[2025-11-22 12:15:12,233] INFO root:122 - Constructing inputs for Diabetes model from heart rows...
+[2025-11-22 12:15:12,243] INFO root:134 - No 'bmi' column found — approximating bmi from 'obesity' (heuristic).
+[2025-11-22 12:15:12,262] INFO root:169 - Transforming diabetes inputs via diabetes preprocessor and computing probabilities...
+[2025-11-22 12:15:12,262] ERROR root:173 - Error while transforming inputs with diabetes preprocessor: 'dict' object has no attribute 'transform'
+[2025-11-22 12:15:12,263] INFO root:174 - Attempting to align columns by re-ordering/selection (fallback).
+[2025-11-22 12:15:12,263] ERROR root:179 - Fatal: diabetes preprocessor transform failed. Aborting.
+Traceback (most recent call last):
+  File "d:\AutoCare\machine_learning\transfer_learning\retrain_heart.py", line 171, in main
+    X_dia = diab_preproc.transform(diab_input)
+            ^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'dict' object has no attribute 'transform'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "d:\AutoCare\machine_learning\transfer_learning\retrain_heart.py", line 177, in main
+    X_dia = diab_preproc.transform(diab_input)
+            ^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'dict' object has no attribute 'transform'
