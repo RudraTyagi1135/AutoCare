@@ -26,7 +26,7 @@
 
       <div class="card-body">
         <!-- LEFT: form -->
-        <form id="healthForm" autocomplete="off" novalidate>
+        <form id="healthForm" action="/manual-entry" method="POST" autocomplete="off" novalidate>
           <div class="section">
             <h3>Basic Details</h3>
 
@@ -78,12 +78,12 @@
             <h3>Medical History</h3>
 
             <div class="checks" role="group" aria-label="Medical history">
-              <label class="check"><input type="checkbox" id="chk_chest" /> Chest pain</label>
-              <label class="check"><input type="checkbox" id="chk_heart" /> Prior heart attack</label>
-              <label class="check"><input type="checkbox" id="chk_chol" /> High cholesterol</label>
-              <label class="check"><input type="checkbox" id="chk_walk" /> Walking difficulty</label>
-              <label class="check"><input type="checkbox" id="chk_activity" /> Regular physical activity</label>
-              <label class="check"><input type="checkbox" id="chk_alcohol" /> Alcohol consumption</label>
+              <label class="check"><input type="checkbox" id="chk_chest" name="chest_pain"> Chest pain</label>
+              <label class="check"><input type="checkbox" id="chk_heart" name="heart_attack"> Prior heart attack</label>
+              <label class="check"><input type="checkbox" id="chk_chol" name="cholesterol"> High cholesterol</label>
+              <label class="check"><input type="checkbox" id="chk_walk" name="walking_difficulty"> Walking difficulty</label>
+              <label class="check"><input type="checkbox" id="chk_activity" name="physical_activity"> Regular physical activity</label>
+              <label class="check"><input type="checkbox" id="chk_alcohol" name="alcohol"> Alcohol consumption</label>
             </div>
 
             <!-- Smoking changed to a tick/untick checkbox -->
