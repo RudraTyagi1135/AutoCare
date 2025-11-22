@@ -104,19 +104,25 @@ def register():
             return render_template("register.html")
 
         # Insert new user
-        users_col.insert_one({
+        try:
+            users_col.insert_one({
             "email": email,
             "password": generate_password_hash(password),
             "role": role,
             "created_at": datetime.utcnow()
-        })
-
+             })
+        except Exception as e:
+            flash("Database error while creating account. Try again later.", "error")
+            return render_template("register.html")
         # Save registration history
-        register_log_col.insert_one({
+        try:
+            register_log_col.insert_one({
             "email": email,
             "role": role,
             "registered_at": datetime.utcnow()
-        })
+            })
+        except Exception as e:
+            pass  # not critical, so we don't block the user
 
         flash("Registration successful. Login now.", "success")
         return redirect(url_for("login"))
@@ -141,17 +147,23 @@ def login():
             flash("Enter email and password.", "error")
             return render_template("login.html")
 
-        user = users_col.find_one({"email": email})
-
+        try:
+            user = users_col.find_one({"email": email})
+        except Exception as e:
+            flash("Database error while fetching user.", "error")
+            return render_template("login.html")
         if user and check_password_hash(user["password"], password) and user["role"] == role:
             session["user"] = email
             session["role"] = role
 
-            login_log_col.insert_one({
+            try:
+                login_log_col.insert_one({
                 "email": email,
                 "role": role,
                 "login_timestamp": datetime.utcnow()
-            })
+                })
+            except Exception as e:
+                pass  # do not block login
 
             flash("Login successful!", "success")
             return redirect(url_for("dashboard"))
@@ -224,9 +236,13 @@ def manual_entry():
         }
     }
 
-    inserted_id = manual_col.insert_one(record).inserted_id
-    session["last_manual"] = str(inserted_id)
+    try:
+        inserted_id = manual_col.insert_one(record).inserted_id
+    except Exception as e:
+        flash("Error saving your health data. Please try again.", "error")
+        return redirect(url_for("manual_entry"))
 
+    session["last_manual"] = str(inserted_id)
     flash("Form submitted & saved successfully.", "success")
     return redirect(url_for("dashboard"))
 
@@ -248,4 +264,4 @@ def logout():
 # Run App
 # ===========================
 if __name__ == "__main__":
-    app.run(debug=True, host="127.0.0.1", port=5000)
+    app.run(debug=False, host="127.0.0.1", port=5000)
