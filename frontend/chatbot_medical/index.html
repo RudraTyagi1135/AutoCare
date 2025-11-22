@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AutoCare – Medical Assistant</title>
+  <link rel="stylesheet" href="/medical-chat-ui/style.css">
+</head>
+<body>
+
+  <div class="chat-wrapper">
+    <header class="chat-header">
+      <h1>AutoCare Medical Assistant</h1>
+      <p>Ask about symptoms, predictions, reports, or health advice.</p>
+    </header>
+
+    <main class="chat-main" id="chat-window">
+      <!-- Messages appear here -->
+    </main>
+
+    <form class="chat-input-bar" id="chat-form">
+      <input
+        type="text"
+        id="user-input"
+        placeholder="Describe your symptoms or ask anything..."
+        autocomplete="off"
+        required
+      />
+      <button type="submit" id="send-btn">Send</button>
+    </form>
+  </div>
+
+  <!-- Medical Chatbot JS -->
+  <script src="/medical-chat-ui/script_medical.js"></script>
+
+</body>
+</html>
