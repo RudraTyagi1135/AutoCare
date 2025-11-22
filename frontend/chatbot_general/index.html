@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AutoCare – General Chatbot</title>
+  <link rel="stylesheet" href="/chat-ui/style.css">
+</head>
+<body>
+  <div class="chat-wrapper">
+    <header class="chat-header">
+      <h1>AutoCare Assistant</h1>
+      <p>Ask anything – health, tips, or general questions.</p>
+    </header>
+
+    <main class="chat-main" id="chat-window">
+      <!-- Messages will be appended here by JS -->
+    </main>
+
+    <form class="chat-input-bar" id="chat-form">
+      <input
+        type="text"
+        id="user-input"
+        placeholder="Type your message..."
+        autocomplete="off"
+        required
+      />
+      <button type="submit" id="send-btn">Send</button>
+    </form>
+  </div>
+
+  <script src="/chat-ui/script.js"></script>
+</body>
+</html>
