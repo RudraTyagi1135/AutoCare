@@ -20,7 +20,7 @@ columns:
   obesity: int                    # int (0,1)
   hypertension: int               # 1 = yes, 0 = no
   highchol: int                   # 1 = yes, 0 = no
-  diabetes: int                   # 1 = yes, 0 = no
+
 
   # -------------------------------
   # 🩺 Cardiac & Chest Symptoms

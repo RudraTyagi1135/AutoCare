@@ -18,8 +18,7 @@ columns:
   # ⚕️ Clinical Indicators
   # -------------------------------
   bmi: float                      # Body Mass Index (continuous)
-  diabetes: int                   # 1 = diabetic, 0 = non-diabetic
-  heart_disease: int              # 1 = yes, 0 = no
+  
 
   # -------------------------------
   # 🧠 Neurological / Vascular
