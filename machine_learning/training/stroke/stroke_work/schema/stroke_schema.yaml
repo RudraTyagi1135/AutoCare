@@ -1,83 +1,17 @@
 # ==========================================================
-# 🧬 AutoCare Clinical Risk Prediction – Data Schema (v4)
-# ==========================================================
-# Defines expected dataset structure, column names, and types
-# Used by: DataValidation component before model training
+# 🧠 AutoCare Stroke Risk Training Data Schema (FINAL v6)
 # ==========================================================
 
 columns:
-
-
-  # -------------------------------
-  # 🧑 Demographics
-  # -------------------------------
-  age_category: int               # Encoded age bucket (1–13)
-  gender: object                  # Raw categorical: Male/Female
-
-  # -------------------------------
-  # ⚕️ Clinical Indicators
-  # -------------------------------
-  bmi: float                      # Body Mass Index (continuous)
-  
-
-  # -------------------------------
-  # 🧠 Neurological / Vascular
-  # -------------------------------
-  stroke: int                     # 1 = stroke, 0 = no-stroke (CURRENT TARGET)
-
-  # -------------------------------
-  # 🧬 Lifestyle Factors
-  # -------------------------------
+  age_category: int               # 1–13 encoded age bucket
+  gender: object                  # 'Male' or 'Female'
+  bmi: float                      # Body Mass Index
   smoking: int                    # 1 = smoker, 0 = non-smoker
-  alcohol: int                    # 1 = yes, 0 = no
-  physactivity: int               # 1 = active, 0 = inactive
-  sleeptime: int                  # Hours of sleep (1–24)
+  alcohol: int                    # 1 = Yes, 0 = No
+  physactivity: int               # 1 = Yes, 0 = No
+  sleeptime: int                  # Sleep hours (1–24)
+  stress_category: int            # 0–4
+  diffwalk: int                   # 1 = Yes, 0 = No
+  stroke: int                     # TARGET: 1 = stroke, 0 = healthy
 
-  # -------------------------------
-  # 🧠 Behavioral / Emotional Health
-  # -------------------------------
-  stress_category: int            # 0 = none → 4 = severe stress
-  diffwalk: int                  # Difficulty in walking (1 = Yes, 0 = No)
-
-
-
-# ==========================================================
-# 🎯 Target Column (for this training run)
-# ==========================================================
 target_column: stroke
-
-
-# ==========================================================
-# ⚙ Allowed Data Types
-# ==========================================================
-# int     → Numeric / encoded categorical
-# float   → Continuous numeric
-# object  → Raw categorical (requires encoding)
-# ==========================================================
-
-# ==========================================================
-# 📌 Notes / Pipeline Rules
-# ----------------------------------------------------------
-# 1. 'gender' stays as object → OneHotEncoder applies here.
-# 2. All other categoricals must be int-encoded before training.
-# 3. 'stroke' is the target for this run, but can be swapped.
-# 4. Schema supports AutoCare v4 multi-condition prediction.
-# 5. BMI kept as float (more clinically meaningful than category bins).
-# 6. No unused fields (cleaned for production readiness).
-# ==========================================================
-
-# ==========================================================
-# 🧪 Example Valid Row (aligned with schema)
-# ==========================================================
-# age_category: 6
-# gender: Female
-# bmi: 27.8
-# diabetes: 1
-# heart_disease: 0
-# stroke: 0
-# smoking: 1
-# alcohol: 0
-# physactivity: 1
-# sleeptime: 7
-# stress_category: 2
-# ==========================================================

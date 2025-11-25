@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.impute import SimpleImputer
-from typing import Dict, List
+from typing import List, Dict
 
 from autocare_utils.exception import AutoCareException
 from autocare_utils.logging import logging
@@ -22,21 +22,34 @@ from machine_learning.ml_utils.main_utils.utils import save_numpy_array_data, sa
 
 class DataTransformation:
     """
-    Data transformation for Heart model.
-    - Heart training dataset expects an 'obesity' column (0/1). Heart dataset may NOT have height/weight/bmi.
-    - If obesity missing but bmi exists, compute obesity from bmi.
-    - Performs mapping for gender, age_category, yes/no columns, stress mapping, scaling, imputation.
-    - Saves preprocessor dict to config.transformed_object_file_path and transformed numpy arrays.
+    Heart model data transformation:
+    Final features (order):
+    age_category, gender, obesity, hypertension, highchol,
+    heart_attack_history, chest_pain, smoking, alcohol, physactivity, stress_category
+
+    Target: 'heart_disease'
     """
 
-    TARGET_COLUMN = "heart_disease"  # adapt if your schema uses a different name
+    TARGET_COLUMN = "heart_disease"
+    FINAL_FEATURES = [
+        "age_category",
+        "gender",
+        "obesity",
+        "hypertension",
+        "highchol",
+        "heart_attack_history",
+        "chest_pain",
+        "smoking",
+        "alcohol",
+        "physactivity",
+        "stress_category",
+    ]
 
     def __init__(self, data_validation_artifact: DataValidationArtifact, data_transformation_config: DataTransformationConfig):
         try:
             self.config = data_transformation_config
             self.data_validation_artifact = data_validation_artifact
 
-            # Age mapping used across AutoCare
             self.age_mapping: Dict[str, int] = {
                 '0-24': 1, '25-29': 2, '30-34': 3, '35-39': 4, '40-44': 5,
                 '45-49': 6, '50-54': 7, '55-59': 8, '60-64': 9, '65-69': 10,
@@ -44,7 +57,6 @@ class DataTransformation:
             }
 
             logging.info("✅ Heart DataTransformation instance created successfully.")
-
         except Exception as e:
             raise AutoCareException(e, sys)
 
@@ -65,11 +77,9 @@ class DataTransformation:
         return df
 
     def _map_age(self, df: pd.DataFrame) -> pd.DataFrame:
-        # Accept either raw numeric 'age' or existing 'age_category'. If numeric, bucket it.
         if "age_category" in df.columns and df["age_category"].dtype == object:
             df["age_category"] = df["age_category"].map(lambda x: self.age_mapping.get(str(x).strip(), np.nan))
         elif "age" in df.columns:
-            # numeric age -> bucket
             def age_to_bucket(a):
                 try:
                     a = float(a)
@@ -92,47 +102,37 @@ class DataTransformation:
         return df
 
     def _ensure_obesity(self, df: pd.DataFrame) -> pd.DataFrame:
-        """
-        Heart training uses 'obesity' (0/1). If obesity exists, keep it.
-        If not and 'bmi' exists compute obesity = (bmi > 29).
-        If neither present, raise — heart training *requires* obesity column.
-        """
+        # If obesity present, ensure 0/1; else compute from bmi if available
         if "obesity" in df.columns:
-            # ensure numeric 0/1
-            df["obesity"] = df["obesity"].apply(lambda x: 1 if str(x).strip() in ["1", "1.0", "yes", "y", "true"] else 0)
+            df["obesity"] = df["obesity"].apply(lambda x: 1 if str(x).strip().lower() in ["1", "1.0", "yes", "y", "true"] else 0)
             return df
 
         if "bmi" in df.columns:
             df["obesity"] = df["bmi"].apply(lambda x: 1 if float(x) > 29 else 0)
-            logging.info("Computed 'obesity' from existing 'bmi'.")
+            logging.info("Computed 'obesity' from 'bmi'.")
             return df
 
-        # Heart dataset must have obesity (or bmi to compute it). Fail early and loudly.
-        raise AutoCareException("Heart dataset must contain 'obesity' (0/1) or 'bmi' to compute obesity.", sys)
+        raise AutoCareException("Heart dataset must contain 'obesity' (0/1) or 'bmi' to compute it.", sys)
 
-    def _compute_hypertension(self, df: pd.DataFrame) -> pd.DataFrame:
-        # Heart model uses hypertension. If 'hypertension' already exists keep it, else compute from systolic/diastolic.
-        if "hypertension" not in df.columns:
-            if {"systolic", "diastolic"}.issubset(df.columns):
-                df["hypertension"] = df.apply(
-                    lambda r: 1 if (float(r.get("systolic", 0)) >= 130 or float(r.get("diastolic", 0)) >= 85) else 0,
-                    axis=1
-                )
-                logging.info("Computed 'hypertension' from systolic/diastolic.")
-            else:
-                # if missing and not needed later, set to 0? For heart it is required — raise for clarity.
-                raise AutoCareException("Heart dataset expected 'hypertension' or systolic/diastolic fields to compute it.", sys)
+    def _compute_hypertension_if_needed(self, df: pd.DataFrame) -> pd.DataFrame:
+        if "hypertension" not in df.columns and {"systolic", "diastolic"}.issubset(df.columns):
+            df["hypertension"] = df.apply(
+                lambda r: 1 if (float(r.get("systolic", 0)) >= 130 or float(r.get("diastolic", 0)) >= 85) else 0,
+                axis=1
+            )
+            logging.info("Computed 'hypertension' from systolic/diastolic.")
         return df
 
     def _map_yes_no(self, df: pd.DataFrame, column: str) -> pd.DataFrame:
         if column in df.columns:
-            df[column] = df[column].apply(lambda x: 1 if str(x).strip().lower() in ["yes", "y", "1", "true"] else 0)
+            df[column] = df[column].apply(lambda x: 1 if str(x).strip().lower() in ["1", "yes", "y", "true"] else 0)
         return df
 
     def _map_stress(self, df: pd.DataFrame) -> pd.DataFrame:
         if "stress_category" in df.columns:
             mapping = {"no stress": 0, "mild": 1, "moderate": 2, "high": 3, "severe": 4}
-            df["stress_category"] = df["stress_category"].map(lambda x: mapping.get(str(x).strip().lower(), np.nan))
+            if df["stress_category"].dtype == object:
+                df["stress_category"] = df["stress_category"].map(lambda x: mapping.get(str(x).strip().lower(), np.nan))
         return df
 
     # -----------------------------
@@ -142,28 +142,34 @@ class DataTransformation:
         try:
             df = df.copy()
 
-            # Ensure obesity column exists (heart model depends on obesity)
+            # Ensure obesity exists
             df = self._ensure_obesity(df)
 
-            # Hypertension required for heart model
-            df = self._compute_hypertension(df)
+            # Hypertension required
+            df = self._compute_hypertension_if_needed(df)
 
-            # Mappings and conversions
+            # Mappings
             df = self._map_gender(df)
             df = self._map_age(df)
+
+            # Map yes/no style columns
+            df = self._map_yes_no(df, "heart_attack_history")  # normalized name expected
+            # also accept older name 'prior_heart_attack'
+            if "prior_heart_attack" in df.columns and "heart_attack_history" not in df.columns:
+                df["heart_attack_history"] = df["prior_heart_attack"].apply(lambda x: 1 if str(x).strip().lower() in ["1", "yes", "y", "true"] else 0)
+
             df = self._map_yes_no(df, "chest_pain")
-            df = self._map_yes_no(df, "prior_heart_attack")
             df = self._map_yes_no(df, "smoking")
             df = self._map_yes_no(df, "alcohol")
             df = self._map_yes_no(df, "physactivity")
             df = self._map_yes_no(df, "highchol")
             df = self._map_stress(df)
 
-            # Drop helper/unwanted columns if present: keep only features and target
-            drop_cols = ["Unnamed: 0", "height", "weight", "bmi"]  # heart may not have these, safe to drop if present
+            # Drop helpers not used for training
+            drop_cols = ["Unnamed: 0", "height", "weight", "bmi", "systolic", "diastolic", "prior_heart_attack"]
             df.drop(columns=[c for c in drop_cols if c in df.columns], inplace=True)
 
-            # Ensure target column exists and is integer
+            # Ensure target column present
             if self.TARGET_COLUMN in df.columns:
                 df[self.TARGET_COLUMN] = df[self.TARGET_COLUMN].astype(int)
             else:
@@ -171,40 +177,39 @@ class DataTransformation:
 
             logging.info(f"Processed DF Columns: {list(df.columns)}")
             return df
-
         except Exception as e:
             raise AutoCareException(e, sys)
 
     # -----------------------------
-    # Main function
+    # Main
     # -----------------------------
     def initiate_data_transformation(self) -> DataTransformationArtifact:
         try:
             logging.info("🚀 Starting HEART data transformation...")
 
-            # Load validated CSVs
             train_df = self._load_csv(self.data_validation_artifact.valid_train_file_path)
             test_df = self._load_csv(self.data_validation_artifact.valid_test_file_path)
 
-            # Prepare both dataframes (this will compute obesity/hypertension if needed)
             train_df = self._prepare_dataframe(train_df)
             test_df = self._prepare_dataframe(test_df)
 
-            # Build feature list (all columns except target)
-            feature_cols: List[str] = [c for c in train_df.columns if c != self.TARGET_COLUMN]
+            # Ensure all required features exist
+            missing = [f for f in self.FINAL_FEATURES if f not in train_df.columns]
+            if missing:
+                raise AutoCareException(f"Missing required heart feature(s) in train set: {missing}", sys)
 
-            # Sanity check: feature_cols must be same between train and test
+            feature_cols: List[str] = self.FINAL_FEATURES.copy()
+
+            # Sanity between train/test
             missing_in_test = set(feature_cols) - set(test_df.columns)
             if missing_in_test:
                 raise AutoCareException(f"Feature columns missing in test set: {missing_in_test}", sys)
 
-            # Arrange arrays
             X_train = train_df[feature_cols].values
             y_train = train_df[self.TARGET_COLUMN].values
             X_test = test_df[feature_cols].values
             y_test = test_df[self.TARGET_COLUMN].values
 
-            # Impute and scale
             imputer = SimpleImputer(strategy="median")
             X_train = imputer.fit_transform(X_train)
             X_test = imputer.transform(X_test)
@@ -213,22 +218,18 @@ class DataTransformation:
             X_train_scaled = scaler.fit_transform(X_train)
             X_test_scaled = scaler.transform(X_test)
 
-            # Save preprocessor (imputer + scaler + feature_columns)
             preprocessor = {"imputer": imputer, "scaler": scaler, "feature_columns": feature_cols}
             os.makedirs(os.path.dirname(self.config.transformed_object_file_path), exist_ok=True)
             save_object(self.config.transformed_object_file_path, preprocessor)
             logging.info(f"Preprocessor saved at: {self.config.transformed_object_file_path}")
 
-            # Save transformed arrays (features + target)
             train_arr = np.c_[X_train_scaled, y_train]
             test_arr = np.c_[X_test_scaled, y_test]
-
             os.makedirs(os.path.dirname(self.config.transformed_train_file_path), exist_ok=True)
             save_numpy_array_data(self.config.transformed_train_file_path, train_arr)
             save_numpy_array_data(self.config.transformed_test_file_path, test_arr)
             logging.info("Transformed train/test arrays saved successfully.")
 
-            # Build artifact
             artifact = DataTransformationArtifact(
                 transformed_object_file_path=self.config.transformed_object_file_path,
                 transformed_train_file_path=self.config.transformed_train_file_path,

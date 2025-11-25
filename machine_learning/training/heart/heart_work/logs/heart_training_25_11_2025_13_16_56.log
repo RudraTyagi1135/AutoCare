@@ -1,0 +1,120 @@
+[2025-11-25 13:16:59,590] INFO root:31 - \u2705 MongoDB connection string loaded from environment successfully.
+[2025-11-25 13:17:00,001] INFO root:39 - ==========================================================================================
+[2025-11-25 13:17:00,001] INFO root:40 - \U0001f680 Starting AutoCare Heart Training Pipeline
+[2025-11-25 13:17:00,001] INFO root:41 - ==========================================================================================
+[2025-11-25 13:17:00,001] INFO root:58 - \u2705 DataIngestion instance created successfully.
+[2025-11-25 13:17:00,001] INFO root:165 - \U0001f680 Starting Data Ingestion Process...
+[2025-11-25 13:17:00,001] INFO root:77 - \U0001f510 Connecting securely to MongoDB Atlas...
+[2025-11-25 13:17:13,720] INFO root:90 - \u2705 Fetched 192076 rows and 12 columns from MongoDB collection.
+[2025-11-25 13:17:14,520] INFO root:123 - \U0001f4e6 Raw data saved to feature store at: machine_learning\training\heart\heart_work\Artifacts\25_11_2025_13_16_59\data_ingestion\raw_data\Heart_73733 _Final_data.xlsx
+[2025-11-25 13:17:14,520] INFO root:136 - \u2702 Performing train-test split on dataset...
+[2025-11-25 13:17:15,359] INFO root:150 - \u2705 Train-Test Split Completed: Train((153660, 12)), Test((38416, 12))
+[2025-11-25 13:17:15,375] INFO root:182 - \U0001f3c1 Data Ingestion Completed Successfully.
+[2025-11-25 13:17:15,419] INFO root:50 - Schema file loaded successfully from machine_learning\training\heart\heart_work\schema\heart_schema.yaml
+[2025-11-25 13:17:15,419] INFO root:150 - \U0001f680 Initiating Data Validation Process...
+[2025-11-25 13:17:15,419] INFO root:59 - Reading dataset from: machine_learning\training\heart\heart_work\Artifacts\25_11_2025_13_16_59\data_ingestion\ingested\train.csv
+[2025-11-25 13:17:15,612] INFO root:59 - Reading dataset from: machine_learning\training\heart\heart_work\Artifacts\25_11_2025_13_16_59\data_ingestion\ingested\test.csv
+[2025-11-25 13:17:15,659] INFO root:73 - Schema requires 12 columns.
+[2025-11-25 13:17:15,659] INFO root:74 - DataFrame contains 12 columns.
+[2025-11-25 13:17:15,659] INFO root:84 - \u2705 Column validation successful.
+[2025-11-25 13:17:15,659] INFO root:73 - Schema requires 12 columns.
+[2025-11-25 13:17:15,659] INFO root:74 - DataFrame contains 12 columns.
+[2025-11-25 13:17:15,659] INFO root:84 - \u2705 Column validation successful.
+[2025-11-25 13:17:15,659] INFO root:98 - Starting dataset drift detection...
+[2025-11-25 13:17:16,241] INFO root:134 - \u2705 Drift report saved at: machine_learning\training\heart\heart_work\Artifacts\25_11_2025_13_16_59\data_validation\drift_store\report.yaml
+[2025-11-25 13:17:17,001] INFO root:180 - \u2705 Validated datasets saved successfully.
+[2025-11-25 13:17:17,001] INFO root:192 - \U0001f3af Data Validation Completed | Drift Status: True
+[2025-11-25 13:17:17,003] INFO root:61 - \u2705 Data validation passed.
+[2025-11-25 13:17:17,003] INFO root:59 - \u2705 Heart DataTransformation instance created successfully.
+[2025-11-25 13:17:17,003] INFO root:188 - \U0001f680 Starting HEART data transformation...
+[2025-11-25 13:17:17,292] INFO root:69 - Loaded dataset: machine_learning\training\heart\heart_work\Artifacts\25_11_2025_13_16_59\data_validation\validated\train.csv, Shape: (153660, 12)
+[2025-11-25 13:17:17,366] INFO root:69 - Loaded dataset: machine_learning\training\heart\heart_work\Artifacts\25_11_2025_13_16_59\data_validation\validated\test.csv, Shape: (38416, 12)
+[2025-11-25 13:17:18,420] INFO root:178 - Processed DF Columns: ['age_category', 'gender', 'obesity', 'hypertension', 'highchol', 'heart_attack_history', 'chest_pain', 'smoking', 'alcohol', 'physactivity', 'stress_category', 'heart_disease']
+[2025-11-25 13:17:18,901] INFO root:178 - Processed DF Columns: ['age_category', 'gender', 'obesity', 'hypertension', 'highchol', 'heart_attack_history', 'chest_pain', 'smoking', 'alcohol', 'physactivity', 'stress_category', 'heart_disease']
+[2025-11-25 13:17:19,120] INFO root:91 - Entered the save object method of MainUtils class
+[2025-11-25 13:17:19,120] INFO root:98 - exited the save object method of MainUtils class
+[2025-11-25 13:17:19,120] INFO root:224 - Preprocessor saved at: machine_learning\training\heart\heart_work\Artifacts\25_11_2025_13_16_59\data_transformation\transformed_object\preprocessing.pkl
+[2025-11-25 13:17:19,136] INFO root:231 - Transformed train/test arrays saved successfully.
+[2025-11-25 13:17:19,136] INFO root:239 - \u2705 HEART Data Transformation Completed!
+[2025-11-25 13:17:19,152] INFO root:43 - \u2705 Heart ModelTrainer created.
+[2025-11-25 13:17:19,152] INFO root:112 - \U0001f680 Starting Heart model training...
+[2025-11-25 13:17:19,152] INFO root:49 - \U0001f4e5 Loading transformed arrays...
+[2025-11-25 13:17:19,152] INFO root:56 - \U0001f4ca Train shape: (153660, 11), Test shape: (38416, 11)
+[2025-11-25 13:17:19,152] INFO root:137 - \U0001f539 GridSearchCV for LogisticRegression
+[2025-11-25 13:17:26,054] INFO root:148 -    LogisticRegression | CV F1: 0.7155 | Train F1: 0.7160 | Test F1: 0.7129
+[2025-11-25 13:17:26,054] INFO root:137 - \U0001f539 GridSearchCV for RandomForest
+[2025-11-25 13:19:14,713] INFO root:148 -    RandomForest | CV F1: 0.7164 | Train F1: 0.7164 | Test F1: 0.7132
+[2025-11-25 13:19:14,713] INFO root:137 - \U0001f539 GridSearchCV for GradientBoosting
+[2025-11-25 13:22:00,848] INFO root:148 -    GradientBoosting | CV F1: 0.7164 | Train F1: 0.7164 | Test F1: 0.7132
+[2025-11-25 13:22:00,848] INFO root:137 - \U0001f539 GridSearchCV for XGBoost
+[2025-11-25 13:22:50,953] INFO root:148 -    XGBoost | CV F1: 0.7164 | Train F1: 0.7164 | Test F1: 0.7132
+[2025-11-25 13:22:50,953] INFO root:168 - \U0001f4dc Model Comparison Summary:
+[2025-11-25 13:22:50,953] INFO root:169 - {
+  "LogisticRegression": {
+    "cv_best_f1": 0.7155411077478723,
+    "best_params": {
+      "C": 0.01
+    },
+    "train_f1": 0.7160100376411543,
+    "test_f1": 0.7128530220701684,
+    "test_accuracy_percent": 55.43002915451895,
+    "precision": 0.5544164449313925,
+    "recall": 0.998074574997652,
+    "training_time_sec": 6.746712923049927
+  },
+  "RandomForest": {
+    "cv_best_f1": 0.7164194065757817,
+    "best_params": {
+      "max_depth": 5,
+      "n_estimators": 100
+    },
+    "train_f1": 0.7164194065757818,
+    "test_f1": 0.7132473622508793,
+    "test_accuracy_percent": 55.43002915451895,
+    "precision": 0.5543002915451894,
+    "recall": 1.0,
+    "training_time_sec": 107.57267117500305
+  },
+  "GradientBoosting": {
+    "cv_best_f1": 0.7164194065757817,
+    "best_params": {
+      "learning_rate": 0.01,
+      "n_estimators": 100
+    },
+    "train_f1": 0.7164194065757818,
+    "test_f1": 0.7132473622508793,
+    "test_accuracy_percent": 55.43002915451895,
+    "precision": 0.5543002915451894,
+    "recall": 1.0,
+    "training_time_sec": 165.74227261543274
+  },
+  "XGBoost": {
+    "cv_best_f1": 0.7164194065757817,
+    "best_params": {
+      "learning_rate": 0.01,
+      "max_depth": 3,
+      "n_estimators": 100
+    },
+    "train_f1": 0.7164194065757818,
+    "test_f1": 0.7132473622508793,
+    "test_accuracy_percent": 55.43002915451895,
+    "precision": 0.5543002915451894,
+    "recall": 1.0,
+    "training_time_sec": 49.9519145488739
+  }
+}
+[2025-11-25 13:22:50,953] INFO root:174 - \U0001f3c6 Best Model: RandomForest | Test F1: 0.7132
+[2025-11-25 13:22:50,954] INFO root:105 - \u2705 Built ColumnTransformer from transformed_object.
+[2025-11-25 13:22:50,954] INFO root:91 - Entered the save object method of MainUtils class
+[2025-11-25 13:22:50,959] INFO root:98 - exited the save object method of MainUtils class
+[2025-11-25 13:22:50,959] INFO root:193 - \u2705 Inference pipeline saved: machine_learning\training\heart\heart_work\model_processor\model.pkl
+[2025-11-25 13:22:50,959] INFO root:91 - Entered the save object method of MainUtils class
+[2025-11-25 13:22:50,961] INFO root:98 - exited the save object method of MainUtils class
+[2025-11-25 13:22:50,961] INFO root:197 - \u2705 Preprocessor saved: machine_learning\training\heart\heart_work\model_processor\preprocessor.pkl
+[2025-11-25 13:22:50,962] INFO root:91 - Entered the save object method of MainUtils class
+[2025-11-25 13:22:50,967] INFO root:98 - exited the save object method of MainUtils class
+[2025-11-25 13:22:50,967] INFO root:203 - \U0001f4e6 Raw estimator saved: machine_learning\training\heart\heart_work\Artifacts\25_11_2025_13_16_59\model_trainer\trained_model\model.pkl
+[2025-11-25 13:22:50,967] INFO root:214 - \u2705 Heart Model training completed.
+[2025-11-25 13:22:50,970] INFO root:78 - ==========================================================================================
+[2025-11-25 13:22:50,970] INFO root:79 - \U0001f3c1 AutoCare Heart Training Pipeline Completed
+[2025-11-25 13:22:50,970] INFO root:80 - ==========================================================================================
