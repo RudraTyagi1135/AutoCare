@@ -1,0 +1,7 @@
+[2025-11-25 13:00:40,286] INFO root:31 - \u2705 MongoDB connection string loaded from environment successfully.
+[2025-11-25 13:00:48,318] INFO root:39 - ==========================================================================================
+[2025-11-25 13:00:48,318] INFO root:40 - \U0001f680 Starting AutoCare Diabetes Training Pipeline
+[2025-11-25 13:00:48,318] INFO root:41 - ==========================================================================================
+[2025-11-25 13:00:48,318] INFO root:58 - \u2705 DataIngestion instance created successfully.
+[2025-11-25 13:00:48,318] INFO root:165 - \U0001f680 Starting Data Ingestion Process...
+[2025-11-25 13:00:48,318] INFO root:77 - \U0001f510 Connecting securely to MongoDB Atlas...

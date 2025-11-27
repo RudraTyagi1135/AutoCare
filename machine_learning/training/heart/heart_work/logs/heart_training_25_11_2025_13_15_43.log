@@ -1,0 +1,105 @@
+[2025-11-25 13:15:45,757] INFO root:31 - \u2705 MongoDB connection string loaded from environment successfully.
+[2025-11-25 13:15:46,106] INFO root:39 - ==========================================================================================
+[2025-11-25 13:15:46,106] INFO root:40 - \U0001f680 Starting AutoCare Heart Training Pipeline
+[2025-11-25 13:15:46,106] INFO root:41 - ==========================================================================================
+[2025-11-25 13:15:46,106] INFO root:58 - \u2705 DataIngestion instance created successfully.
+[2025-11-25 13:15:46,106] INFO root:165 - \U0001f680 Starting Data Ingestion Process...
+[2025-11-25 13:15:46,106] INFO root:77 - \U0001f510 Connecting securely to MongoDB Atlas...
+[2025-11-25 13:16:30,393] ERROR root:83 - \u274c Exception during pipeline execution
+Traceback (most recent call last):
+  File "D:\AutoCare\.venv\Lib\site-packages\pymongo\pool_shared.py", line 496, in _configured_socket_interface
+    ssl_sock = ssl_context.wrap_socket(sock, server_hostname=host)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rudra\AppData\Local\Programs\Python\Python311\Lib\ssl.py", line 517, in wrap_socket
+    return self.sslsocket_class._create(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rudra\AppData\Local\Programs\Python\Python311\Lib\ssl.py", line 1104, in _create
+    self.do_handshake()
+  File "C:\Users\rudra\AppData\Local\Programs\Python\Python311\Lib\ssl.py", line 1382, in do_handshake
+    self._sslobj.do_handshake()
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\AutoCare\machine_learning\training\heart\heart_work\components\data_ingestion.py", line 82, in export_collection_as_dataframe
+    df = pd.DataFrame(list(collection.find()))
+                      ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\pymongo\synchronous\cursor.py", line 1289, in __next__
+    return self.next()
+           ^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\pymongo\synchronous\cursor.py", line 1265, in next
+    if len(self._data) or self._refresh():
+                          ^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\pymongo\synchronous\cursor.py", line 1213, in _refresh
+    self._send_message(q)
+  File "D:\AutoCare\.venv\Lib\site-packages\pymongo\synchronous\cursor.py", line 1108, in _send_message
+    response = client._run_operation(
+               ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\pymongo\_csot.py", line 125, in csot_wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\pymongo\synchronous\mongo_client.py", line 1938, in _run_operation
+    return self._retryable_read(
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\pymongo\synchronous\mongo_client.py", line 2047, in _retryable_read
+    return self._retry_internal(
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\pymongo\_csot.py", line 125, in csot_wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\pymongo\synchronous\mongo_client.py", line 2014, in _retry_internal
+    ).run()
+      ^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\pymongo\synchronous\mongo_client.py", line 2765, in run
+    return self._read() if self._is_read else self._write()
+           ^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\pymongo\synchronous\mongo_client.py", line 2912, in _read
+    with self._client._conn_from_server(self._read_pref, self._server, self._session) as (
+  File "C:\Users\rudra\AppData\Local\Programs\Python\Python311\Lib\contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\pymongo\synchronous\mongo_client.py", line 1867, in _conn_from_server
+    with self._checkout(server, session) as conn:
+  File "C:\Users\rudra\AppData\Local\Programs\Python\Python311\Lib\contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\pymongo\synchronous\mongo_client.py", line 1777, in _checkout
+    with server.checkout(handler=err_handler) as conn:
+  File "C:\Users\rudra\AppData\Local\Programs\Python\Python311\Lib\contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\pymongo\synchronous\pool.py", line 1118, in checkout
+    conn = self._get_conn(checkout_started_time, handler=handler)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\pymongo\synchronous\pool.py", line 1280, in _get_conn
+    conn = self.connect(handler=handler)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\pymongo\synchronous\pool.py", line 1032, in connect
+    networking_interface = _configured_socket_interface(self.address, self.opts)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\pymongo\pool_shared.py", line 510, in _configured_socket_interface
+    _raise_connection_failure(address, exc, "SSL handshake failed: ", timeout_details=details)
+  File "D:\AutoCare\.venv\Lib\site-packages\pymongo\pool_shared.py", line 150, in _raise_connection_failure
+    raise AutoReconnect(msg) from error
+pymongo.errors.AutoReconnect: SSL handshake failed: ac-y0fvbni-shard-00-02.gilugwr.mongodb.net:27017: [WinError 10054] An existing connection was forcibly closed by the remote host (configured timeouts: connectTimeoutMS: 20000.0ms)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\AutoCare\machine_learning\training\heart\heart_work\components\data_ingestion.py", line 168, in initiate_data_ingestion
+    dataframe = self.export_collection_as_dataframe()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\machine_learning\training\heart\heart_work\components\data_ingestion.py", line 106, in export_collection_as_dataframe
+    raise AutoCareException(e, sys)
+autocare_utils.exception.AutoCareException: Error occurred in python script name [D:\AutoCare\machine_learning\training\heart\heart_work\components\data_ingestion.py] line number [82] error message [SSL handshake failed: ac-y0fvbni-shard-00-02.gilugwr.mongodb.net:27017: [WinError 10054] An existing connection was forcibly closed by the remote host (configured timeouts: connectTimeoutMS: 20000.0ms)]
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "d:\AutoCare\machine_learning\training\heart\heart_work\pipeline\training_pipeline.py", line 47, in <module>
+    ingestion_artifact = ingestion.initiate_data_ingestion()
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\machine_learning\training\heart\heart_work\components\data_ingestion.py", line 186, in initiate_data_ingestion
+    raise AutoCareException(e, sys)
+autocare_utils.exception.AutoCareException: Error occurred in python script name [D:\AutoCare\machine_learning\training\heart\heart_work\components\data_ingestion.py] line number [168] error message [Error occurred in python script name [D:\AutoCare\machine_learning\training\heart\heart_work\components\data_ingestion.py] line number [82] error message [SSL handshake failed: ac-y0fvbni-shard-00-02.gilugwr.mongodb.net:27017: [WinError 10054] An existing connection was forcibly closed by the remote host (configured timeouts: connectTimeoutMS: 20000.0ms)]]

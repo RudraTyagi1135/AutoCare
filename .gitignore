@@ -32,11 +32,6 @@ machine_learning/training/*/*_work/model_processor/
 # File Types Usually Stored in DVC
 # (ensure these are NOT directly committed)
 # -----------------------------------------
-*.pkl
-*.npy
-*.xlsx
-*.csv
-*.json
 
 # BUT allow the DVC metafiles:
 # (IMPORTANT — these must NOT be ignored)

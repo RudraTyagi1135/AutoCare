@@ -27,6 +27,14 @@ class AutoCareException(Exception):
         # traceback object helps to locate where exactly the error occurred
         _, _, exc_tb = error_details.exc_info()
 
+        if exc_tb is not None:
+            self.lineno = exc_tb.tb_lineno
+            self.file_name = exc_tb.tb_frame.f_code.co_filename
+        else:
+            self.lineno = "N/A"
+            self.file_name = "N/A"
+
+            
         # extract line number from traceback object
         self.lineno = exc_tb.tb_lineno
 

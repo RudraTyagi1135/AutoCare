@@ -4,6 +4,7 @@ numpy
 xgboost
 pymongo[srv]
 certifi
+awscli
 scikit-learn
 mlflow
 PyYAML
@@ -13,6 +14,10 @@ uvicorn
 python-multipart
 dill
 openpyxl
+dvc
+dvc[gdrive]
+mlflow
+dvc[s3]
 fastapi==0.95.2
 uvicorn[standard]==0.22.0
 python-dotenv==1.2.1

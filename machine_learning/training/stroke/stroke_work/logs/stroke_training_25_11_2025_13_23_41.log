@@ -1,0 +1,121 @@
+[2025-11-25 13:23:43,632] INFO root:31 - \u2705 MongoDB connection string loaded from environment successfully.
+[2025-11-25 13:23:43,931] INFO root:39 - ==========================================================================================
+[2025-11-25 13:23:43,931] INFO root:40 - \U0001f680 Starting AutoCare Stroke Training Pipeline
+[2025-11-25 13:23:43,931] INFO root:41 - ==========================================================================================
+[2025-11-25 13:23:43,931] INFO root:58 - \u2705 DataIngestion instance created successfully.
+[2025-11-25 13:23:43,931] INFO root:165 - \U0001f680 Starting Data Ingestion Process...
+[2025-11-25 13:23:43,933] INFO root:77 - \U0001f510 Connecting securely to MongoDB Atlas...
+[2025-11-25 13:24:07,606] INFO root:90 - \u2705 Fetched 239023 rows and 10 columns from MongoDB collection.
+[2025-11-25 13:24:08,758] INFO root:123 - \U0001f4e6 Raw data saved to feature store at: machine_learning\training\stroke\stroke_work\Artifacts\25_11_2025_13_23_43\data_ingestion\raw_data\Stroke_Final_data.xlsx
+[2025-11-25 13:24:08,758] INFO root:136 - \u2702 Performing train-test split on dataset...
+[2025-11-25 13:24:10,074] INFO root:150 - \u2705 Train-Test Split Completed: Train((191218, 10)), Test((47805, 10))
+[2025-11-25 13:24:10,085] INFO root:182 - \U0001f3c1 Data Ingestion Completed Successfully.
+[2025-11-25 13:24:10,139] INFO root:50 - Schema file loaded successfully from machine_learning\training\stroke\stroke_work\schema\stroke_schema.yaml
+[2025-11-25 13:24:10,139] INFO root:150 - \U0001f680 Initiating Data Validation Process...
+[2025-11-25 13:24:10,139] INFO root:59 - Reading dataset from: machine_learning\training\stroke\stroke_work\Artifacts\25_11_2025_13_23_43\data_ingestion\ingested\train.csv
+[2025-11-25 13:24:10,364] INFO root:59 - Reading dataset from: machine_learning\training\stroke\stroke_work\Artifacts\25_11_2025_13_23_43\data_ingestion\ingested\test.csv
+[2025-11-25 13:24:10,424] INFO root:73 - Schema requires 10 columns.
+[2025-11-25 13:24:10,424] INFO root:74 - DataFrame contains 10 columns.
+[2025-11-25 13:24:10,424] INFO root:84 - \u2705 Column validation successful.
+[2025-11-25 13:24:10,424] INFO root:73 - Schema requires 10 columns.
+[2025-11-25 13:24:10,424] INFO root:74 - DataFrame contains 10 columns.
+[2025-11-25 13:24:10,424] INFO root:84 - \u2705 Column validation successful.
+[2025-11-25 13:24:10,424] INFO root:98 - Starting dataset drift detection...
+[2025-11-25 13:24:10,744] WARNING root:127 - \u26a0 Drift detected in column: bmi
+[2025-11-25 13:24:11,154] INFO root:134 - \u2705 Drift report saved at: machine_learning\training\stroke\stroke_work\Artifacts\25_11_2025_13_23_43\data_validation\drift_store\report.yaml
+[2025-11-25 13:24:12,799] INFO root:180 - \u2705 Validated datasets saved successfully.
+[2025-11-25 13:24:12,800] INFO root:192 - \U0001f3af Data Validation Completed | Drift Status: False
+[2025-11-25 13:24:12,804] WARNING root:59 - \u26a0 Drift or schema issues detected — continuing training (Option-C).
+[2025-11-25 13:24:12,804] INFO root:54 - \u2705 Stroke DataTransformation instance created successfully.
+[2025-11-25 13:24:12,806] INFO root:168 - \U0001f680 Starting STROKE data transformation...
+[2025-11-25 13:24:13,038] INFO root:64 - Loaded dataset: machine_learning\training\stroke\stroke_work\Artifacts\25_11_2025_13_23_43\data_validation\validated\train.csv, Shape: (191218, 10)
+[2025-11-25 13:24:13,094] INFO root:64 - Loaded dataset: machine_learning\training\stroke\stroke_work\Artifacts\25_11_2025_13_23_43\data_validation\validated\test.csv, Shape: (47805, 10)
+[2025-11-25 13:24:14,059] INFO root:158 - Processed DF Columns: ['age_category', 'gender', 'bmi', 'smoking', 'alcohol', 'physactivity', 'sleeptime', 'stress_category', 'diffwalk', 'stroke']
+[2025-11-25 13:24:14,287] INFO root:158 - Processed DF Columns: ['age_category', 'gender', 'bmi', 'smoking', 'alcohol', 'physactivity', 'sleeptime', 'stress_category', 'diffwalk', 'stroke']
+[2025-11-25 13:24:14,632] INFO root:91 - Entered the save object method of MainUtils class
+[2025-11-25 13:24:14,635] INFO root:98 - exited the save object method of MainUtils class
+[2025-11-25 13:24:14,635] INFO root:204 - Preprocessor saved at: machine_learning\training\stroke\stroke_work\Artifacts\25_11_2025_13_23_43\data_transformation\transformed_object\preprocessing.pkl
+[2025-11-25 13:24:14,691] INFO root:211 - Transformed train/test arrays saved successfully.
+[2025-11-25 13:24:14,691] INFO root:219 - \u2705 STROKE Data Transformation Completed!
+[2025-11-25 13:24:14,706] INFO root:43 - \u2705 Stroke ModelTrainer created.
+[2025-11-25 13:24:14,706] INFO root:112 - \U0001f680 Starting Stroke model training...
+[2025-11-25 13:24:14,707] INFO root:49 - \U0001f4e5 Loading transformed arrays...
+[2025-11-25 13:24:14,729] INFO root:56 - \U0001f4ca Train shape: (191218, 9), Test shape: (47805, 9)
+[2025-11-25 13:24:14,731] INFO root:137 - \U0001f539 GridSearchCV for LogisticRegression
+[2025-11-25 13:24:24,010] INFO root:148 -    LogisticRegression | CV F1: 0.0000 | Train F1: 0.0000 | Test F1: 0.0000
+[2025-11-25 13:24:24,011] INFO root:137 - \U0001f539 GridSearchCV for RandomForest
+[2025-11-25 13:27:27,249] INFO root:148 -    RandomForest | CV F1: 0.0485 | Train F1: 0.8676 | Test F1: 0.0480
+[2025-11-25 13:27:27,249] INFO root:137 - \U0001f539 GridSearchCV for GradientBoosting
+[2025-11-25 13:30:08,651] INFO root:148 -    GradientBoosting | CV F1: 0.0002 | Train F1: 0.0021 | Test F1: 0.0000
+[2025-11-25 13:30:08,651] INFO root:137 - \U0001f539 GridSearchCV for XGBoost
+[2025-11-25 13:30:48,156] INFO root:148 -    XGBoost | CV F1: 0.0027 | Train F1: 0.0237 | Test F1: 0.0033
+[2025-11-25 13:30:48,156] INFO root:168 - \U0001f4dc Model Comparison Summary:
+[2025-11-25 13:30:48,156] INFO root:169 - {
+  "LogisticRegression": {
+    "cv_best_f1": 0.0,
+    "best_params": {
+      "C": 0.01
+    },
+    "train_f1": 0.0,
+    "test_f1": 0.0,
+    "test_accuracy_percent": 94.9816964752641,
+    "precision": 0.0,
+    "recall": 0.0,
+    "training_time_sec": 9.127368450164795
+  },
+  "RandomForest": {
+    "cv_best_f1": 0.048466504574207904,
+    "best_params": {
+      "max_depth": null,
+      "n_estimators": 100
+    },
+    "train_f1": 0.8676232353621847,
+    "test_f1": 0.04800462695199537,
+    "test_accuracy_percent": 93.11369103650246,
+    "precision": 0.07837582625118036,
+    "recall": 0.03459774906210921,
+    "training_time_sec": 181.26952075958252
+  },
+  "GradientBoosting": {
+    "cv_best_f1": 0.00020859407592824363,
+    "best_params": {
+      "learning_rate": 0.1,
+      "n_estimators": 100
+    },
+    "train_f1": 0.0020855057351407717,
+    "test_f1": 0.0,
+    "test_accuracy_percent": 94.9816964752641,
+    "precision": 0.0,
+    "recall": 0.0,
+    "training_time_sec": 161.17627096176147
+  },
+  "XGBoost": {
+    "cv_best_f1": 0.002693711773400349,
+    "best_params": {
+      "learning_rate": 0.1,
+      "max_depth": 7,
+      "n_estimators": 200
+    },
+    "train_f1": 0.02372112211221122,
+    "test_f1": 0.0033181252592285357,
+    "test_accuracy_percent": 94.97332914967053,
+    "precision": 0.3333333333333333,
+    "recall": 0.0016673614005835765,
+    "training_time_sec": 38.90731334686279
+  }
+}
+[2025-11-25 13:30:48,156] INFO root:174 - \U0001f3c6 Best Model: RandomForest | Test F1: 0.0480
+[2025-11-25 13:30:48,156] INFO root:105 - \u2705 Built ColumnTransformer from transformed_object.
+[2025-11-25 13:30:48,156] INFO root:91 - Entered the save object method of MainUtils class
+[2025-11-25 13:30:48,745] INFO root:98 - exited the save object method of MainUtils class
+[2025-11-25 13:30:48,745] INFO root:193 - \u2705 Inference pipeline saved: machine_learning\training\stroke\stroke_work\model_processor\model.pkl
+[2025-11-25 13:30:48,745] INFO root:91 - Entered the save object method of MainUtils class
+[2025-11-25 13:30:48,746] INFO root:98 - exited the save object method of MainUtils class
+[2025-11-25 13:30:48,746] INFO root:197 - \u2705 Preprocessor saved: machine_learning\training\stroke\stroke_work\model_processor\preprocessor.pkl
+[2025-11-25 13:30:48,746] INFO root:91 - Entered the save object method of MainUtils class
+[2025-11-25 13:30:49,411] INFO root:98 - exited the save object method of MainUtils class
+[2025-11-25 13:30:49,416] INFO root:203 - \U0001f4e6 Raw estimator saved: machine_learning\training\stroke\stroke_work\Artifacts\25_11_2025_13_23_43\model_trainer\trained_model\model.pkl
+[2025-11-25 13:30:49,416] INFO root:214 - \u2705 Stroke Model training completed.
+[2025-11-25 13:30:49,446] INFO root:78 - ==========================================================================================
+[2025-11-25 13:30:49,446] INFO root:79 - \U0001f3c1 AutoCare Stroke Training Pipeline Completed
+[2025-11-25 13:30:49,446] INFO root:80 - ==========================================================================================

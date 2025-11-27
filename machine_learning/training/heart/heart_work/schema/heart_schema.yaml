@@ -1,85 +1,19 @@
 # ==========================================================
-# 🧬 AutoCare Clinical Risk Prediction – Data Schema (v3)
-# ==========================================================
-# This schema defines the expected structure, column names,
-# and data types for validating the dataset before training.
-# Used by: DataValidation component.
+# ❤️ AutoCare Heart Disease Training Schema (FINAL v6)
 # ==========================================================
 
 columns:
-
-  # -------------------------------
-  # 🧑 Demographics
-  # -------------------------------
-  age_category: int               # Encoded age group (1–13)
-  gender: object                  # 'Male' / 'Female'
-
-  # -------------------------------
-  # ⚕️ Clinical Indicators
-  # -------------------------------
-  obesity: int                    # int (0,1)
-  hypertension: int               # 1 = yes, 0 = no
-  highchol: int                   # 1 = yes, 0 = no
-  diabetes: int                   # 1 = yes, 0 = no
-
-  # -------------------------------
-  # 🩺 Cardiac & Chest Symptoms
-  # -------------------------------
-  heart_attack_history: int       # Past MI (1 = yes, 0 = no)
-  chest_pain: int                 # Encoded pain category (0,12)
-  heart_disease: int              # Target-related condition (not the target)
-
-  # -------------------------------
-  # 🧬 Lifestyle Factors
-  # -------------------------------
+  age_category: int               # 1–13 encoded age bucket
+  gender: object                  # 'Male' or 'Female'
+  obesity: int                    # 1 = BMI ≥ 30, else 0
+  hypertension: int               # 1 = Yes, 0 = No
+  highchol: int                   # 1 = Yes, 0 = No
+  heart_attack_history: int       # 1 = Yes, 0 = No
+  chest_pain: int                 # Encoded (0/1 checkbox → keep int)
   smoking: int                    # 1 = smoker, 0 = non-smoker
-  alcohol: int                    # 1 = yes, 0 = no
-  physactivity: int               # 1 = regular activity, 0 = no
-
-  # -------------------------------
-  # 🧠 Behavioral / Functional
-  # -------------------------------
+  alcohol: int                    # 1 = Yes, 0 = No
+  physactivity: int               # 1 = Yes, 0 = No
   stress_category: int            # 0 = none → 4 = severe
+  heart_disease: int              # TARGET: 1 = disease, 0 = healthy
 
-
-# ==========================================================
-# 🎯 Target Column for This Training Run
-# ==========================================================
 target_column: heart_disease
-
-
-# ==========================================================
-# ⚙ Allowed Data Types
-# ==========================================================
-# - int     → Numeric or encoded categorical
-# - float   → Continuous numeric values
-# - object  → Raw string categorical (must be processed)
-# ==========================================================
-
-# ==========================================================
-# 📌 Notes
-# ----------------------------------------------------------
-# 1. Keep 'gender' as object so preprocessor encodes it.
-# 2. All other categorical columns are expected to be ints.
-# 3. 'heart_disease' is target, not diabetes.
-# 4. Additional disease targets can be swapped easily.
-# 5. This schema supports AutoCare v4 multi-condition risk.
-# ==========================================================
-
-# ==========================================================
-# 🧪 Sample Valid Row
-# ==========================================================
-# age_category: 7
-# gender: Male
-# obesity: 3
-# hypertension: 1
-# highchol: 1
-# diabetes: 0
-# heart_attack_history: 0
-# chest_pain: 2
-# heart_disease: 1
-# smoking: 0
-# alcohol: 1
-# physactivity: 1
-# stress_category: 3
-# ==========================================================
