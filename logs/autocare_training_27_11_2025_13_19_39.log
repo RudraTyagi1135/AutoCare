@@ -12,3 +12,4 @@
 [2025-11-27 13:22:44,636] INFO root:53 - [manual-entry] incoming payload: {'gender': 'Male', 'age': '45', 'height': '176', 'weight': '85', 'systolic': '126', 'diastolic': '89', 'sleep': '8', 'chest_pain': 'on', 'cholesterol': 'on', 'walking_difficulty': 'on', 'smoking': 'on', 'stress': '0.5'}
 [2025-11-27 13:22:44,636] INFO root:109 - [manual-entry] normalized raw_input: {'gender': 'Male', 'age': '45', 'height': '176', 'weight': '85', 'systolic': '126', 'diastolic': '89', 'sleeptime': '8', 'chest_pain': True, 'prior_heart_attack': False, 'highchol': True, 'diffwalk': True, 'physactivity': False, 'alcohol': False, 'smoking': True, 'stress_level': 'mild'}
 [2025-11-27 13:22:45,630] INFO werkzeug:97 - 127.0.0.1 - - [27/Nov/2025 13:22:45] "POST /api/manual-entry HTTP/1.1" 200 -
+[2025-11-27 13:26:01,345] INFO werkzeug:97 -  * Detected change in 'D:\\AutoCare\\backend\\app.py', reloading
