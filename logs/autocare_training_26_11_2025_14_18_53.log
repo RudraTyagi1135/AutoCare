@@ -1,0 +1,24 @@
+[2025-11-26 14:18:55,050] WARNING werkzeug:97 -  * Debugger is active!
+[2025-11-26 14:18:55,052] INFO werkzeug:97 -  * Debugger PIN: 132-120-931
+[2025-11-26 14:19:26,628] INFO root:56 - [manual-entry] incoming payload: {'gender': 'Male', 'age': 40, 'height': 172, 'weight': 75, 'systolic': 135, 'diastolic': 85, 'sleep': 6, 'smoking': 0, 'highchol': 1, 'alcohol': 0, 'stress_level': '1'}
+[2025-11-26 14:19:26,629] INFO root:100 - [manual-entry] normalized raw_input: {'gender': 'Male', 'age': 40, 'height': 172, 'weight': 75, 'systolic': 135, 'diastolic': 85, 'sleeptime': 6, 'chest_pain': False, 'prior_heart_attack': False, 'highchol': True, 'diffwalk': False, 'physactivity': False, 'alcohol': False, 'smoking': False, 'stress_level': 'moderate'}
+[2025-11-26 14:19:27,263] ERROR root:121 - Error in /manual-entry
+Traceback (most recent call last):
+  File "D:\AutoCare\backend\routes\manual_entry.py", line 103, in manual_entry
+    diabetes_pred = predictor.predict("diabetes", raw_input)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\machine_learning\prediction\prediction_pipeline.py", line 77, in predict
+    X = self._apply_preprocessor(preprocessor, df_for_model, feature_columns=features)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\machine_learning\prediction\prediction_pipeline.py", line 26, in _apply_preprocessor
+    return preprocessor.transform(df_features)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\utils\_set_output.py", line 316, in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\compose\_column_transformer.py", line 1055, in transform
+    check_is_fitted(self)
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\utils\validation.py", line 1754, in check_is_fitted
+    raise NotFittedError(msg % {"name": type(estimator).__name__})
+sklearn.exceptions.NotFittedError: This ColumnTransformer instance is not fitted yet. Call 'fit' with appropriate arguments before using this estimator.
+[2025-11-26 14:19:27,280] INFO werkzeug:97 - 127.0.0.1 - - [26/Nov/2025 14:19:27] "[35m[1mPOST /api/manual-entry HTTP/1.1[0m" 500 -

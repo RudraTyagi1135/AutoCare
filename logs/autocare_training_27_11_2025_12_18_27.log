@@ -1,0 +1,99 @@
+[2025-11-27 12:18:29,779] WARNING werkzeug:97 -  * Debugger is active!
+[2025-11-27 12:18:29,785] INFO werkzeug:97 -  * Debugger PIN: 372-271-899
+[2025-11-27 12:18:40,999] INFO root:57 - [manual-entry] incoming payload: {'gender': 'Male', 'age': 45, 'height': 172, 'weight': 82, 'systolic': 138, 'diastolic': 88, 'sleep': 6, 'chest_pain': 1, 'prior_heart_attack': 0, 'highchol': 1, 'diffwalk': 0, 'physactivity': 1, 'alcohol': 0, 'smoking': 1, 'stress_level': 'moderate'}
+[2025-11-27 12:18:40,999] INFO root:113 - [manual-entry] normalized raw_input: {'gender': 'Male', 'age': 45, 'height': 172, 'weight': 82, 'systolic': 138, 'diastolic': 88, 'sleeptime': 6, 'chest_pain': True, 'prior_heart_attack': False, 'highchol': True, 'diffwalk': False, 'physactivity': True, 'alcohol': False, 'smoking': True, 'stress_level': ''}
+[2025-11-27 12:18:41,140] ERROR root:134 - Error in /manual-entry
+Traceback (most recent call last):
+  File "D:\AutoCare\machine_learning\prediction\prediction_pipeline.py", line 82, in predict
+    prob = float(model.predict_proba(X)[0][1])
+                 ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\pipeline.py", line 904, in predict_proba
+    Xt = transform.transform(Xt)
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\utils\_set_output.py", line 316, in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\compose\_column_transformer.py", line 1096, in transform
+    Xs = self._call_func_on_transformers(
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\compose\_column_transformer.py", line 889, in _call_func_on_transformers
+    X=_safe_indexing(X, columns, axis=1),
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\utils\_indexing.py", line 322, in _safe_indexing
+    raise ValueError(
+ValueError: Specifying the columns using strings is only supported for dataframes.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\AutoCare\backend\routes\manual_entry.py", line 116, in manual_entry
+    diabetes_pred = predictor.predict("diabetes", raw_input)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\machine_learning\prediction\prediction_pipeline.py", line 90, in predict
+    prob = float(model.predict(X)[0])
+                 ^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\pipeline.py", line 788, in predict
+    Xt = transform.transform(Xt)
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\utils\_set_output.py", line 316, in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\compose\_column_transformer.py", line 1096, in transform
+    Xs = self._call_func_on_transformers(
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\compose\_column_transformer.py", line 889, in _call_func_on_transformers
+    X=_safe_indexing(X, columns, axis=1),
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\utils\_indexing.py", line 322, in _safe_indexing
+    raise ValueError(
+ValueError: Specifying the columns using strings is only supported for dataframes.
+[2025-11-27 12:18:41,140] INFO werkzeug:97 - 127.0.0.1 - - [27/Nov/2025 12:18:41] "[35m[1mPOST /api/manual-entry HTTP/1.1[0m" 500 -
+[2025-11-27 12:20:08,154] INFO root:57 - [manual-entry] incoming payload: {'gender': 'Male', 'age': 45, 'height': 172, 'weight': 82, 'systolic': 138, 'diastolic': 88, 'sleeptime': 6, 'chest_pain': 1, 'prior_heart_attack': 0, 'highchol': 1, 'diffwalk': 0, 'physactivity': 1, 'alcohol': 0, 'smoking': 1, 'stress_level': 'moderate'}
+[2025-11-27 12:20:08,155] INFO root:113 - [manual-entry] normalized raw_input: {'gender': 'Male', 'age': 45, 'height': 172, 'weight': 82, 'systolic': 138, 'diastolic': 88, 'sleeptime': 6, 'chest_pain': True, 'prior_heart_attack': False, 'highchol': True, 'diffwalk': False, 'physactivity': True, 'alcohol': False, 'smoking': True, 'stress_level': ''}
+[2025-11-27 12:20:08,176] ERROR root:134 - Error in /manual-entry
+Traceback (most recent call last):
+  File "D:\AutoCare\machine_learning\prediction\prediction_pipeline.py", line 82, in predict
+    prob = float(model.predict_proba(X)[0][1])
+                 ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\pipeline.py", line 904, in predict_proba
+    Xt = transform.transform(Xt)
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\utils\_set_output.py", line 316, in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\compose\_column_transformer.py", line 1096, in transform
+    Xs = self._call_func_on_transformers(
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\compose\_column_transformer.py", line 889, in _call_func_on_transformers
+    X=_safe_indexing(X, columns, axis=1),
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\utils\_indexing.py", line 322, in _safe_indexing
+    raise ValueError(
+ValueError: Specifying the columns using strings is only supported for dataframes.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\AutoCare\backend\routes\manual_entry.py", line 116, in manual_entry
+    diabetes_pred = predictor.predict("diabetes", raw_input)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\machine_learning\prediction\prediction_pipeline.py", line 90, in predict
+    prob = float(model.predict(X)[0])
+                 ^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\pipeline.py", line 788, in predict
+    Xt = transform.transform(Xt)
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\utils\_set_output.py", line 316, in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\compose\_column_transformer.py", line 1096, in transform
+    Xs = self._call_func_on_transformers(
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\compose\_column_transformer.py", line 889, in _call_func_on_transformers
+    X=_safe_indexing(X, columns, axis=1),
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\utils\_indexing.py", line 322, in _safe_indexing
+    raise ValueError(
+ValueError: Specifying the columns using strings is only supported for dataframes.
+[2025-11-27 12:20:08,186] INFO werkzeug:97 - 127.0.0.1 - - [27/Nov/2025 12:20:08] "[35m[1mPOST /api/manual-entry HTTP/1.1[0m" 500 -
+[2025-11-27 12:21:35,454] INFO werkzeug:97 -  * Detected change in 'D:\\AutoCare\\machine_learning\\prediction\\prediction_pipeline.py', reloading

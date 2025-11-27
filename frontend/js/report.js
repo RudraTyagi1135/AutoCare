@@ -1,59 +1,108 @@
-// js/report.js
-// Reports page: generate simulated PDF, enable download link, preview and progress
+// js/report.js — Combined Prediction Viewer + Report Generator
 
-(function(){
-  function by(id){ return document.getElementById(id); }
-  function createBlobPdf(content){
-    // simulate a PDF with a text blob but use application/pdf type
-    return new Blob([content], { type: 'application/pdf' });
+(function () {
+  console.log("📄 AutoCare Report System Loaded");
+
+  function by(id) { return document.getElementById(id); }
+
+  const preview = by("reportPreview");
+  const genBtn = by("genReport");
+  const dlBtn = by("dlReport");
+
+  // === 1️⃣ LOAD STORED PREDICTIONS ===
+  const saved = sessionStorage.getItem("autocare_prediction");
+
+  if (!saved) {
+    preview.innerHTML = `<div class="preview-line" style="color:#888">
+      ⚠ No prediction data found.<br>Return to <strong>Manual Entry</strong> and submit the form.
+    </div>`;
+    dlBtn.disabled = true;
+    return;
   }
 
-  function generateReport(){
-    const status = by('reportPreview');
-    const genBtn = by('genReport');
-    const dlBtn = by('dlReport');
-    if(genBtn) genBtn.disabled = true;
-    if(status) status.innerHTML = '<div class="preview-line">Generating report…</div><div class="progress"><div class="bar" style="width:0%"></div></div>';
-    // animate progress and then create blob
-    let pct = 0;
-    const bar = status && status.querySelector('.bar');
-    const t = setInterval(()=>{
-      pct += Math.floor(Math.random()*22)+8;
-      if(bar) bar.style.width = Math.min(pct,95) + '%';
-      if(pct >= 92){
-        clearInterval(t);
-        setTimeout(()=>{
+  const data = JSON.parse(saved);
+  const preds = data.predictions;
+
+  // risk color mapping
+  const labelColor = {
+    "Low": "#2ecc71",
+    "Moderate": "#f4b400",
+    "High": "#e74c3c",
+    "Very High": "#b60e0e",
+    "Severe": "#8B0000"
+  };
+
+  // === 2️⃣ BUILD PREVIEW UI ===
+  let html = `
+    <div class="report-block">
+      <h3>🧠 Personal Health Risk Summary</h3>
+      <p class="small muted">Based on your clinical and lifestyle inputs.</p>
+      <hr>
+  `;
+
+  Object.entries(preds).forEach(([disease, r]) => {
+    html += `
+      <div class="disease-item">
+        <h4>${disease.toUpperCase()}</h4>
+        <p><strong>Risk Probability:</strong> ${r.risk_percent}%</p>
+        <p><strong>Risk Category:</strong> 
+          <span style="color:${labelColor[r.risk_label] || '#000'}; font-weight:bold;">
+            ${r.risk_label}
+          </span>
+        </p>
+        <p class="small text-muted">Model: ${r.model}</p>
+        <hr>
+      </div>
+    `;
+  });
+
+  html += `</div>`;
+  preview.innerHTML = html;
+
+  // enable download now that data exists
+  dlBtn.disabled = false;
+
+
+  // === 3️⃣ REPORT GENERATOR ===
+  function generateReport() {
+    genBtn.disabled = true;
+    preview.innerHTML = `<div class="preview-line">📝 Generating report…</div>
+      <div class="progress"><div class="bar" style="width:0%"></div></div>`;
+
+    let progress = 0;
+    const bar = preview.querySelector('.bar');
+
+    const timer = setInterval(() => {
+      progress += Math.random() * 25;
+      bar.style.width = Math.min(progress, 95) + "%";
+
+      if (progress >= 90) {
+        clearInterval(timer);
+
+        setTimeout(() => {
           const now = new Date().toLocaleString();
-          const content = `AutoCare Report\nGenerated: ${now}\n\n(Simulated PDF content for preview)`;
-          const blob = createBlobPdf(content);
+          const content = JSON.stringify(data, null, 2);
+          const blob = new Blob([content], { type: "application/pdf" });
           const url = URL.createObjectURL(blob);
-          if(dlBtn){
-            dlBtn.href = url;
-            dlBtn.download = `autocare-report-${Date.now()}.pdf`;
-            dlBtn.disabled = false;
-          }
-          if(status) status.innerHTML = `<div class="mini-report"><div class="meta">Report generated</div><div class="when">${now}</div></div><div style="margin-top:8px"><a class="download-link" href="${url}" download>Download PDF</a></div>`;
-          if(genBtn) genBtn.disabled = false;
-        }, 400);
+
+          dlBtn.href = url;
+          dlBtn.download = `AutoCare_Report_${Date.now()}.pdf`;
+
+          preview.innerHTML = `
+            <div class="mini-report">
+              <strong>Report Ready ✔</strong>
+              <div class="small">Generated: ${now}</div>
+            </div>
+            <a class="download-link" href="${url}" download>⬇ Download PDF</a>
+          `;
+
+          genBtn.disabled = false;
+        }, 500);
       }
-    }, 220);
+    }, 300);
   }
 
-  function downloadReport(){
-    // when download button is clicked, the anchor's href will trigger download.
-    const status = by('reportPreview');
-    if(status) status.insertAdjacentHTML('beforeend','<div class="preview-line">Download started.</div>');
-  }
+  // === 4️⃣ HOOK EVENTS ===
+  genBtn.addEventListener("click", generateReport);
 
-  function initReports(){
-    const gen = by('genReport');
-    const dl = by('dlReport');
-    if(gen) gen.addEventListener('click', generateReport);
-    if(dl) dl.addEventListener('click', downloadReport);
-  }
-
-  document.addEventListener('DOMContentLoaded', initReports);
-  window.initReports = initReports;
-  window.generateReport = generateReport;
-  window.downloadReport = downloadReport;
 })();
