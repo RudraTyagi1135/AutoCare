@@ -1,0 +1,54 @@
+[2025-11-27 12:06:07,778] WARNING werkzeug:97 -  * Debugger is active!
+[2025-11-27 12:06:07,778] INFO werkzeug:97 -  * Debugger PIN: 372-271-899
+[2025-11-27 12:06:23,478] INFO werkzeug:97 - 127.0.0.1 - - [27/Nov/2025 12:06:23] "[36mGET /manual HTTP/1.1[0m" 304 -
+[2025-11-27 12:06:23,513] INFO werkzeug:97 - 127.0.0.1 - - [27/Nov/2025 12:06:23] "[33mGET /css/manual.css HTTP/1.1[0m" 404 -
+[2025-11-27 12:06:23,518] INFO werkzeug:97 - 127.0.0.1 - - [27/Nov/2025 12:06:23] "[33mGET /js/manual.js HTTP/1.1[0m" 404 -
+[2025-11-27 12:07:01,035] INFO root:57 - [manual-entry] incoming payload: {'gender': 'Male', 'age': '23', 'height': '173', 'weight': '78', 'systolic': '125', 'diastolic': '56', 'sleep': '21', 'chest_pain': 'on', 'cholesterol': 'on', 'walking_difficulty': 'on', 'stress': '1'}
+[2025-11-27 12:07:01,037] INFO root:113 - [manual-entry] normalized raw_input: {'gender': 'Male', 'age': '23', 'height': '173', 'weight': '78', 'systolic': '125', 'diastolic': '56', 'sleeptime': '21', 'chest_pain': True, 'prior_heart_attack': False, 'highchol': True, 'diffwalk': True, 'physactivity': False, 'alcohol': False, 'smoking': False, 'stress_level': 'moderate'}
+[2025-11-27 12:07:01,398] ERROR root:134 - Error in /manual-entry
+Traceback (most recent call last):
+  File "D:\AutoCare\machine_learning\prediction\prediction_pipeline.py", line 86, in predict
+    prob = float(model.predict_proba(X)[0][1])
+                 ^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\pipeline.py", line 904, in predict_proba
+    Xt = transform.transform(Xt)
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\utils\_set_output.py", line 316, in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\compose\_column_transformer.py", line 1096, in transform
+    Xs = self._call_func_on_transformers(
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\compose\_column_transformer.py", line 889, in _call_func_on_transformers
+    X=_safe_indexing(X, columns, axis=1),
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\utils\_indexing.py", line 322, in _safe_indexing
+    raise ValueError(
+ValueError: Specifying the columns using strings is only supported for dataframes.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\AutoCare\backend\routes\manual_entry.py", line 116, in manual_entry
+    diabetes_pred = predictor.predict("diabetes", raw_input)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\machine_learning\prediction\prediction_pipeline.py", line 93, in predict
+    prob = float(model.predict(X)[0])
+                 ^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\pipeline.py", line 788, in predict
+    Xt = transform.transform(Xt)
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\utils\_set_output.py", line 316, in wrapped
+    data_to_wrap = f(self, X, *args, **kwargs)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\compose\_column_transformer.py", line 1096, in transform
+    Xs = self._call_func_on_transformers(
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\compose\_column_transformer.py", line 889, in _call_func_on_transformers
+    X=_safe_indexing(X, columns, axis=1),
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\sklearn\utils\_indexing.py", line 322, in _safe_indexing
+    raise ValueError(
+ValueError: Specifying the columns using strings is only supported for dataframes.
+[2025-11-27 12:07:01,417] INFO werkzeug:97 - 127.0.0.1 - - [27/Nov/2025 12:07:01] "[35m[1mPOST /api/manual-entry HTTP/1.1[0m" 500 -
+[2025-11-27 12:09:59,623] INFO werkzeug:97 -  * Detected change in 'D:\\AutoCare\\machine_learning\\prediction\\prediction_pipeline.py', reloading

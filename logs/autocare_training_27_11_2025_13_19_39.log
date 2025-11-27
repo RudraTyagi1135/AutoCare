@@ -1,0 +1,14 @@
+[2025-11-27 13:19:42,405] WARNING werkzeug:97 -  * Debugger is active!
+[2025-11-27 13:19:42,407] INFO werkzeug:97 -  * Debugger PIN: 372-271-899
+[2025-11-27 13:19:47,578] INFO werkzeug:97 - 127.0.0.1 - - [27/Nov/2025 13:19:47] "[36mGET /manual HTTP/1.1[0m" 304 -
+[2025-11-27 13:19:47,609] INFO werkzeug:97 - 127.0.0.1 - - [27/Nov/2025 13:19:47] "[33mGET /css/manual.css HTTP/1.1[0m" 404 -
+[2025-11-27 13:19:47,617] INFO werkzeug:97 - 127.0.0.1 - - [27/Nov/2025 13:19:47] "[33mGET /js/manual.js HTTP/1.1[0m" 404 -
+[2025-11-27 13:20:23,705] INFO root:53 - [manual-entry] incoming payload: {'gender': 'Male', 'age': '45', 'height': '175', 'weight': '84', 'systolic': '124', 'diastolic': '89', 'sleep': '6', 'chest_pain': 'on', 'cholesterol': 'on', 'walking_difficulty': 'on', 'smoking': 'on', 'stress': '0.5'}
+[2025-11-27 13:20:23,745] INFO root:109 - [manual-entry] normalized raw_input: {'gender': 'Male', 'age': '45', 'height': '175', 'weight': '84', 'systolic': '124', 'diastolic': '89', 'sleeptime': '6', 'chest_pain': True, 'prior_heart_attack': False, 'highchol': True, 'diffwalk': True, 'physactivity': False, 'alcohol': False, 'smoking': True, 'stress_level': 'mild'}
+[2025-11-27 13:20:25,595] INFO werkzeug:97 - 127.0.0.1 - - [27/Nov/2025 13:20:25] "POST /api/manual-entry HTTP/1.1" 200 -
+[2025-11-27 13:22:00,753] INFO werkzeug:97 - 127.0.0.1 - - [27/Nov/2025 13:22:00] "[36mGET /manual HTTP/1.1[0m" 304 -
+[2025-11-27 13:22:00,818] INFO werkzeug:97 - 127.0.0.1 - - [27/Nov/2025 13:22:00] "[33mGET /css/manual.css HTTP/1.1[0m" 404 -
+[2025-11-27 13:22:00,874] INFO werkzeug:97 - 127.0.0.1 - - [27/Nov/2025 13:22:00] "[33mGET /js/manual.js HTTP/1.1[0m" 404 -
+[2025-11-27 13:22:44,636] INFO root:53 - [manual-entry] incoming payload: {'gender': 'Male', 'age': '45', 'height': '176', 'weight': '85', 'systolic': '126', 'diastolic': '89', 'sleep': '8', 'chest_pain': 'on', 'cholesterol': 'on', 'walking_difficulty': 'on', 'smoking': 'on', 'stress': '0.5'}
+[2025-11-27 13:22:44,636] INFO root:109 - [manual-entry] normalized raw_input: {'gender': 'Male', 'age': '45', 'height': '176', 'weight': '85', 'systolic': '126', 'diastolic': '89', 'sleeptime': '8', 'chest_pain': True, 'prior_heart_attack': False, 'highchol': True, 'diffwalk': True, 'physactivity': False, 'alcohol': False, 'smoking': True, 'stress_level': 'mild'}
+[2025-11-27 13:22:45,630] INFO werkzeug:97 - 127.0.0.1 - - [27/Nov/2025 13:22:45] "POST /api/manual-entry HTTP/1.1" 200 -

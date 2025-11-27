@@ -1,0 +1,45 @@
+[2025-11-27 13:11:34,865] WARNING werkzeug:97 -  * Debugger is active!
+[2025-11-27 13:11:34,871] INFO werkzeug:97 -  * Debugger PIN: 372-271-899
+[2025-11-27 13:14:06,133] INFO werkzeug:97 - 127.0.0.1 - - [27/Nov/2025 13:14:06] "[36mGET /manual HTTP/1.1[0m" 304 -
+[2025-11-27 13:14:06,154] INFO werkzeug:97 - 127.0.0.1 - - [27/Nov/2025 13:14:06] "[33mGET /css/manual.css HTTP/1.1[0m" 404 -
+[2025-11-27 13:14:06,163] INFO werkzeug:97 - 127.0.0.1 - - [27/Nov/2025 13:14:06] "[33mGET /js/manual.js HTTP/1.1[0m" 404 -
+[2025-11-27 13:14:39,005] INFO root:53 - [manual-entry] incoming payload: {'gender': 'Male', 'age': '56', 'height': '172', 'weight': '56', 'systolic': '125', 'diastolic': '86', 'sleep': '8', 'chest_pain': 'on', 'alcohol': 'on', 'stress': '0.5'}
+[2025-11-27 13:14:39,005] INFO root:109 - [manual-entry] normalized raw_input: {'gender': 'Male', 'age': '56', 'height': '172', 'weight': '56', 'systolic': '125', 'diastolic': '86', 'sleeptime': '8', 'chest_pain': True, 'prior_heart_attack': False, 'highchol': False, 'diffwalk': False, 'physactivity': False, 'alcohol': True, 'smoking': False, 'stress_level': 'mild'}
+[2025-11-27 13:14:40,453] ERROR root:130 - Error in /manual-entry
+Traceback (most recent call last):
+  File "D:\AutoCare\backend\routes\manual_entry.py", line 127, in manual_entry
+    return jsonify(response)
+           ^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\flask\json\__init__.py", line 170, in jsonify
+    return current_app.json.response(*args, **kwargs)  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\flask\json\provider.py", line 214, in response
+    f"{self.dumps(obj, **dump_args)}\n", mimetype=self.mimetype
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\flask\json\provider.py", line 179, in dumps
+    return json.dumps(obj, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\rudra\AppData\Local\Programs\Python\Python311\Lib\json\__init__.py", line 238, in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+  File "C:\Users\rudra\AppData\Local\Programs\Python\Python311\Lib\json\encoder.py", line 202, in encode
+    chunks = list(chunks)
+             ^^^^^^^^^^^^
+  File "C:\Users\rudra\AppData\Local\Programs\Python\Python311\Lib\json\encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "C:\Users\rudra\AppData\Local\Programs\Python\Python311\Lib\json\encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "C:\Users\rudra\AppData\Local\Programs\Python\Python311\Lib\json\encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "C:\Users\rudra\AppData\Local\Programs\Python\Python311\Lib\json\encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "C:\Users\rudra\AppData\Local\Programs\Python\Python311\Lib\json\encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "C:\Users\rudra\AppData\Local\Programs\Python\Python311\Lib\json\encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "D:\AutoCare\.venv\Lib\site-packages\flask\json\provider.py", line 121, in _default
+    raise TypeError(f"Object of type {type(o).__name__} is not JSON serializable")
+TypeError: Object of type int64 is not JSON serializable
+[2025-11-27 13:14:40,459] INFO werkzeug:97 - 127.0.0.1 - - [27/Nov/2025 13:14:40] "[35m[1mPOST /api/manual-entry HTTP/1.1[0m" 500 -
+[2025-11-27 13:17:12,210] INFO werkzeug:97 -  * Detected change in 'D:\\AutoCare\\machine_learning\\prediction\\prediction_pipeline.py', reloading
