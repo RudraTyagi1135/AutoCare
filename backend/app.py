@@ -55,6 +55,8 @@ def manual_static(filename):
 def home():
   return jsonify({"message": "AutoCare Flask backend running!"})
 
+
+# --------- Run Server ---------
 if __name__ == "__main__":
     print("\n================= 🚀 AUT0CARE BACKEND RUNNING =================\n")
     print(" ➤ Local Server:        http://127.0.0.1:9000")
@@ -63,4 +65,3 @@ if __name__ == "__main__":
     print(" ===============================================================\n")
 
     app.run(host="127.0.0.1", port=9000, debug=True)
-
