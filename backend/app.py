@@ -15,7 +15,7 @@ app.register_blueprint(medical_bp)
 # -------------------------------------------------------
 #  Serve Frontend (chatbot UI)
 # -------------------------------------------------------
-ROOT_DIR = Path(__file__).resolve().parent.parent       # AutoCare/
+ROOT_DIR = Path(_file_).resolve().parent.parent       # AutoCare/
 FRONTEND_DIR = ROOT_DIR / "frontend" / "chatbot_general"
 
 @app.route("/chat-ui")
@@ -44,5 +44,5 @@ def serve_medical_static(filename):
     return send_from_directory(MEDICAL_UI_DIR, filename)
 
 
-if __name__ == "__main__":
+if __name__ == "_main_":
     app.run(host="127.0.0.1", port=9000, debug=True)
