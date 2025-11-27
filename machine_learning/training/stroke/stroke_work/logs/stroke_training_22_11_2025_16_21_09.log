@@ -1,0 +1,42 @@
+[2025-11-22 16:21:11,821] INFO root:31 - \u2705 MongoDB connection string loaded from environment successfully.
+[2025-11-22 16:21:12,142] INFO root:52 - ==========================================================================================
+[2025-11-22 16:21:12,147] INFO root:53 - \U0001f680 Starting AutoCare Diabetes ML Training Pipeline
+[2025-11-22 16:21:12,147] INFO root:54 - ==========================================================================================
+[2025-11-22 16:21:12,147] INFO root:60 - \u2699 Training Pipeline Configuration Initialized.
+[2025-11-22 16:21:12,147] INFO root:65 - \U0001f4e5 Initiating Data Ingestion...
+[2025-11-22 16:21:12,147] INFO root:58 - \u2705 DataIngestion instance created successfully.
+[2025-11-22 16:21:12,147] INFO root:165 - \U0001f680 Starting Data Ingestion Process...
+[2025-11-22 16:21:12,147] INFO root:77 - \U0001f510 Connecting securely to MongoDB Atlas...
+[2025-11-22 16:21:30,319] INFO root:90 - \u2705 Fetched 239023 rows and 10 columns from MongoDB collection.
+[2025-11-22 16:21:31,284] INFO root:123 - \U0001f4e6 Raw data saved to feature store at: machine_learning\training\stroke\stroke_work\Artifacts\22_11_2025_16_21_11\data_ingestion\raw_data\Stroke_Final_data.xlsx
+[2025-11-22 16:21:31,284] INFO root:136 - \u2702 Performing train-test split on dataset...
+[2025-11-22 16:21:32,148] INFO root:150 - \u2705 Train-Test Split Completed: Train((191218, 10)), Test((47805, 10))
+[2025-11-22 16:21:32,163] INFO root:182 - \U0001f3c1 Data Ingestion Completed Successfully.
+[2025-11-22 16:21:32,221] INFO root:70 - \u2705 Data Ingestion Completed Successfully.
+[2025-11-22 16:21:32,221] INFO root:76 - \U0001f50d Initiating Data Validation...
+[2025-11-22 16:21:32,221] INFO root:50 - Schema file loaded successfully from machine_learning\training\stroke\stroke_work\schema\stroke_schema.yaml
+[2025-11-22 16:21:32,221] INFO root:150 - \U0001f680 Initiating Data Validation Process...
+[2025-11-22 16:21:32,221] INFO root:59 - Reading dataset from: machine_learning\training\stroke\stroke_work\Artifacts\22_11_2025_16_21_11\data_ingestion\ingested\train.csv
+[2025-11-22 16:21:32,415] INFO root:59 - Reading dataset from: machine_learning\training\stroke\stroke_work\Artifacts\22_11_2025_16_21_11\data_ingestion\ingested\test.csv
+[2025-11-22 16:21:32,462] INFO root:73 - Schema requires 10 columns.
+[2025-11-22 16:21:32,462] INFO root:74 - DataFrame contains 10 columns.
+[2025-11-22 16:21:32,462] INFO root:84 - \u2705 Column validation successful.
+[2025-11-22 16:21:32,462] INFO root:73 - Schema requires 10 columns.
+[2025-11-22 16:21:32,462] INFO root:74 - DataFrame contains 10 columns.
+[2025-11-22 16:21:32,462] INFO root:84 - \u2705 Column validation successful.
+[2025-11-22 16:21:32,462] INFO root:98 - Starting dataset drift detection...
+[2025-11-22 16:21:32,698] WARNING root:127 - \u26a0 Drift detected in column: bmi
+[2025-11-22 16:21:33,140] INFO root:134 - \u2705 Drift report saved at: machine_learning\training\stroke\stroke_work\Artifacts\22_11_2025_16_21_11\data_validation\drift_store\report.yaml
+[2025-11-22 16:21:33,980] INFO root:180 - \u2705 Validated datasets saved successfully.
+[2025-11-22 16:21:33,980] INFO root:192 - \U0001f3af Data Validation Completed | Drift Status: False
+[2025-11-22 16:21:33,980] INFO root:84 - \u2705 Data Validation Completed Successfully.
+[2025-11-22 16:21:33,980] ERROR root:89 - \u274c Data validation failed — aborting training pipeline.
+[2025-11-22 16:21:33,980] ERROR root:128 - \u274c Exception occurred during pipeline execution.
+Traceback (most recent call last):
+  File "d:\AutoCare\machine_learning\training\stroke\stroke_work\pipeline\training_pipeline.py", line 90, in <module>
+    raise AutoCareException("Data Validation Failed. Check drift report or invalid files.", sys)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\AutoCare\autocare_utils\exception.py", line 39, in __init__
+    self.lineno = exc_tb.tb_lineno
+                  ^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'tb_lineno'

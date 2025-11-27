@@ -9,6 +9,7 @@ Requires-Dist: numpy
 Requires-Dist: xgboost
 Requires-Dist: pymongo[srv]
 Requires-Dist: certifi
+Requires-Dist: awscli
 Requires-Dist: scikit-learn
 Requires-Dist: mlflow
 Requires-Dist: PyYAML
@@ -18,6 +19,10 @@ Requires-Dist: uvicorn
 Requires-Dist: python-multipart
 Requires-Dist: dill
 Requires-Dist: openpyxl
+Requires-Dist: dvc
+Requires-Dist: dvc[gdrive]
+Requires-Dist: mlflow
+Requires-Dist: dvc[s3]
 Requires-Dist: fastapi==0.95.2
 Requires-Dist: uvicorn[standard]==0.22.0
 Requires-Dist: python-dotenv==1.2.1
