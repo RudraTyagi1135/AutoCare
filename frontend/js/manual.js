@@ -8,7 +8,7 @@ const els = {
   weight: document.getElementById('weight'),
   systolic: document.getElementById('systolic'),
   diastolic: document.getElementById('diastolic'),
-  sleep: document.getElementById('sleep'),
+  sleeptime: document.getElementById('sleep'),
   chk_chest: document.getElementById('chk_chest'),
   chk_heart: document.getElementById('chk_heart'),
   chk_chol: document.getElementById('chk_chol'),
@@ -46,7 +46,7 @@ function isFilled(el) {
 
 const progressFields = [
   els.gender, els.age, els.height, els.weight,
-  els.systolic, els.diastolic, els.sleep, els.smoking, els.stress
+  els.systolic, els.diastolic,els.sleeptime, els.smoking, els.stress
 ];
 
 function updateProgress() {
@@ -83,7 +83,7 @@ function calculateBMI() {
 }
 
 /* ============================
-   General Score
+   General Score (UI Only)
 ============================ */
 function computeGeneralScore() {
   let score = 0;
@@ -131,7 +131,7 @@ function computeGeneralScore() {
 }
 
 /* ============================
-   UI Update
+   UI Update Based on Score
 ============================ */
 const generalStates = [
   { emoji: '💖', text: 'Excellent' },
@@ -162,7 +162,7 @@ function updateUIFromScore() {
 }
 
 /* ============================
-   Input Event Wiring
+   Input Live Updates
 ============================ */
 document.querySelectorAll('#healthForm input, #healthForm select')
   .forEach(input => {
@@ -186,11 +186,47 @@ calculateBMI();
 updateUIFromScore();
 
 /* ============================
-   Submit Handler (REAL submit)
+   Submit Handler → API Call
 ============================ */
-document.getElementById('healthForm').addEventListener('submit', () => {
-  updateProgress();
-  calculateBMI();
-  updateUIFromScore();
-  // Form now submits normally to Flask
+document.getElementById('healthForm').addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  const payload = {
+    gender: els.gender.value,
+    age: Number(els.age.value),
+    height: Number(els.height.value),
+    weight: Number(els.weight.value),
+    systolic: Number(els.systolic.value),
+    diastolic: Number(els.diastolic.value),
+    sleeptime: Number(els.sleep.value),
+    chest_pain: els.chk_chest.checked ? 1 : 0,
+    prior_heart_attack: els.chk_heart.checked ? 1 : 0,
+    highchol: els.chk_chol.checked ? 1 : 0,
+    diffwalk: els.chk_walk.checked ? 1 : 0,
+    physactivity: els.chk_activity.checked ? 1 : 0,
+    alcohol: els.chk_alcohol.checked ? 1 : 0,
+    smoking: els.smoking.checked ? 1 : 0,
+    stress_level: Number(els.stress.value)
+  };
+
+  try {
+    const response = await fetch(`${window.location.origin}/api/manual-entry`, {
+
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const result = await response.json();
+
+    if (result.status === "success") {
+      sessionStorage.setItem("autocare_prediction", JSON.stringify(result));
+      window.location.href = "/report.html";
+    } else {
+      alert("Prediction failed: " + result.message);
+    }
+  } catch (err) {
+    console.error("Prediction Error:", err);
+    alert("Server error. Please check backend.");
+  }
 });

@@ -8,6 +8,8 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.impute import SimpleImputer
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
 
 from autocare_utils.exception import AutoCareException
 from autocare_utils.logging import logging
@@ -82,12 +84,9 @@ class DataTransformation:
         if "age_category" in df.columns and df["age_category"].dtype == object:
             df["age_category"] = df["age_category"].map(lambda x: self.age_mapping.get(str(x).strip(), np.nan))
         elif "age" in df.columns:
-            # numeric age -> bucket
             def age_to_bucket(a):
-                try:
-                    a = float(a)
-                except Exception:
-                    return np.nan
+                try: a = float(a)
+                except: return np.nan
                 if a <= 24: return 1
                 if 25 <= a <= 29: return 2
                 if 30 <= a <= 34: return 3
@@ -105,14 +104,12 @@ class DataTransformation:
         return df
 
     def _compute_bmi_if_needed(self, df: pd.DataFrame) -> pd.DataFrame:
-        # If BMI missing but height & weight present, compute.
         if "bmi" not in df.columns and {"height", "weight"}.issubset(df.columns):
             df["bmi"] = df["weight"] / ((df["height"] / 100) ** 2)
             logging.info("Computed 'bmi' from height & weight.")
         return df
 
     def _compute_hypertension_if_needed(self, df: pd.DataFrame) -> pd.DataFrame:
-        # If hypertension missing but systolic/diastolic present, compute.
         if "hypertension" not in df.columns and {"systolic", "diastolic"}.issubset(df.columns):
             df["hypertension"] = df.apply(
                 lambda r: 1 if (float(r.get("systolic", 0)) >= 130 or float(r.get("diastolic", 0)) >= 85) else 0,
@@ -140,23 +137,19 @@ class DataTransformation:
         try:
             df = df.copy()
 
-            # Compute/Map core fields
             df = self._compute_bmi_if_needed(df)
             df = self._compute_hypertension_if_needed(df)
             df = self._map_gender(df)
             df = self._map_age(df)
 
-            # Boolean mappings for required boolean columns
             for col in ["smoking", "alcohol", "physactivity", "diffwalk", "highchol"]:
                 df = self._map_boolean(df, col)
 
             df = self._map_stress(df)
 
-            # Drop helper/unwanted columns if present
             drop_cols = ["Unnamed: 0", "height", "weight", "systolic", "diastolic"]
             df.drop(columns=[c for c in drop_cols if c in df.columns], inplace=True)
 
-            # Ensure target type
             if self.TARGET_COLUMN in df.columns:
                 df[self.TARGET_COLUMN] = df[self.TARGET_COLUMN].astype(int)
 
@@ -172,67 +165,60 @@ class DataTransformation:
         try:
             logging.info("🚀 Initiating diabetes data transformation...")
 
-            # Load validated CSVs
             train_df = self._load_csv(self.data_validation_artifact.valid_train_file_path)
             test_df = self._load_csv(self.data_validation_artifact.valid_test_file_path)
 
-            # Prepare
             train_df = self._prepare_dataframe(train_df)
             test_df = self._prepare_dataframe(test_df)
 
-            # Ensure target present
             if self.TARGET_COLUMN not in train_df.columns:
-                raise AutoCareException(f"Target column '{self.TARGET_COLUMN}' not found in diabetes dataset.", sys)
+                raise AutoCareException(f"Target column '{self.TARGET_COLUMN}' not found.", sys)
 
-            # Build features list strictly in FINAL_FEATURES order but include only present ones (error if missing)
             missing = [f for f in self.FINAL_FEATURES if f not in train_df.columns]
             if missing:
-                raise AutoCareException(f"Missing required diabetes feature(s) in train set: {missing}", sys)
+                raise AutoCareException(f"Missing required diabetes feature(s): {missing}", sys)
 
             feature_cols = self.FINAL_FEATURES.copy()
 
-            # Separate arrays
-            X_train = train_df[feature_cols].values
+            # Only y_train/y_test kept — X_train/X_test removed because ColumnTransformer replaces them
             y_train = train_df[self.TARGET_COLUMN].values
-            X_test = test_df[feature_cols].values
             y_test = test_df[self.TARGET_COLUMN].values
 
-            # Impute & scale
-            imputer = SimpleImputer(strategy="median")
-            X_train = imputer.fit_transform(X_train)
-            X_test = imputer.transform(X_test)
+            pipeline = Pipeline(
+                steps=[
+                    ("imputer", SimpleImputer(strategy="median")),
+                    ("scaler", StandardScaler())
+                ]
+            )
 
-            scaler = StandardScaler()
-            X_train_scaled = scaler.fit_transform(X_train)
-            X_test_scaled = scaler.transform(X_test)
+            preprocessor = ColumnTransformer(
+                transformers=[
+                    ("numeric", pipeline, feature_cols)
+                ]
+            )
 
-            # Save preprocessor (imputer+scaler+feature_columns)
-            preprocessor = {
-                "imputer": imputer,
-                "scaler": scaler,
-                "feature_columns": feature_cols
-            }
+            X_train_scaled = preprocessor.fit_transform(train_df[feature_cols])
+            X_test_scaled = preprocessor.transform(test_df[feature_cols])
+
             os.makedirs(os.path.dirname(self.config.transformed_object_file_path), exist_ok=True)
             save_object(self.config.transformed_object_file_path, preprocessor)
+
             logging.info(f"Preprocessor object saved at: {self.config.transformed_object_file_path}")
 
-            # Combine features + target and save arrays
             train_arr = np.c_[X_train_scaled, y_train]
             test_arr = np.c_[X_test_scaled, y_test]
 
             os.makedirs(os.path.dirname(self.config.transformed_train_file_path), exist_ok=True)
             save_numpy_array_data(self.config.transformed_train_file_path, train_arr)
             save_numpy_array_data(self.config.transformed_test_file_path, test_arr)
+
             logging.info("Transformed train/test arrays saved successfully.")
 
-            artifact = DataTransformationArtifact(
+            return DataTransformationArtifact(
                 transformed_object_file_path=self.config.transformed_object_file_path,
                 transformed_train_file_path=self.config.transformed_train_file_path,
                 transformed_test_file_path=self.config.transformed_test_file_path,
             )
-
-            logging.info("✅ Diabetes Data Transformation completed successfully.")
-            return artifact
 
         except Exception as e:
             raise AutoCareException(e, sys)
