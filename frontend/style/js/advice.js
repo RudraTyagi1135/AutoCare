@@ -15,6 +15,7 @@
     const body = document.createElement('div');
     body.innerHTML = String(text).replace(/\n/g,'<br>');
 
+    
     el.appendChild(meta);
     el.appendChild(body);
 
