@@ -7,6 +7,7 @@ from typing import Dict, Any
 from machine_learning.prediction.feature_encoder import encode_raw_input
 from machine_learning.prediction.load_models import load_model_and_preprocessor
 from machine_learning.prediction.utils import prob_to_percent, percent_to_risk_label
+from machine_learning.shap_engine.shap_utils import get_shap_details
 
 
 class Predictor:
@@ -97,6 +98,24 @@ class Predictor:
 
         label = int(prob >= 0.5)
 
+
+        # ⭐ NEW: SHAP Explainability Integration ----------------------------------
+        try:
+            # Correct update — pipeline model, not only model
+            explainability = get_shap_details(
+                disease=disease,
+                pipeline_model=model,
+                input_df=df_for_model
+            )
+        except Exception as shap_error:
+            explainability = {
+                "error": str(shap_error),
+                "message": "SHAP explanation failed."
+            }
+        # ---------------------------------------------------------------------------
+
+
+
         # 6️⃣ Build response payload
         return {
         "disease": disease,
@@ -111,5 +130,8 @@ class Predictor:
 
         # sanitize encoded vector
         "encoded_feature_vector": [self._to_python(v) for v in list(df_for_model.iloc[0].values)],
+
+        #  ⭐ SHAP explainability results
+        "explainability": explainability
 }
 
