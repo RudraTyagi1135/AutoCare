@@ -40,4 +40,4 @@ machine_learning/training/*/*_work/model_processor/
 # -----------------------------------------
 # Log Files
 # -----------------------------------------
-
+logs/
