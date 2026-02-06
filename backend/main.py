@@ -1,307 +1,247 @@
 # backend/main.py
-from flask import Flask, render_template, request, redirect, url_for, session, flash, g
-from functools import wraps
+# ================================
+# AutoCare - FINAL MAIN BACKEND
+# (serves templates from frontend/templates and css/js under /css & /js)
+# ================================
+import os
+from pathlib import Path
+from datetime import datetime
+from flask import (
+    Flask, render_template, request, redirect,
+    url_for, session, flash, jsonify, send_from_directory
+)
 from werkzeug.security import generate_password_hash, check_password_hash
 from pymongo import MongoClient
-import random
-from datetime import datetime
-import os
 from dotenv import load_dotenv
+from functools import wraps
+from flask_cors import CORS
 
-# ===========================
-# Resolve Frontend Directory
-# ===========================
-THIS_DIR = os.path.dirname(__file__)
-FRONTEND_DIR = os.path.abspath(os.path.join(THIS_DIR, "..", "frontend"))
+# -----------------------------
+# PATH CONFIG
+# -----------------------------
+ROOT = Path(__file__).resolve().parent.parent    # project root (AutoCare/)
+FRONTEND_DIR = ROOT / "frontend"
+FRONTEND_TEMPLATES = FRONTEND_DIR / "templates"
+FRONTEND_STYLE = FRONTEND_DIR / "style"          # contains css/ and js/
+CHATBOT_GENERAL_DIR = FRONTEND_DIR / "chatbot_general"
+CHATBOT_MEDICAL_DIR = FRONTEND_DIR / "chatbot_medical"
 
-# Load .env file
-load_dotenv()
+print("AutoCare Backend Running")
+print("Templates:", FRONTEND_TEMPLATES)
+print("Style (css/js):", FRONTEND_STYLE)
+print("Chatbot general dir:", CHATBOT_GENERAL_DIR)
+print("Chatbot medical dir:", CHATBOT_MEDICAL_DIR)
 
+# -----------------------------
+# APP INIT
+# -----------------------------
+# Use templates folder explicitly and DO NOT rely on Flask's built-in static route.
+# We'll add explicit routes so existing template relative links like "css/..." keep working.
 app = Flask(
     __name__,
-    template_folder=FRONTEND_DIR,
-    static_folder=FRONTEND_DIR,
-    static_url_path=""
+    template_folder=str(FRONTEND_TEMPLATES),
+    static_folder=None   # disable built-in static to avoid collisions — we'll serve custom routes
 )
-app.secret_key = os.getenv("FLASK_SECRET_KEY")  # Change for production
-if not app.secret_key:
-    raise Exception("secret key not found. Set it inside .env")
 
+CORS(app)
+load_dotenv(ROOT / ".env")
 
+app.secret_key = os.getenv("FLASK_SECRET_KEY") or "dev-secret-for-local"  # replace in prod
 
-
-# ===========================
-# MongoDB Setup
-# ===========================
+# -----------------------------
+# MONGO INIT (safe)
+# -----------------------------
 MONGO_URI = os.getenv("MONGO_DB_URL")
 if not MONGO_URI:
-    raise Exception("MongoDB URI not found. Set it inside .env")
+    print("⚠️  Warning: MONGO_DB_URL not set in .env — continuing without DB for local UI testing")
+    client = None
+    db = None
+    users_col = None
+    manual_col = None
+else:
+    client = MongoClient(MONGO_URI)
+    db = client.get_database("History")
+    users_col = db["users"]
+    manual_col = db["manual_history"]
 
-client = MongoClient(MONGO_URI)
-db = client["History"]
+# -----------------------------
+# BLUEPRINTS (import after app created)
+# -----------------------------
+# if these fail to import, app start will fail and you'll see the error
+try:
+    from routes.chatbot_general import general_chat_bp
+    from routes.chatbot_medical import medical_bp
+    from routes.manual_entry import manual_bp
+except Exception as e:
+    # Print full error to console, but allow the server to start for UI debugging (optional)
+    print("Failed to import one or more blueprints:", e)
+    raise
 
-users_col = db["users"]             # Registered users
-register_log_col = db["register_logs"]  # Registration history
-login_log_col = db["login_logs"]    # Login history
-manual_col = db["manual_history"]   # Manual form submissions
+app.register_blueprint(general_chat_bp, url_prefix="/api")
+# medical_bp likely defines its own prefix — register as-is
+app.register_blueprint(medical_bp)
+app.register_blueprint(manual_bp, url_prefix="/api")
 
+# -----------------------------
+# Serve frontend static assets (css/js) at root paths used by templates
+# Templates refer to "css/..."/"js/..." (relative to site root),
+# so we expose those routes to match the existing HTML.
+# -----------------------------
+@app.route("/css/<path:filename>")
+def serve_css(filename):
+    """Serve CSS files from frontend/style/css/"""
+    css_dir = FRONTEND_STYLE / "css"
+    return send_from_directory(css_dir, filename)
 
-# ===========================
-# LOGIN PROTECTION DECORATOR
-# ===========================
-def login_required(role=None):
-    def wrapper(fn):
-        @wraps(fn)
-        def decorated_view(*args, **kwargs):
-            if "user" not in session:
-                flash("Please log in.", "error")
-                return redirect(url_for("login"))
-            if role and session.get("role") != role:
-                flash("Access denied.", "error")
-                return redirect(url_for("dashboard"))
-            g.user = session.get("user")
-            g.role = session.get("role")
-            return fn(*args, **kwargs)
-        return decorated_view
+@app.route("/js/<path:filename>")
+def serve_js(filename):
+    """Serve JS files from frontend/style/js/"""
+    js_dir = FRONTEND_STYLE / "js"
+    return send_from_directory(js_dir, filename)
+
+@app.route("/images/<path:filename>")
+def serve_images(filename):
+    """Optional: image assets if you have them under style/images/"""
+    img_dir = FRONTEND_STYLE / "images"
+    return send_from_directory(img_dir, filename)
+
+# Serve the chatbot standalone folders (they contain index.html + assets)
+@app.route("/chatbot_general/<path:filename>")
+def serve_chatbot_general(filename):
+    return send_from_directory(CHATBOT_GENERAL_DIR, filename)
+
+@app.route("/chatbot_medical/<path:filename>")
+def serve_chatbot_medical(filename):
+    return send_from_directory(CHATBOT_MEDICAL_DIR, filename)
+
+# If someone requests the chatbot root, serve index.html
+@app.route("/chat-ui")
+def chat_ui_root():
+    return send_from_directory(CHATBOT_GENERAL_DIR, "index.html")
+
+@app.route("/medical-chat-ui")
+def med_chat_ui_root():
+    return send_from_directory(CHATBOT_MEDICAL_DIR, "index.html")
+
+# -----------------------------
+# Simple login_required decorator
+# -----------------------------
+def login_required(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        if "user" not in session:
+            return redirect("/login")
+        return fn(*args, **kwargs)
     return wrapper
 
-
-# ===========================
-# HOME → LOGIN REDIRECT
-# ===========================
+# -----------------------------
+# AUTH ROUTES (keep as-is)
+# -----------------------------
 @app.route("/")
 def home():
-    if "user" in session:
-        return redirect(url_for("dashboard"))
-    return redirect(url_for("login"))
+    return redirect("/login")
 
-
-# ===========================
-# REGISTER ROUTE (MongoDB)
-# ===========================
-@app.route("/register", methods=["GET", "POST"])
-def register():
-    if "user" in session:
-        flash("You are already logged in.", "info")
-        return redirect(url_for("dashboard"))
-
-    if request.method == "POST":
-        email = request.form.get("email", "").lower().strip()
-        password = request.form.get("password", "").strip()
-        confirm_password = request.form.get("confirm_password", "").strip()
-        role = request.form.get("role", "user").strip()
-
-        if not email or not password or not confirm_password:
-            flash("Fill all fields.", "error")
-            return render_template("register.html")
-
-        if password != confirm_password:
-            flash("Passwords do not match.", "error")
-            return render_template("register.html")
-
-        if users_col.find_one({"email": email}):
-            flash("User already exists!", "error")
-            return render_template("register.html")
-
-        # Insert new user
-        try:
-            users_col.insert_one({
-            "email": email,
-            "password": generate_password_hash(password),
-            "role": role,
-            "created_at": datetime.utcnow()
-             })
-        except Exception as e:
-            flash("Database error while creating account. Try again later.", "error")
-            return render_template("register.html")
-        # Save registration history
-        try:
-            register_log_col.insert_one({
-            "email": email,
-            "role": role,
-            "registered_at": datetime.utcnow()
-            })
-        except Exception as e:
-            pass  # not critical, so we don't block the user
-
-        flash("Registration successful. Login now.", "success")
-        return redirect(url_for("login"))
-
-    return render_template("register.html")
-
-
-# ===========================
-# LOGIN ROUTE (MongoDB)
-# ===========================
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    if "user" in session:
-        return redirect(url_for("dashboard"))
-
     if request.method == "POST":
-        email = request.form.get("email", "").lower().strip()
-        password = request.form.get("password", "").strip()
-        role = request.form.get("role", "user").strip()
+        email = (request.form.get("email") or "").strip().lower()
+        password = request.form.get("password") or ""
 
-        if not email or not password:
-            flash("Enter email and password.", "error")
+        if users_col is None:
+            flash("Database not configured (MONGO_DB_URL missing).", "error")
             return render_template("login.html")
 
-        try:
-            user = users_col.find_one({"email": email})
-        except Exception as e:
-            flash("Database error while fetching user.", "error")
+        user = users_col.find_one({"email": email})
+        if not user or not check_password_hash(user["password"], password):
+            flash("Invalid credentials", "error")
             return render_template("login.html")
-        if user and check_password_hash(user["password"], password) and user["role"] == role:
-            session["user"] = email
-            session["role"] = role
 
-            try:
-                login_log_col.insert_one({
-                "email": email,
-                "role": role,
-                "login_timestamp": datetime.utcnow()
-                })
-            except Exception as e:
-                pass  # do not block login
-
-            flash("Login successful!", "success")
-            return redirect(url_for("dashboard"))
-        else:
-            flash("Invalid credentials or role.", "error")
-            return render_template("login.html")
+        session["user"] = email
+        flash("Login successful!", "success")
+        return redirect("/dashboard")
 
     return render_template("login.html")
 
-
-# ===========================
-# DASHBOARD ROUTE
-# ===========================
-@app.route("/dashboard")
-@login_required()
-def dashboard():
-    role = session.get("role", "user")
-    template_name = f"{role}.html"
-
-    if not os.path.exists(os.path.join(FRONTEND_DIR, template_name)):
-        template_name = "user.html"  # fallback
-
-    last_manual = session.get("last_manual")
-    return render_template(template_name, user=session.get("user"), last_manual=last_manual)
-
-
-# ===========================
-# MANUAL ENTRY (MongoDB)
-# ===========================
-@app.route("/manual-entry", methods=["GET", "POST"])
-@login_required()
-def manual_entry():
+@app.route("/register", methods=["GET", "POST"])
+def register():
     if request.method == "POST":
-        inputs = {k: v for k, v in request.form.items()}
+        email = (request.form.get("email") or "").strip().lower()
+        password = request.form.get("password") or ""
+        confirm = request.form.get("confirm_password") or ""
 
-        # Validate numeric fields safely
-        def to_int(value):
-            try:
-                return int(value) if value not in (None, "", " ") else None
-            except:
-                return None
+        if password != confirm:
+            flash("Passwords do not match", "error")
+            return render_template("register.html")
 
-        def to_float(value):
-            try:
-                return float(value) if value not in (None, "", " ") else None
-            except:
-                return None
+        if users_col is not None:
+            users_col.insert_one({
+                "email": email,
+                "password": generate_password_hash(password)
+            })
+        else:
+            print("Skipped DB insert because MONGO_DB_URL missing (local dev)")
 
-        def to_bool(value):
-            return True if value else False
+        return redirect("/login")
 
-        # Convert types
-        gender = inputs.get("gender")
-        age = to_int(inputs.get("age"))
-        height = to_float(inputs.get("height"))
-        weight = to_float(inputs.get("weight"))
-        systolic = to_int(inputs.get("systolic"))
-        diastolic = to_int(inputs.get("diastolic"))
-        sleep = to_float(inputs.get("sleep"))
-        stress = to_float(inputs.get("stress"))
+    return render_template("register.html")
 
-        # Checkbox booleans
-        chest_pain = to_bool(inputs.get("chest_pain"))
-        heart_attack = to_bool(inputs.get("heart_attack"))
-        cholesterol = to_bool(inputs.get("cholesterol"))
-        walking_difficulty = to_bool(inputs.get("walking_difficulty"))
-        physical_activity = to_bool(inputs.get("physical_activity"))
-        alcohol = to_bool(inputs.get("alcohol"))
-        smoking = to_bool(inputs.get("smoking"))
-
-        # Required field check
-        if age is None or height is None or weight is None:
-            flash("Age, height, and weight are required and must be valid numbers.", "error")
-            return redirect(url_for("manual_entry"))
-
-        # Generate Demo Scores (you can replace later)
-        heart_score = random.randint(30, 79)
-        stroke_score = random.randint(10, 49)
-        diabetes_score = random.randint(5, 34)
-
-        # Build final record with correct datatypes
-        record = {
-            "email": session.get("user"),
-            "role": session.get("role"),
-            "timestamp": datetime.utcnow(),
-            "input_values": {
-                "gender": gender,
-                "age": age,
-                "height": height,
-                "weight": weight,
-                "systolic": systolic,
-                "diastolic": diastolic,
-                "sleep": sleep,
-                "chest_pain": chest_pain,
-                "heart_attack": heart_attack,
-                "cholesterol": cholesterol,
-                "walking_difficulty": walking_difficulty,
-                "physical_activity": physical_activity,
-                "alcohol": alcohol,
-                "smoking": smoking,
-                "stress": stress
-            },
-            "scores": {
-                "heart": f"{heart_score}%",
-                "stroke": f"{stroke_score}%",
-                "diabetes": f"{diabetes_score}%"
-            }
-        }
-
-        # Save safely
-        try:
-            inserted_id = manual_col.insert_one(record).inserted_id
-        except Exception as e:
-            flash("Database error while saving data. Try again later.", "error")
-            return redirect(url_for("manual_entry"))
-
-        session["last_manual"] = str(inserted_id)
-        flash("Form submitted & saved successfully.", "success")
-        return redirect(url_for("dashboard"))
-
- 
-
-
-
- 
-# ===========================
-# LOGOUT
-# ===========================
 @app.route("/logout")
-@login_required()
 def logout():
     session.clear()
-    flash("Logged out.", "info")
-    return redirect(url_for("login"))
+    return redirect("/login")
 
+# -----------------------------
+# FRONTEND PAGES (render templates)
+# -----------------------------
+@app.route("/dashboard")
+@login_required
+def dashboard():
+    return render_template("user.html")
 
-# ===========================
-# Run App
-# ===========================
+@app.route("/advice")
+@login_required
+def advice_page():
+    return render_template("advice.html")
+
+@app.route("/chat")
+@login_required
+def chat_page():
+    return render_template("chat.html")
+
+@app.route("/manual")
+@login_required
+def manual_page():
+    return render_template("manual.html")
+
+@app.route("/report")
+@login_required
+def report_page():
+    return render_template("report.html")
+
+@app.route("/dataupload")
+@login_required
+def dataupload_page():
+    return render_template("dataupload.html")
+
+# -----------------------------
+# Helpful API: return a saved manual-entry record (by id)
+# (If you store ObjectId, you should cast/convert when querying)
+# -----------------------------
+@app.route("/api/last-manual/<string:record_id>", methods=["GET"])
+@login_required
+def api_get_manual(record_id):
+    if manual_col is None:
+        return jsonify({"success": False, "error": "DB not configured"}), 500
+    try:
+        rec = manual_col.find_one({"_id": record_id})
+        return jsonify({"success": True, "record": rec})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+# -----------------------------
+# RUN SERVER (single app.run only)
+# -----------------------------
 if __name__ == "__main__":
-    app.run(debug=False, host="127.0.0.1", port=5000)
+    # Ensure only one run point exists to avoid socket errors on Windows
+    print("\nStarting server: http://127.0.0.1:5000")
+    app.run(host="127.0.0.1", port=5000, debug=True)

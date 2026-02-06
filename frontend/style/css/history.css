@@ -1,0 +1,106 @@
+body {
+    margin: 0;
+    font-family: "Inter", Arial, sans-serif;
+    background-color: #f6f8fa;
+    color: #1f2937;
+}
+
+.history-container {
+    max-width: 900px;
+    margin: 50px auto;
+    padding: 20px;
+}
+
+.history-header h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.subtext {
+    color: #6b7280;
+    margin-top: 6px;
+    font-size: 14px;
+}
+
+.empty-state {
+    margin-top: 40px;
+    padding: 20px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    text-align: center;
+    color: #6b7280;
+}
+
+.history-card {
+    margin-top: 25px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 20px 24px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #6b7280;
+    margin-bottom: 15px;
+}
+
+.card-body {
+    border-top: 1px solid #e5e7eb;
+    padding-top: 15px;
+}
+
+.disease-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.disease-row:last-child {
+    border-bottom: none;
+}
+
+.disease-name {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.risk-info {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.risk-percent {
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.risk-label {
+    padding: 4px 10px;
+    font-size: 12px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.low {
+    background-color: #e6f4ea;
+    color: #1b5e20;
+}
+
+.moderate {
+    background-color: #fff4e5;
+    color: #9a6b00;
+}
+
+.high {
+    background-color: #fdecea;
+    color: #b71c1c;
+}

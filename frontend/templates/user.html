@@ -8,138 +8,128 @@
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <!-- Inter font (used site-wide) -->
+  <!-- Inter font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
   <!-- App CSS -->
-  <link rel="stylesheet" href="css/user.css">
+  <link rel="stylesheet" href="/style/css/user.css">
 </head>
+
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <div class="mark" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" width="26" height="26" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2C10.8954 2 10 2.89543 10 4V5.2C8.34315 5.71159 7.2 7.23903 7.2 9C7.2 11.4853 9.51472 13.2 12 13.2C14.4853 13.2 16.8 11.4853 16.8 9C16.8 7.23903 15.6569 5.71159 14 5.2V4C14 2.89543 13.1046 2 12 2Z" fill="white" opacity="0.95"/>
-        </svg>
-      </div>
-      <div class="app-title"><strong>AutoCare</strong><div class="sub small">Clinical AI · Risk · Reports</div></div>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="mark">
+      <svg viewBox="0 0 24 24" fill="none" width="26" height="26">
+        <path d="M12 2C10.8954 2 10 2.89543 10 4V5.2C8.34315 5.71159 7.2 7.23903 7.2 9C7.2 11.4853 9.51472 13.2 12 13.2C14.4853 13.2 16.8 11.4853 16.8 9C16.8 7.23903 15.6569 5.71159 14 5.2V4C14 2.89543 13.1046 2 12 2Z" fill="white"/>
+      </svg>
     </div>
-
-    <nav class="topnav" role="navigation" aria-label="Top navigation">
-      <!-- Dashboard as a normal nav anchor (active on this page) -->
-      <a class="nav-link active" href="user.html">Dashboard</a>
-
-      <!-- Data Upload is now a separate page (link to dataupload.html) -->
-      <a class="nav-link" href="dataupload.html">Data Upload</a>
-
-      <!-- External pages (remain separate) -->
-      <a class="nav-link" href="advice.html">Advice</a>
-      <a class="nav-link" href="chat.html">Chat</a>
-      <a class="nav-link" href="report.html">Reports</a>
-    </nav>
-
-    <div class="right-controls">
-      <div class="dropdown" style="margin-right:8px">
-        <button id="settingsToggle" class="icon-btn" title="Settings" aria-label="Settings">⚙️</button>
-        <div id="settingsMenu" class="dropdown-menu" role="menu" aria-hidden="true">
-          <div class="item" data-action="signin">Sign in</div>
-          <div class="item" data-action="switch">Switch account</div>
-          <div class="item" data-action="signout">Sign out</div>
-        </div>
-      </div>
-
-      <div class="auth-container" style="position:relative">
-        <button id="authBox" class="box-dash" aria-haspopup="true" aria-expanded="false" title="Account">--</button>
-        <div id="authMenu" class="dropdown-menu" role="menu" aria-hidden="true" style="right:0;top:64px">
-          <div class="item" data-action="signin">Sign in</div>
-          <div class="item" data-action="switch">Switch account</div>
-          <div class="item" data-action="signout">Sign out</div>
-        </div>
-      </div>
+    <div class="app-title">
+      <strong>AutoCare</strong>
+      <div class="sub small">Clinical AI · Risk · Reports</div>
     </div>
-  </header>
-
-  <div class="container">
-    <main class="workspace">
-      <!-- DASHBOARD (visible by default) -->
-      <section id="dashboard" class="dashboard-only" aria-label="Dashboard">
-        <div class="three-columns" role="main">
-          <div class="panel" id="col-diabetes">
-            <div class="panel-header">
-              <div class="panel-title"><h3>Diabetes</h3><div id="risk-diabetes" class="risk-badge">--%</div></div>
-              <div class="method">Prediction model: Ensemble gradient-boosted trees.</div>
-            </div>
-            <div class="panel-body">
-              <div class="panel-info"><div style="font-weight:800;margin-bottom:8px">Why this decision? (Top 5 contributors)</div><div class="reasons"><ol id="reasons-diabetes"></ol></div></div>
-              <div class="panel-graph"><div class="chart-box"><canvas id="chart-diabetes-canvas" aria-label="Diabetes trend chart"></canvas></div></div>
-            </div>
-          </div>
-
-          <div class="panel" id="col-heart">
-            <div class="panel-header">
-              <div class="panel-title"><h3>Heart Disease</h3><div id="risk-heart" class="risk-badge">--%</div></div>
-              <div class="method">Prediction model: XGBoost using demographics, labs, BP and ECG flags.</div>
-            </div>
-            <div class="panel-body">
-              <div class="panel-info"><div style="font-weight:800;margin-bottom:8px">Why this decision? (Top 5 contributors)</div><div class="reasons"><ol id="reasons-heart"></ol></div></div>
-              <div class="panel-graph"><div class="chart-box"><canvas id="chart-heart-canvas" aria-label="Heart disease trend chart"></canvas></div></div>
-            </div>
-          </div>
-
-          <div class="panel" id="col-stroke">
-            <div class="panel-header">
-              <div class="panel-title"><h3>Stroke</h3><div id="risk-stroke" class="risk-badge">--%</div></div>
-              <div class="method">Prediction: hybrid logistic + tree ensemble using BP trends, AF flags and smoking status.</div>
-            </div>
-            <div class="panel-body">
-              <div class="panel-info"><div style="font-weight:800;margin-bottom:8px">Why this decision? (Top 5 contributors)</div><div class="reasons"><ol id="reasons-stroke"></ol></div></div>
-              <div class="panel-graph"><div class="chart-box"><canvas id="chart-stroke-canvas" aria-label="Stroke trend chart"></canvas></div></div>
-            </div>
-          </div>
-        </div>
-
-
-      <!-- NOTE: in-page 'upload' section REMOVED (you now have a separate dataupload.html) -->
-
-      <!-- The other sections remain separate pages (links are outside the in-page toggles) -->
-      <!-- Advice / Chat / Reports are not toggled in-page; they are linked from the nav bar. -->
-    </main>
   </div>
 
-  <script>
-    // Wire the action buttons under the dashboard:
-    document.addEventListener('DOMContentLoaded', function(){
-      const openUpload = document.getElementById('openUpload');
-      const openManual = document.getElementById('openManual');
+  <nav class="topnav">
+    <a class="nav-link" href="/dashboard">Dashboard</a>
+    <a class="nav-link" href="/dataupload">Data Upload</a>
+    <a class="nav-link" href="/advice">Advice</a>
+    <a class="nav-link" href="/chat">Chat</a>
+    <a class="nav-link" href="/report">Reports</a>
+  </nav>
 
-      if(openUpload){
-        // go to the separate data upload page
-        openUpload.addEventListener('click', function(){
-          location.href = 'dataupload.html';
-        });
-      }
+  <!-- ✅ USER INFO SECTION -->
+  <div class="right-controls">
 
-      if(openManual){
-        openManual.addEventListener('click', function(){
-          location.href = 'manual.html';
-        });
-      }
+    <div class="user-info">
+      <div class="avatar">
+        {{ user_name[0]|upper if user_name else "U" }}
+      </div>
+      <div class="user-name">
+        {{ user_name if user_name else "User" }}
+      </div>
+    </div>
 
-      // Keep topnav anchors visually active if current path matches href
-      const anchors = document.querySelectorAll('.topnav a.nav-link');
-      anchors.forEach(a => {
-        try{
-          const hrefFile = (a.getAttribute('href')||'').split('/').pop();
-          const current = location.pathname.split('/').pop();
-          if(hrefFile && current && hrefFile === current){
-            a.classList.add('active');
-          }
-        }catch(e){}
-      });
-    });
-  </script>
+    <button onclick="location.href='/logout'" class="icon-btn">
+      Logout
+    </button>
+  </div>
+</header>
 
-  <!-- App JS (charts, upload logic, etc.). Keep this file as your main JS. -->
-  <script src="js/user.js"></script>
+<div class="container">
+<main class="workspace">
+
+<section id="dashboard">
+
+  <!-- Optional Welcome Line -->
+  <h2 style="margin-bottom:20px;">
+    Hello {{ user_name if user_name else "User" }}
+  </h2>
+
+  <div class="three-columns">
+
+    <!-- ================= DIABETES ================= -->
+    <div class="panel">
+      <div class="panel-header">
+        <h3>Diabetes</h3>
+        <div id="risk-diabetes" class="risk-badge">--%</div>
+      </div>
+
+      <ol id="reasons-diabetes"></ol>
+
+      <canvas id="chart-diabetes-canvas"></canvas>
+      <canvas id="shap-diabetes-canvas"></canvas>
+    </div>
+
+
+    <!-- ================= HEART ================= -->
+    <div class="panel">
+      <div class="panel-header">
+        <h3>Heart Disease</h3>
+        <div id="risk-heart" class="risk-badge">--%</div>
+      </div>
+
+      <ol id="reasons-heart"></ol>
+
+      <canvas id="chart-heart-canvas"></canvas>
+      <canvas id="shap-heart-canvas"></canvas>
+    </div>
+
+
+    <!-- ================= STROKE ================= -->
+    <div class="panel">
+      <div class="panel-header">
+        <h3>Stroke</h3>
+        <div id="risk-stroke" class="risk-badge">--%</div>
+      </div>
+
+      <ol id="reasons-stroke"></ol>
+
+      <canvas id="chart-stroke-canvas"></canvas>
+      <canvas id="shap-stroke-canvas"></canvas>
+    </div>
+
+  </div>
+</section>
+<a class="nav-link" href="/history">History</a>
+
+
+</main>
+</div>
+
+<script>
+document.querySelectorAll('.nav-link').forEach(link => {
+  if (link.getAttribute('href') === window.location.pathname) {
+    link.classList.add('active');
+  }
+});
+</script>
+
+<script>
+  window.predictionData = {{ prediction | tojson | safe if prediction else 'null' }};
+</script>
+
+<script src="/style/js/user.js"></script>
+
 </body>
 </html>

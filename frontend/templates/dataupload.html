@@ -5,71 +5,90 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>AutoCare — Data Upload</title>
 
-  <!-- Inter font (used site-wide) -->
+  <!-- Inter font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- global app CSS (keeps header/nav exactly like other pages) -->
-  <link rel="stylesheet" href="css/user.css">
+  <!-- Global app CSS -->
+  <link rel="stylesheet" href="/style/css/user.css">
 
-  <!-- page CSS (page-specific overrides) -->
-  <link rel="stylesheet" href="css/dataupload.css">
+  <!-- Page-specific CSS -->
+  <link rel="stylesheet" href="/style/css/dataupload.css">
 </head>
+
 <body>
-  <!-- topbar (same markup used by other pages) -->
+
+  <!-- ================= TOPBAR ================= -->
   <header class="topbar">
     <div class="brand">
       <div class="mark" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" width="26" height="26" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2C10.8954 2 10 2.89543 10 4V5.2C8.34315 5.71159 7.2 7.23903 7.2 9C7.2 11.4853 9.51472 13.2 12 13.2C14.4853 13.2 16.8 11.4853 16.8 9C16.8 7.23903 15.6569 5.71159 14 5.2V4C14 2.89543 13.1046 2 12 2Z" fill="white" opacity="0.95"/>
+        <svg viewBox="0 0 24 24" fill="none" width="26" height="26">
+          <path d="M12 2C10.9 2 10 2.9 10 4V5.2C8.3 5.7 7.2 7.2 7.2 9
+                   C7.2 11.5 9.5 13.2 12 13.2
+                   C14.5 13.2 16.8 11.5 16.8 9
+                   C16.8 7.2 15.7 5.7 14 5.2V4
+                   C14 2.9 13.1 2 12 2Z"
+                fill="white" opacity="0.95"/>
         </svg>
       </div>
-      <div class="app-title"><strong>AutoCare</strong><div class="sub small">Clinical AI · Risk · Reports</div></div>
+      <div class="app-title">
+        <strong>AutoCare</strong>
+        <div class="sub small">Clinical AI · Risk · Reports</div>
+      </div>
     </div>
 
-    <nav class="topnav" role="navigation" aria-label="Top navigation">
-      <a class="nav-link" href="user.html">Dashboard</a>
-      <a class="nav-link active" href="dataupload.html">Data Upload</a>
-      <a class="nav-link" href="advice.html">Advice</a>
-      <a class="nav-link" href="chat.html">Chat</a>
-      <a class="nav-link" href="report.html">Reports</a>
+    <nav class="topnav" role="navigation">
+      <a class="nav-link" href="/dashboard">Dashboard</a>
+      <a class="nav-link active" href="/dataupload">Data Upload</a>
+      <a class="nav-link" href="/advice">Advice</a>
+      <a class="nav-link" href="/chat">Chat</a>
+      <a class="nav-link" href="/report">Reports</a>
     </nav>
 
     <div class="right-controls">
-      <div class="auth-container" style="position:relative">
-        <button id="authBox" class="box-dash" aria-haspopup="true" aria-expanded="false" title="Account">--</button>
-      </div>
+      <button class="box-dash" title="Account">--</button>
     </div>
   </header>
 
+  <!-- ================= MAIN ================= -->
   <main class="container">
     <div class="card upload-area">
       <h2>Data Upload</h2>
 
-      <!-- dropzone -->
-      <div id="largeDropzone" class="drop-large" tabindex="0" aria-label="Drop files here">
+      <!-- DROPZONE -->
+      <div id="largeDropzone" class="drop-large" tabindex="0">
         <div class="title">Drop patient data here</div>
         <div class="subtitle">Drag & drop PDF, CSV or Excel files</div>
 
         <div style="margin-top:12px">
-          <input id="fileInput" type="file" accept=".pdf,.csv,.xlsx,.xls" style="display:none" />
+          <input id="fileInput" type="file"
+                 accept=".pdf,.csv,.xlsx,.xls"
+                 style="display:none" />
           <button class="result-btn" id="browseBtn">Browse files</button>
         </div>
 
-        <div class="small" style="margin-top:8px">Max file size 20MB · CSV with headers recommended</div>
+        <div class="small" style="margin-top:8px">
+          Max file size 20MB · CSV with headers recommended
+        </div>
       </div>
 
-      <!-- Manual entry button (placed directly beneath the upload area as requested) -->
+      <!-- MANUAL ENTRY BUTTON -->
       <div style="text-align:center;margin-top:12px;">
-        <a id="manualEntryBtn"  href="manual.html" class="manual-btn">Fill patient values manually</a>
+        <a href="/manual" class="manual-btn">
+          Fill patient values manually
+        </a>
       </div>
 
-      <div id="upload-preview" class="preview" aria-live="polite"></div>
+      <!-- PREVIEW -->
+      <div id="upload-preview" class="preview"></div>
 
+      <!-- ANALYSIS RESULT -->
       <div id="analysis-preview" class="card analysis" style="display:none">
         <div class="analysis-head">
           <div>
             <div class="strong">Analysis result</div>
-            <div id="analysis-summary" class="small muted">Results will appear here after uploading a file.</div>
+            <div id="analysis-summary" class="small muted">
+              Results will appear here after uploading a file.
+            </div>
           </div>
           <div class="small">Verified · fast</div>
         </div>
@@ -77,14 +96,19 @@
         <div id="analysis-body" style="margin-top:10px"></div>
       </div>
 
+      <!-- ACTION BUTTONS -->
       <div style="margin-top:14px;text-align:center">
-        <button id="resultBtn" class="result-btn" disabled>Show Results</button>
-        <button id="backBtn" class="manual-btn">Back to Dashboard</button>
+        <button id="resultBtn" class="result-btn" disabled>
+          Show Results
+        </button>
+        <button class="manual-btn" onclick="location.href='/dashboard'">
+          Back to Dashboard
+        </button>
       </div>
     </div>
   </main>
 
-  <!-- main page JS -->
-  <script src="js/dataupload.js"></script>
+  <!-- JS -->
+  <script src="/style/js/dataupload.js"></script>
 </body>
 </html>

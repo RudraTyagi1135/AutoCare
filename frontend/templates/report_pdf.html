@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: Arial; padding: 30px; }
+    h1 { color: #0b5ecf; }
+    .section { margin-bottom: 25px; }
+    .risk-high { color: #e74c3c; font-weight: bold; }
+    .risk-mid { color: #f4b400; font-weight: bold; }
+    .risk-low { color: #2ecc71; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+<h1>AutoCare Clinical AI Report</h1>
+<p>Generated: {{ generated_at }}</p>
+
+{% for disease, data in prediction.predictions.items() %}
+<div class="section">
+  <h2>{{ disease|upper }}</h2>
+  <p><strong>Risk Probability:</strong> {{ data.risk_percent }}%</p>
+  <p><strong>Risk Category:</strong>
+     <span class="
+       {% if data.risk_percent >= 70 %}risk-high
+       {% elif data.risk_percent >= 40 %}risk-mid
+       {% else %}risk-low
+       {% endif %}
+     ">
+     {{ data.risk_label }}
+     </span>
+  </p>
+
+  <h4>Top Contributors</h4>
+  <ul>
+  {% for item in data.explainability.top_contributors %}
+      <li>{{ item.feature }} ({{ "%.3f"|format(item.impact) }})</li>
+  {% endfor %}
+  </ul>
+</div>
+{% endfor %}
+
+<hr>
+<p style="font-size:12px;color:#777;">
+This AI-generated report is for informational purposes only.
+Consult a licensed medical professional for diagnosis.
+</p>
+
+</body>
+</html>
