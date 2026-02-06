@@ -30,6 +30,7 @@ Requires-Dist: pydantic==1.10.12
 Requires-Dist: motor==3.7.1
 Requires-Dist: google-generativeai==0.8.5
 Requires-Dist: httpx==0.24.1
+Requires-Dist: PyMuPDF
 Dynamic: author
 Dynamic: author-email
 Dynamic: requires-dist

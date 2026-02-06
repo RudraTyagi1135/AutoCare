@@ -1,71 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>AutoCare - Login</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AutoCare — Login</title>
 
-
-<!-- Link external CSS -->
-<link rel="stylesheet" href="css/login.css" />
+  <!-- App CSS -->
+  <link rel="stylesheet" href="/style/css/login.css">
 </head>
 
-
 <body>
-<form id="loginForm" class="login-card" action="{{ url_for('login') }}" method="POST">
-<div class="brand">
-<div class="logo-mark">AC</div>
-<h1 class="title">AutoCare</h1>
-</div>
 
+  <form id="loginForm"
+        class="login-card"
+        action="{{ url_for('login') }}"
+        method="POST">
 
-<p class="subtitle">Sign in to access your dashboard</p>
+    <!-- BRAND -->
+    <div class="brand">
+      <div class="logo-mark">AC</div>
+      <h1 class="title">AutoCare</h1>
+    </div>
 
+    <p class="subtitle">Sign in to access your dashboard</p>
 
-<!-- Flash Messages -->
-{% with messages = get_flashed_messages(with_categories=true) %}
-{% if messages %}
-{% for category, msg in messages %}
-<p class="flash {{ category }}">{{ msg }}</p>
-{% endfor %}
-{% endif %}
-{% endwith %}
+    <!-- FLASH MESSAGES -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+          <p class="flash {{ category }}">{{ msg }}</p>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
 
+    <!-- ROLE TOGGLE -->
+    <div class="role-toggle">
+      <div class="toggle-option active" id="userToggle" data-role="user">
+        User
+      </div>
+      <div class="toggle-option" id="doctorToggle" data-role="doctor">
+        Doctor
+      </div>
+    </div>
 
-<!-- Role Toggle -->
-<div class="role-toggle">
-<div class="toggle-option active" id="userToggle" data-role="user">User</div>
-<div class="toggle-option" id="doctorToggle" data-role="doctor">Doctor</div>
-</div>
-<input type="hidden" name="role" id="roleInput" value="user">
+    <input type="hidden" name="role" id="roleInput" value="user">
 
+    <!-- EMAIL -->
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        placeholder="you@example.com"
+        required
+      />
+    </div>
 
-<div class="form-group">
-<label for="email">Email</label>
-<input type="text" id="email" name="email" placeholder="you@example.com" required />
-</div>
+    <!-- PASSWORD -->
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        placeholder="Enter your password"
+        required
+      />
+    </div>
 
+    <!-- SUBMIT -->
+    <button type="submit" class="btn">Login</button>
 
-<div class="form-group">
-<label for="password">Password</label>
-<input type="password" id="password" name="password" placeholder="Enter your password" required />
-</div>
+    <!-- REGISTER LINK -->
+    <p class="link">
+      Don’t have an account?
+      <a href="{{ url_for('register') }}">Create one</a>
+    </p>
 
+    <p class="footer-text">
+      © 2025 AutoCare. All rights reserved.
+    </p>
+  </form>
 
-<button type="submit" class="btn">Login</button>
+  <!-- JS -->
+  <script src="/style/js/login.js" defer></script>
 
-
-<p class="link">
-Don’t have an account?
-<a href="{{ url_for('register') }}">Create one</a>
-</p>
-
-
-<p class="footer-text">© 2025 AutoCare. All rights reserved.</p>
-</form>
-
-
-<!-- External JS -->
-<script src="js/login.js" defer></script>
 </body>
 </html>

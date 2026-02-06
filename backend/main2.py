@@ -1,9 +1,6 @@
-# ============================================================
-#   AutoCare - Unified Backend (FINAL VERSION)
-# ============================================================
 from flask import (
     Flask, render_template, request, redirect,
-    url_for, session, flash, g, jsonify
+    url_for, session, flash, g
 )
 from functools import wraps
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -15,46 +12,33 @@ from pathlib import Path
 from flask_cors import CORS
 from dotenv import load_dotenv
 
-# Chatbot routes
 from routes.chatbot_general import general_chat_bp
 from routes.chatbot_medical import medical_bp
 
 
-# ============================================================
-#   Load .env
-# ============================================================
 load_dotenv()
 
+BASE_DIR = Path(__file__).resolve().parent.parent
 
-# ============================================================
-#   FRONTEND DIRECTORY
-# ============================================================
-BASE_DIR = Path(__file__).resolve().parent.parent     # AutoCare/
-FRONTEND_DIR = BASE_DIR / "frontend"
+TEMPLATES_DIR = BASE_DIR / "frontend" / "templates"
+STATIC_DIR = BASE_DIR / "frontend" / "style"
 
-
-# ============================================================
-#   INIT APP
-# ============================================================
 app = Flask(
     __name__,
-    template_folder=str(FRONTEND_DIR),
-    static_folder=str(FRONTEND_DIR),
-    static_url_path=""
+    template_folder=str(TEMPLATES_DIR),
+    static_folder=str(STATIC_DIR),
+    static_url_path="/style"
 )
+
 CORS(app)
 
 app.secret_key = os.getenv("FLASK_SECRET_KEY")
 if not app.secret_key:
-    raise Exception("❌ Missing FLASK_SECRET_KEY in .env")
+    raise Exception("Missing FLASK_SECRET_KEY in .env")
 
-
-# ============================================================
-#   MONGODB SETUP
-# ============================================================
 MONGO_URI = os.getenv("MONGO_DB_URL")
 if not MONGO_URI:
-    raise Exception("❌ Missing MONGO_DB_URL in .env")
+    raise Exception("Missing MONGO_DB_URL in .env")
 
 client = MongoClient(MONGO_URI)
 db = client["History"]
@@ -64,17 +48,10 @@ register_log_col = db["register_logs"]
 login_log_col = db["login_logs"]
 manual_col = db["manual_history"]
 
-
-# ============================================================
-#   CHATBOT ROUTES
-# ============================================================
 app.register_blueprint(general_chat_bp, url_prefix="/api")
-app.register_blueprint(medical_bp)   # already has /api/medical prefix
+app.register_blueprint(medical_bp)
 
 
-# ============================================================
-#   LOGIN PROTECTOR
-# ============================================================
 def login_required(role=None):
     def decorator(fn):
         @wraps(fn)
@@ -92,9 +69,6 @@ def login_required(role=None):
     return decorator
 
 
-# ============================================================
-#   HOME
-# ============================================================
 @app.route("/")
 def home():
     if "user" in session:
@@ -102,9 +76,6 @@ def home():
     return redirect(url_for("login"))
 
 
-# ============================================================
-#   REGISTER
-# ============================================================
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if "user" in session:
@@ -124,7 +95,6 @@ def register():
             flash("User already exists", "error")
             return render_template("register.html")
 
-        # Save user
         users_col.insert_one({
             "email": email,
             "password": generate_password_hash(password),
@@ -144,9 +114,6 @@ def register():
     return render_template("register.html")
 
 
-# ============================================================
-#   LOGIN
-# ============================================================
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if "user" in session:
@@ -170,7 +137,6 @@ def login():
             flash("Invalid role selected", "error")
             return render_template("login.html")
 
-        # Save session
         session["user"] = email
         session["role"] = role
 
@@ -186,31 +152,24 @@ def login():
     return render_template("login.html")
 
 
-# ============================================================
-#   DASHBOARD
-# ============================================================
 @app.route("/dashboard")
 @login_required()
 def dashboard():
     role = session.get("role", "user")
     file = f"{role}.html"
 
-    if not (FRONTEND_DIR / file).exists():
+    if not (TEMPLATES_DIR / file).exists():
         file = "user.html"
 
     return render_template(file)
 
 
-# ============================================================
-#   MANUAL ENTRY (Professional ML-ready Version B)
-# ============================================================
 @app.route("/manual-entry", methods=["GET", "POST"])
 @login_required()
 def manual_entry():
     if request.method == "POST":
         raw = request.form.to_dict()
 
-        # Helpers
         def to_int(v):
             try: return int(v)
             except: return None
@@ -222,86 +181,36 @@ def manual_entry():
         def to_bool(v):
             return True if v and str(v).lower() in ("1", "true", "yes", "on") else False
 
-        # Extract
-        gender = raw.get("gender")
         age = to_int(raw.get("age"))
         height = to_float(raw.get("height"))
         weight = to_float(raw.get("weight"))
-        systolic = to_int(raw.get("systolic"))
-        diastolic = to_int(raw.get("diastolic"))
-        sleep = to_float(raw.get("sleep"))
-        stress = to_float(raw.get("stress"))
 
-        chest_pain = to_bool(raw.get("chest_pain"))
-        heart_attack = to_bool(raw.get("heart_attack"))
-        cholesterol = to_bool(raw.get("cholesterol"))
-        walking_difficulty = to_bool(raw.get("walking_difficulty"))
-        physical_activity = to_bool(raw.get("physical_activity"))
-        alcohol = to_bool(raw.get("alcohol"))
-        smoking = to_bool(raw.get("smoking"))
-
-        # Validation
-        missing = []
-        if age is None: missing.append("Age")
-        if height is None: missing.append("Height")
-        if weight is None: missing.append("Weight")
-
-        if missing:
-            flash(f"Missing/invalid values: {', '.join(missing)}", "error")
+        if age is None or height is None or weight is None:
+            flash("Invalid numeric input", "error")
             return redirect(url_for("manual_entry"))
 
-        # Derived
-        try:
-            bmi = round(weight / ((height / 100) ** 2), 2)
-        except:
-            bmi = None
+        bmi = round(weight / ((height / 100) ** 2), 2)
 
-        cleaned = {
-            "gender": gender,
-            "age": age,
-            "height_cm": height,
-            "weight_kg": weight,
-            "bmi": bmi,
-            "systolic": systolic,
-            "diastolic": diastolic,
-            "sleep_hours": sleep,
-            "stress_level": stress,
-            "chest_pain": chest_pain,
-            "heart_attack": heart_attack,
-            "cholesterol": cholesterol,
-            "walking_difficulty": walking_difficulty,
-            "physical_activity": physical_activity,
-            "alcohol": alcohol,
-            "smoking": smoking
-        }
-
-        # Placeholder ML predictions
         result = {
             "heart": f"{random.randint(30, 79)}%",
             "stroke": f"{random.randint(10, 49)}%",
             "diabetes": f"{random.randint(5, 34)}%"
         }
 
-        final_record = {
+        manual_col.insert_one({
             "email": session["user"],
             "role": session["role"],
             "timestamp": datetime.utcnow(),
-            "input_values": cleaned,
+            "bmi": bmi,
             "scores": result
-        }
+        })
 
-        inserted = manual_col.insert_one(final_record)
-        session["last_manual"] = str(inserted.inserted_id)
-
-        flash("Form submitted & processed successfully!", "success")
+        flash("Form submitted successfully!", "success")
         return redirect(url_for("dashboard"))
 
     return render_template("manual.html")
 
 
-# ============================================================
-#   LOGOUT
-# ============================================================
 @app.route("/logout")
 @login_required()
 def logout():
@@ -310,8 +219,5 @@ def logout():
     return redirect(url_for("login"))
 
 
-# ============================================================
-#   RUN SERVER
-# ============================================================
 if __name__ == "__main__":
     app.run(debug=True, host="127.0.0.1", port=5000)

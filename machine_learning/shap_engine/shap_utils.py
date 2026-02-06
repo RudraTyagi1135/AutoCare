@@ -35,7 +35,9 @@ def load_background(disease: str) -> pd.DataFrame:
     if disease in BACKGROUND_CACHE:
         return BACKGROUND_CACHE[disease]
 
-    file_path = ROOT / "shap_values" / disease / "background.csv"
+    # file_path = ROOT / "shap_values" / disease / "background.csv"
+    file_path = ROOT / "shap_background_data" / disease / "background.csv"
+
 
     if not file_path.exists():
         raise FileNotFoundError(
@@ -91,37 +93,51 @@ def _normalize_shap_arrays(explanation):
 
     return values.astype(float), base_scalar
 
-
 def get_shap_details(disease: str, pipeline_model, input_df: pd.DataFrame):
     """
-    Generates SHAP contribution metrics for a prediction request.
-    Uses real background distribution + model's own preprocessor.
+    Generates SHAP contribution metrics.
+    Works for:
+    - sklearn Pipeline models
+    - Plain tree/linear estimators
     """
 
     try:
-        # Step 1: Extract components from sklearn Pipeline
-        transformer = pipeline_model.named_steps["preprocessor"]
-        model = pipeline_model.named_steps["model"]
+        # -----------------------------
+        # CASE 1: Model is sklearn Pipeline
+        # -----------------------------
+        if hasattr(pipeline_model, "named_steps"):
 
-        # Step 2: Load stored background dataset (already coerced to numeric)
-        bg_raw = load_background(disease)
+            transformer = pipeline_model.named_steps.get("preprocessor")
+            model = pipeline_model.named_steps.get("model")
 
-        # Step 3: Transform raw background to model format
-        X_background = transformer.transform(bg_raw)
+            bg_raw = load_background(disease)
 
-        # Step 4: Transform incoming user input
-        X_input = transformer.transform(input_df)
+            if transformer is not None:
+                X_background = transformer.transform(bg_raw)
+                X_input = transformer.transform(input_df)
+            else:
+                X_background = bg_raw.values
+                X_input = input_df.values
 
-        # Step 5: Load or create explainer per disease
+        # -----------------------------
+        # CASE 2: Plain trained model
+        # -----------------------------
+        else:
+            model = pipeline_model
+            bg_raw = load_background(disease)
+            X_background = bg_raw.values
+            X_input = input_df.values
+
+        # -----------------------------
+        # Build SHAP explainer
+        # -----------------------------
         explainer = EXPLAINER_CACHE.get(disease)
         if explainer is None:
             explainer = select_explainer(model, X_background)
             EXPLAINER_CACHE[disease] = explainer
 
-        # Step 6: Compute SHAP values for only this prediction
         explanation = explainer(X_input)
 
-        # Step 7: Normalize SHAP outputs (handles all shapes)
         values, base_value = _normalize_shap_arrays(explanation)
 
         feature_names = list(input_df.columns)

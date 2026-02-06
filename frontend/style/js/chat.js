@@ -1,48 +1,60 @@
 // js/chat.js
 // Chat page → connects to GENERAL chatbot: /api/chat/general
 
-(function(){
-  function by(id){ return document.getElementById(id); }
+(function () {
+  function by(id) { return document.getElementById(id); }
 
-  function timeNow(){
+  function timeNow() {
     const d = new Date();
-    return d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   }
 
-  function escapeHtml(unsafe){
+  function escapeHtml(unsafe) {
     return String(unsafe || '')
-      .replaceAll('&','&amp;')
-      .replaceAll('<','&lt;')
-      .replaceAll('>','&gt;')
-      .replaceAll('"','&quot;')
-      .replaceAll("'",'&#039;');
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
   }
 
-  // REAL backend call
-  async function callGeneralChat(question){
+  // =========================
+  // BACKEND CALL (SAFE)
+  // =========================
+  async function callGeneralChat(question) {
     try {
       const res = await fetch("/api/chat/general", {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: question })
       });
 
-      return await res.json();
-    } catch (e){
-      return { reply: "⚠️ Backend error. Check server." };
+      if (!res.ok) {
+        throw new Error("Server error: " + res.status);
+      }
+
+      const data = await res.json();
+      return data.reply || "⚠️ No reply field from server.";
+
+    } catch (err) {
+      console.error("Chat API error:", err);
+      return "⚠️ Chat service unavailable. Please try again.";
     }
   }
 
-  function addMessage(messagesEl, text, role='assistant'){
+  // =========================
+  // UI HELPERS
+  // =========================
+  function addMessage(messagesEl, text, role = 'assistant') {
     const el = document.createElement('div');
-    el.className = 'msg ' + (role==='user' ? 'user' : 'assistant');
+    el.className = 'msg ' + (role === 'user' ? 'user' : 'assistant');
 
     const meta = document.createElement('div');
     meta.className = 'meta';
     meta.textContent = role === 'user' ? 'You' : 'Assistant';
 
     const body = document.createElement('div');
-    body.innerHTML = escapeHtml(text).replace(/\n/g,'<br>');
+    body.innerHTML = escapeHtml(text).replace(/\n/g, '<br>');
 
     const tm = document.createElement('div');
     tm.className = 'time';
@@ -53,63 +65,70 @@
     el.appendChild(tm);
 
     messagesEl.appendChild(el);
-    el.scrollIntoView({ behavior:'smooth', block:'end' });
+    el.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }
 
-  async function initPolishedChat(){
+  // =========================
+  // MAIN INIT
+  // =========================
+  async function initPolishedChat() {
     const userInput = by('polUserInput');
     const sendBtn = by('polSendBtn');
     const messages = by('polMessages');
     const chatList = by('polChatList');
     const newChatBtn = by('polNewChat');
 
-    if(!messages || !userInput) return;
+    if (!messages || !userInput || !sendBtn) return;
     userInput.focus();
 
-    async function sendMessage(){
+    async function sendMessage() {
       const text = (userInput.value || '').trim();
-      if(!text) return;
+      if (!text) return;
 
       addMessage(messages, text, 'user');
       userInput.value = '';
 
-      // Loading bubble
+      // Typing placeholder
       const placeholder = document.createElement('div');
       placeholder.className = 'msg assistant';
       placeholder.innerHTML =
-        '<div class="meta">Assistant</div>' +
-        '<div>Thinking <span class="typing"><span></span><span></span><span></span></span></div>' +
-        '<div class="time">--</div>';
+        `<div class="meta">Assistant</div>
+         <div>Thinking <span class="typing"><span></span><span></span><span></span></span></div>
+         <div class="time">--</div>`;
       messages.appendChild(placeholder);
-      placeholder.scrollIntoView({ behavior:'smooth', block:'end' });
+      placeholder.scrollIntoView({ behavior: 'smooth', block: 'end' });
 
-      // REAL API CALL
-      const response = await callGeneralChat(text);
+      // API CALL
+      const answer = await callGeneralChat(text);
 
       placeholder.remove();
-      const answer = response.reply || "No reply from server.";
       addMessage(messages, answer, 'assistant');
 
-      // add to left sidebar history
-      if(chatList){
+      // Sidebar history
+      if (chatList) {
         const item = document.createElement('div');
         item.className = 'chat-item';
-        item.setAttribute('data-q', text);
+        item.dataset.q = text;
         item.innerHTML =
-          '<div class="icon"></div>' +
-          '<div class="title">' + escapeHtml(text) + '</div>';
+          `<div class="icon"></div>
+           <div class="title">${escapeHtml(text)}</div>`;
         chatList.prepend(item);
       }
     }
 
-    sendBtn.addEventListener('click', (e)=>{ e.preventDefault(); sendMessage(); });
-    userInput.addEventListener('keydown', (e)=>{ 
-      if(e.key === 'Enter' && !e.shiftKey){ 
-        e.preventDefault(); sendMessage(); 
+    sendBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      sendMessage();
+    });
+
+    userInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
       }
     });
 
-    newChatBtn && newChatBtn.addEventListener('click', ()=>{
+    newChatBtn && newChatBtn.addEventListener('click', () => {
       messages.innerHTML = '';
       userInput.value = '';
       userInput.focus();
@@ -117,5 +136,4 @@
   }
 
   document.addEventListener('DOMContentLoaded', initPolishedChat);
-
 })();

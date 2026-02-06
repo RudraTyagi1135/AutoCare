@@ -1,10 +1,19 @@
 // js/advice.js
 // Advice page → connects to MEDICAL chatbot: /api/medical/chat
 
-(function(){
-  function by(id){ return document.getElementById(id); }
+(function () {
+  function by(id) { return document.getElementById(id); }
 
-  function addAdvMessage(messagesEl, text, role='assistant'){
+  function escapeHtml(unsafe) {
+    return String(unsafe || '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+  }
+
+  function addAdvMessage(messagesEl, text, role = 'assistant') {
     const el = document.createElement('div');
     el.className = 'adv-msg ' + (role === 'user' ? 'user' : 'assistant');
 
@@ -13,88 +22,103 @@
     meta.textContent = role === 'user' ? 'You' : 'Assistant';
 
     const body = document.createElement('div');
-    body.innerHTML = String(text).replace(/\n/g,'<br>');
+    body.innerHTML = escapeHtml(text).replace(/\n/g, '<br>');
 
-    
     el.appendChild(meta);
     el.appendChild(body);
 
     messagesEl.appendChild(el);
-    el.scrollIntoView({ behavior:'smooth', block:'end' });
+    el.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }
 
-  // REAL API → medical chatbot
-  async function callMedicalChat(message){
+  // =========================
+  // BACKEND CALL (SAFE)
+  // =========================
+  async function callMedicalChat(message) {
     try {
       const res = await fetch("/api/medical/chat", {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message })
       });
 
-      return await res.json();
-    } catch (e){
-      return { success: false, reply: "⚠️ Backend error." };
+      if (!res.ok) {
+        throw new Error("Server error: " + res.status);
+      }
+
+      const data = await res.json();
+
+      if (!data.success) {
+        throw new Error(data.error || "Medical chat failed");
+      }
+
+      return data.reply;
+
+    } catch (err) {
+      console.error("Medical chat error:", err);
+      return "⚠️ Medical assistant is temporarily unavailable. Please try again.";
     }
   }
 
-  async function initPolishedAdvice(){
+  // =========================
+  // INIT
+  // =========================
+  async function initPolishedAdvice() {
     const advMessages = by('advMessages');
     const advInput = by('advInput');
     const advSendBtn = by('advSendBtn');
     const history = by('advHistory');
 
-    if(!advMessages || !advInput) return;
-
+    if (!advMessages || !advInput || !advSendBtn) return;
     advInput.focus();
 
-    advSendBtn.addEventListener('click', async ()=>{
+    async function sendAdvice() {
       const question = advInput.value.trim();
-      if(!question) return;
+      if (!question) return;
 
       addAdvMessage(advMessages, question, 'user');
       advInput.value = '';
 
-      // Loading bubble
+      // Thinking bubble
       const thinking = document.createElement('div');
       thinking.className = 'adv-msg assistant';
-      thinking.innerHTML = '<div class="meta">Assistant</div><div>Thinking...</div>';
+      thinking.innerHTML = `<div class="meta">Assistant</div><div>Thinking…</div>`;
       advMessages.appendChild(thinking);
-      thinking.scrollIntoView({behavior:'smooth'});
+      thinking.scrollIntoView({ behavior: 'smooth' });
 
-      // CALL MEDICAL CHAT API
-      const response = await callMedicalChat(question);
+      const answer = await callMedicalChat(question);
 
       thinking.remove();
+      addAdvMessage(advMessages, answer, 'assistant');
 
-      if(response.success){
-        addAdvMessage(advMessages, response.reply, 'assistant');
-      } else {
-        addAdvMessage(advMessages, "⚠️ Error: " + response.error, 'assistant');
-      }
-
-      // save history item
-      if(history){
+      // Save to history
+      if (history) {
         const item = document.createElement('div');
         item.className = 'adv-item';
-        item.setAttribute('data-q', question);
-        item.innerHTML = `<div class="icon">•</div><div class="title">${question}</div>`;
+        item.dataset.q = question;
+        item.innerHTML = `
+          <div class="icon">•</div>
+          <div class="title">${escapeHtml(question)}</div>
+        `;
         history.prepend(item);
       }
-    });
+    }
 
-    advInput.addEventListener('keydown', (e)=>{
-      if(e.key === 'Enter' && !e.shiftKey){
+    advSendBtn.addEventListener('click', sendAdvice);
+
+    advInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
-        advSendBtn.click();
+        sendAdvice();
       }
     });
 
-    // history click
-    history && history.addEventListener('click', (e)=>{
+    // Click history → reuse question
+    history && history.addEventListener('click', (e) => {
       const item = e.target.closest('.adv-item');
-      if(item){
-        advInput.value = item.getAttribute('data-q');
+      if (item) {
+        advInput.value = item.dataset.q || '';
+        advInput.focus();
       }
     });
   }

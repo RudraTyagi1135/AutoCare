@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>AutoCare — Prediction History</title>
+    <link rel="stylesheet" href="/style/css/history.css">
+</head>
+<body>
+
+<div class="history-container">
+
+    <div class="history-header">
+        <h1>Prediction History</h1>
+        <p class="subtext">
+            Clinical records of your previous AI risk assessments.
+        </p>
+    </div>
+
+    {% if records|length == 0 %}
+        <div class="empty-state">
+            No history records found.
+        </div>
+    {% else %}
+        {% for record in records %}
+            <div class="history-card">
+
+                <div class="card-header">
+                    <span class="date">
+                        {{ record.created_at.strftime("%d %B %Y") }}
+                    </span>
+                    <span class="time">
+                        {{ record.created_at.strftime("%I:%M %p") }}
+                    </span>
+                </div>
+
+                <div class="card-body">
+                    {% for disease, data in record["prediction"]["predictions"].items() %}
+                        <div class="disease-row">
+
+                            <div class="disease-name">
+                                {{ disease.upper() }}
+                            </div>
+
+                            <div class="risk-info">
+                                <span class="risk-percent">
+                                    {{ data["risk_percent"] }}%
+                                </span>
+
+                                <span class="risk-label
+                                    {% if data['risk_label'] == 'High' %}
+                                        high
+                                    {% elif data['risk_label'] == 'Moderate' %}
+                                        moderate
+                                    {% else %}
+                                        low
+                                    {% endif %}
+                                ">
+                                    {{ data["risk_label"] }}
+                                </span>
+                            </div>
+
+                        </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+        {% endfor %}
+    {% endif %}
+
+</div>
+
+</body>
+</html>
