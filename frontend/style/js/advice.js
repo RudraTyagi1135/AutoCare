@@ -1,9 +1,16 @@
-// js/advice.js
-// Advice page → connects to MEDICAL chatbot: /api/medical/chat
+// ======================================================
+// AutoCare — Advice Page (FINAL CLEAN VERSION)
+// ======================================================
 
 (function () {
+
   function by(id) { return document.getElementById(id); }
 
+  let isLoading = false;
+
+  /* =========================
+     SAFE HTML
+  ========================= */
   function escapeHtml(unsafe) {
     return String(unsafe || '')
       .replaceAll('&', '&amp;')
@@ -13,95 +20,96 @@
       .replaceAll("'", '&#039;');
   }
 
+  /* =========================
+     MESSAGE UI (CLEAN)
+  ========================= */
   function addAdvMessage(messagesEl, text, role = 'assistant') {
     const el = document.createElement('div');
     el.className = 'adv-msg ' + (role === 'user' ? 'user' : 'assistant');
 
-    const meta = document.createElement('div');
-    meta.className = 'meta';
-    meta.textContent = role === 'user' ? 'You' : 'Assistant';
-
     const body = document.createElement('div');
     body.innerHTML = escapeHtml(text).replace(/\n/g, '<br>');
 
-    el.appendChild(meta);
     el.appendChild(body);
 
     messagesEl.appendChild(el);
     el.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }
 
-  // =========================
-  // BACKEND CALL (SAFE)
-  // =========================
+  /* =========================
+     THINKING UI
+  ========================= */
+  function createThinkingBubble(messagesEl, text = "Analyzing…") {
+    const el = document.createElement('div');
+    el.className = 'adv-msg assistant';
+    el.innerHTML = `<div>${text}</div>`;
+
+    messagesEl.appendChild(el);
+    el.scrollIntoView({ behavior: 'smooth' });
+    return el;
+  }
+
+  /* =========================
+     API CALL
+  ========================= */
   async function callMedicalChat(message) {
     try {
       const res = await fetch("/api/medical/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message })
+        body: JSON.stringify({
+          message,
+          prediction: window.predictionData || null
+        })
       });
 
-      if (!res.ok) {
-        throw new Error("Server error: " + res.status);
-      }
+      if (!res.ok) throw new Error("Server error");
 
       const data = await res.json();
 
-      if (!data.success) {
-        throw new Error(data.error || "Medical chat failed");
-      }
+      if (!data.success) throw new Error(data.error);
 
       return data.reply;
 
     } catch (err) {
-      console.error("Medical chat error:", err);
-      return "⚠️ Medical assistant is temporarily unavailable. Please try again.";
+      console.error(err);
+      return "⚠️ Something went wrong. Try again.";
     }
   }
 
-  // =========================
-  // INIT
-  // =========================
-  async function initPolishedAdvice() {
+  /* =========================
+     INIT
+  ========================= */
+  function initAdvice() {
+
     const advMessages = by('advMessages');
     const advInput = by('advInput');
     const advSendBtn = by('advSendBtn');
-    const history = by('advHistory');
 
     if (!advMessages || !advInput || !advSendBtn) return;
+
     advInput.focus();
 
     async function sendAdvice() {
+
+      if (isLoading) return;
+
       const question = advInput.value.trim();
       if (!question) return;
+
+      isLoading = true;
 
       addAdvMessage(advMessages, question, 'user');
       advInput.value = '';
 
-      // Thinking bubble
-      const thinking = document.createElement('div');
-      thinking.className = 'adv-msg assistant';
-      thinking.innerHTML = `<div class="meta">Assistant</div><div>Thinking…</div>`;
-      advMessages.appendChild(thinking);
-      thinking.scrollIntoView({ behavior: 'smooth' });
+      const thinking = createThinkingBubble(advMessages);
 
       const answer = await callMedicalChat(question);
 
       thinking.remove();
       addAdvMessage(advMessages, answer, 'assistant');
 
-      // Save to history
-      if (history) {
-        const item = document.createElement('div');
-        item.className = 'adv-item';
-        item.dataset.q = question;
-        item.innerHTML = `
-          <div class="icon">•</div>
-          <div class="title">${escapeHtml(question)}</div>
-        `;
-        history.prepend(item);
-      }
+      isLoading = false;
     }
 
     advSendBtn.addEventListener('click', sendAdvice);
@@ -112,16 +120,8 @@
         sendAdvice();
       }
     });
-
-    // Click history → reuse question
-    history && history.addEventListener('click', (e) => {
-      const item = e.target.closest('.adv-item');
-      if (item) {
-        advInput.value = item.dataset.q || '';
-        advInput.focus();
-      }
-    });
   }
 
-  document.addEventListener('DOMContentLoaded', initPolishedAdvice);
+  document.addEventListener('DOMContentLoaded', initAdvice);
+
 })();

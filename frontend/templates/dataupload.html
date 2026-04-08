@@ -8,107 +8,70 @@
   <!-- Inter font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Global app CSS -->
+  <!-- Global CSS -->
   <link rel="stylesheet" href="/style/css/user.css">
-
-  <!-- Page-specific CSS -->
   <link rel="stylesheet" href="/style/css/dataupload.css">
 </head>
 
 <body>
 
-  <!-- ================= TOPBAR ================= -->
-  <header class="topbar">
-    <div class="brand">
-      <div class="mark" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" width="26" height="26">
-          <path d="M12 2C10.9 2 10 2.9 10 4V5.2C8.3 5.7 7.2 7.2 7.2 9
-                   C7.2 11.5 9.5 13.2 12 13.2
-                   C14.5 13.2 16.8 11.5 16.8 9
-                   C16.8 7.2 15.7 5.7 14 5.2V4
-                   C14 2.9 13.1 2 12 2Z"
-                fill="white" opacity="0.95"/>
-        </svg>
-      </div>
-      <div class="app-title">
-        <strong>AutoCare</strong>
-        <div class="sub small">Clinical AI · Risk · Reports</div>
-      </div>
-    </div>
+  <!-- ================= TOPBAR (EXACT SAME) ================= -->
+  <header class="topbar" role="banner">
+    <div class="topbar-inner">
 
-    <nav class="topnav" role="navigation">
-      <a class="nav-link" href="/dashboard">Dashboard</a>
-      <a class="nav-link active" href="/dataupload">Data Upload</a>
-      <a class="nav-link" href="/advice">Advice</a>
-      <a class="nav-link" href="/chat">Chat</a>
-      <a class="nav-link" href="/report">Reports</a>
-    </nav>
+      <div class="brand">
+        <img src="/static/images/gpt_autocare.png" class="logo-img" />
+        <div class="app-title">
+          <span class="app-name">AutoCare</span>
+          <span class="app-sub">Clinical AI · Risk · Reports</span>
+        </div>
+      </div>
 
-    <div class="right-controls">
-      <button class="box-dash" title="Account">--</button>
+      <nav class="topnav">
+        <a class="nav-link" href="/dashboard">Dashboard</a>
+        <a class="nav-link active" href="/dataupload">Data Upload</a>
+        <a class="nav-link" href="/advice">Advice</a>
+        <a class="nav-link" href="/chat">Chat</a>
+        <a class="nav-link" href="/report">Reports</a>
+      </nav>
+
+      <div class="right-controls">
+        <div class="user-info">
+          <div class="avatar">PT</div>
+          <div class="user-name">Paras</div>
+        </div>
+      </div>
+
     </div>
   </header>
 
   <!-- ================= MAIN ================= -->
-  <main class="container">
-    <div class="card upload-area">
-      <h2>Data Upload</h2>
+  <div class="container">
+    <main class="workspace">
 
-      <!-- DROPZONE -->
-      <div id="largeDropzone" class="drop-large" tabindex="0">
-        <div class="title">Drop patient data here</div>
-        <div class="subtitle">Drag & drop PDF, CSV or Excel files</div>
+      <section class="upload-simple">
 
-        <div style="margin-top:12px">
-          <input id="fileInput" type="file"
-                 accept=".pdf,.csv,.xlsx,.xls"
-                 style="display:none" />
-          <button class="result-btn" id="browseBtn">Browse files</button>
+        <h1 class="upload-title">Upload Data</h1>
+        <p class="upload-sub">
+          Choose how you want to provide patient information
+        </p>
+
+        <div class="upload-actions">
+
+          <a href="/manual" class="upload-btn primary">
+            Fill Patient Data Manually
+          </a>
+
+          <a href="/dashboard" class="upload-btn secondary">
+            Back to Dashboard
+          </a>
+
         </div>
 
-        <div class="small" style="margin-top:8px">
-          Max file size 20MB · CSV with headers recommended
-        </div>
-      </div>
+      </section>
 
-      <!-- MANUAL ENTRY BUTTON -->
-      <div style="text-align:center;margin-top:12px;">
-        <a href="/manual" class="manual-btn">
-          Fill patient values manually
-        </a>
-      </div>
+    </main>
+  </div>
 
-      <!-- PREVIEW -->
-      <div id="upload-preview" class="preview"></div>
-
-      <!-- ANALYSIS RESULT -->
-      <div id="analysis-preview" class="card analysis" style="display:none">
-        <div class="analysis-head">
-          <div>
-            <div class="strong">Analysis result</div>
-            <div id="analysis-summary" class="small muted">
-              Results will appear here after uploading a file.
-            </div>
-          </div>
-          <div class="small">Verified · fast</div>
-        </div>
-
-        <div id="analysis-body" style="margin-top:10px"></div>
-      </div>
-
-      <!-- ACTION BUTTONS -->
-      <div style="margin-top:14px;text-align:center">
-        <button id="resultBtn" class="result-btn" disabled>
-          Show Results
-        </button>
-        <button class="manual-btn" onclick="location.href='/dashboard'">
-          Back to Dashboard
-        </button>
-      </div>
-    </div>
-  </main>
-
-  <!-- JS -->
-  <script src="/style/js/dataupload.js"></script>
 </body>
 </html>

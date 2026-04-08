@@ -2,134 +2,192 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="AutoCare — Clinical AI dashboard for risk, explanations and reports." />
+  <meta name="theme-color" content="#ffffff" />
+
   <title>AutoCare — Clinical AI Dashboard</title>
 
-  <!-- Chart.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
 
   <!-- Inter font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- App CSS -->
-  <link rel="stylesheet" href="/style/css/user.css">
+  <!-- CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">
 </head>
 
 <body>
 
-<header class="topbar">
-  <div class="brand">
-    <div class="mark">
-      <svg viewBox="0 0 24 24" fill="none" width="26" height="26">
-        <path d="M12 2C10.8954 2 10 2.89543 10 4V5.2C8.34315 5.71159 7.2 7.23903 7.2 9C7.2 11.4853 9.51472 13.2 12 13.2C14.4853 13.2 16.8 11.4853 16.8 9C16.8 7.23903 15.6569 5.71159 14 5.2V4C14 2.89543 13.1046 2 12 2Z" fill="white"/>
-      </svg>
+  <!-- ================= TOPBAR ================= -->
+  <header class="topbar" role="banner">
+    <div class="topbar-inner">
+
+      <!-- Brand -->
+      <div class="brand" role="img" aria-label="AutoCare — Clinical AI">
+        <img src="{{ url_for('static', filename='images/gpt_autocare.png') }}"
+             alt="AutoCare logo"
+             class="logo-img" />
+        <div class="app-title">
+          <span class="app-name">AutoCare</span>
+          <span class="app-sub">Clinical AI · Risk · Reports</span>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="topnav" role="navigation">
+        <a class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}"
+           href="{{ url_for('dashboard') }}">
+          Dashboard
+        </a>
+
+        <a class="nav-link {% if request.endpoint == 'dataupload' %}active{% endif %}"
+           href="{{ url_for('dataupload') }}">
+          Data Upload
+        </a>
+
+        <a class="nav-link {% if request.endpoint == 'advice' %}active{% endif %}"
+           href="{{ url_for('advice') }}">
+          Advice
+        </a>
+
+        <a class="nav-link {% if request.endpoint == 'chat' %}active{% endif %}"
+           href="{{ url_for('chat') }}">
+          Chat
+        </a>
+
+        <a class="nav-link {% if request.endpoint == 'report' %}active{% endif %}"
+           href="{{ url_for('report') }}">
+          Reports
+        </a>
+      </nav>
+
+      <!-- User -->
+      <div class="right-controls">
+        <div class="user-info">
+          <div class="avatar">
+            {{ user_name[0]|upper if user_name else "U" }}
+          </div>
+          <div class="user-name">
+            {{ user_name if user_name else "User" }}
+          </div>
+        </div>
+      </div>
+
     </div>
-    <div class="app-title">
-      <strong>AutoCare</strong>
-      <div class="sub small">Clinical AI · Risk · Reports</div>
-    </div>
+  </header>
+
+  <!-- ================= MAIN ================= -->
+  <div class="container">
+    <main id="main" class="workspace">
+
+      <!-- Header -->
+      <div class="dashboard-header">
+        <p class="dashboard-sub">
+          Personalized predictive insights based on uploaded clinical data.
+        </p>
+      </div>
+
+      <!-- Dashboard Grid -->
+      <section class="dashboard-grid">
+
+        <!-- Diabetes -->
+        <article class="panel" id="panel-diabetes">
+          <header class="panel-header">
+            <h2 class="panel-title">Diabetes</h2>
+            <div class="risk-meta">
+              <div id="risk-diabetes" class="risk-badge">--%</div>
+            </div>
+          </header>
+
+          <div class="panel-visual">
+            <div class="risk-visual">
+              <div class="risk-track">
+                <div id="risk-diabetes-track" class="risk-fill"></div>
+              </div>
+              <div class="trend">
+                <canvas id="spark-diabetes" height="40" width="140"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="panel-subtitle">Top reasons</h3>
+          <ol id="reasons-diabetes" class="reasons-list"></ol>
+
+          <div class="shap-chart">
+            <canvas id="shap-diabetes-canvas" height="160"></canvas>
+          </div>
+        </article>
+
+        <!-- Heart -->
+        <article class="panel" id="panel-heart">
+          <header class="panel-header">
+            <h2 class="panel-title">Heart Disease</h2>
+            <div class="risk-meta">
+              <div id="risk-heart" class="risk-badge">--%</div>
+            </div>
+          </header>
+
+          <div class="panel-visual">
+            <div class="risk-visual">
+              <div class="risk-track">
+                <div id="risk-heart-track" class="risk-fill"></div>
+              </div>
+              <div class="trend">
+                <canvas id="spark-heart" height="40" width="140"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="panel-subtitle">Top reasons</h3>
+          <ol id="reasons-heart" class="reasons-list"></ol>
+
+          <div class="shap-chart">
+            <canvas id="shap-heart-canvas" height="160"></canvas>
+          </div>
+        </article>
+
+        <!-- Stroke -->
+        <article class="panel" id="panel-stroke">
+          <header class="panel-header">
+            <h2 class="panel-title">Stroke</h2>
+            <div class="risk-meta">
+              <div id="risk-stroke" class="risk-badge">--%</div>
+            </div>
+          </header>
+
+          <div class="panel-visual">
+            <div class="risk-visual">
+              <div class="risk-track">
+                <div id="risk-stroke-track" class="risk-fill"></div>
+              </div>
+              <div class="trend">
+                <canvas id="spark-stroke" height="40" width="140"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="panel-subtitle">Top reasons</h3>
+          <ol id="reasons-stroke" class="reasons-list"></ol>
+
+          <div class="shap-chart">
+            <canvas id="shap-stroke-canvas" height="160"></canvas>
+          </div>
+        </article>
+
+      </section>
+
+    </main>
   </div>
 
-  <nav class="topnav">
-    <a class="nav-link" href="/dashboard">Dashboard</a>
-    <a class="nav-link" href="/dataupload">Data Upload</a>
-    <a class="nav-link" href="/advice">Advice</a>
-    <a class="nav-link" href="/chat">Chat</a>
-    <a class="nav-link" href="/report">Reports</a>
-  </nav>
+  <!-- Data -->
+  <script>
+    window.predictionData = {{ prediction | tojson | safe if prediction else 'null' }};
+  </script>
 
-  <!-- ✅ USER INFO SECTION -->
-  <div class="right-controls">
-
-    <div class="user-info">
-      <div class="avatar">
-        {{ user_name[0]|upper if user_name else "U" }}
-      </div>
-      <div class="user-name">
-        {{ user_name if user_name else "User" }}
-      </div>
-    </div>
-
-    <button onclick="location.href='/logout'" class="icon-btn">
-      Logout
-    </button>
-  </div>
-</header>
-
-<div class="container">
-<main class="workspace">
-
-<section id="dashboard">
-
-  <!-- Optional Welcome Line -->
-  <h2 style="margin-bottom:20px;">
-    Hello {{ user_name if user_name else "User" }}
-  </h2>
-
-  <div class="three-columns">
-
-    <!-- ================= DIABETES ================= -->
-    <div class="panel">
-      <div class="panel-header">
-        <h3>Diabetes</h3>
-        <div id="risk-diabetes" class="risk-badge">--%</div>
-      </div>
-
-      <ol id="reasons-diabetes"></ol>
-
-      <canvas id="chart-diabetes-canvas"></canvas>
-      <canvas id="shap-diabetes-canvas"></canvas>
-    </div>
-
-
-    <!-- ================= HEART ================= -->
-    <div class="panel">
-      <div class="panel-header">
-        <h3>Heart Disease</h3>
-        <div id="risk-heart" class="risk-badge">--%</div>
-      </div>
-
-      <ol id="reasons-heart"></ol>
-
-      <canvas id="chart-heart-canvas"></canvas>
-      <canvas id="shap-heart-canvas"></canvas>
-    </div>
-
-
-    <!-- ================= STROKE ================= -->
-    <div class="panel">
-      <div class="panel-header">
-        <h3>Stroke</h3>
-        <div id="risk-stroke" class="risk-badge">--%</div>
-      </div>
-
-      <ol id="reasons-stroke"></ol>
-
-      <canvas id="chart-stroke-canvas"></canvas>
-      <canvas id="shap-stroke-canvas"></canvas>
-    </div>
-
-  </div>
-</section>
-<a class="nav-link" href="/history">History</a>
-
-
-</main>
-</div>
-
-<script>
-document.querySelectorAll('.nav-link').forEach(link => {
-  if (link.getAttribute('href') === window.location.pathname) {
-    link.classList.add('active');
-  }
-});
-</script>
-
-<script>
-  window.predictionData = {{ prediction | tojson | safe if prediction else 'null' }};
-</script>
-
-<script src="/style/js/user.js"></script>
+  <!-- JS -->
+  <script src="{{ url_for('static', filename='js/user.js') }}" defer></script>
 
 </body>
 </html>

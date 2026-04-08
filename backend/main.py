@@ -241,7 +241,7 @@ def api_get_manual(record_id):
 # -----------------------------
 # RUN SERVER (single app.run only)
 # -----------------------------
-if __name__ == "__main__":
+if __name__ == "__main__": 
     # Ensure only one run point exists to avoid socket errors on Windows
     print("\nStarting server: http://127.0.0.1:5000")
     app.run(host="127.0.0.1", port=5000, debug=True)

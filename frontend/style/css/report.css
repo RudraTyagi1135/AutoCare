@@ -1,97 +1,281 @@
-/* reports.css - styles scoped for the Reports section (standalone) */
+/* ======================================================
+   AutoCare — Reports (Premium UI)
+   Matches Dashboard + Upload Theme
+====================================================== */
 
-/* Theme variables (standalone) */
 :root{
+  --text: #0f172a;
+  --muted: #64748b;
+
+  --accent: #2563eb;
+  --accent-2: #7c3aed;
+
   --bg: #f6f8fb;
   --card: #ffffff;
-  --muted: #586068;
-  --text: #0b2338;
-  --accent: #0b5ecf;
-  --accent-2: #084da8;
-  --line: #cfd6df;
-  --shadow: 0 12px 40px rgba(8,24,48,0.06);
-  --radius: 12px;
-  --panel-width: 1100px;
+
+  --line: #e5edf6;
+
+  --shadow-sm: 0 10px 30px rgba(15,23,42,0.06);
+  --shadow-md: 0 16px 40px rgba(15,23,42,0.08);
+
+  --radius: 18px;
 }
 
-/* Minimal reset */
-* { box-sizing: border-box; }
-html,body { margin:0; padding:0; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue"; background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
+/* ================= Base ================= */
 
-/* container */
-#reports .card { max-width:960px; margin: 28px auto; background:var(--card); border-radius:12px; padding:18px; border:1px solid var(--line); box-shadow: var(--shadow); }
-
-/* header */
-#reports h2 { margin:0 0 8px 0; color:var(--accent); font-size:20px; font-weight:800; }
-#reports .small { color:var(--muted); font-size:13px; }
-
-/* actions row */
-#reports .actions {
-  display:flex;
-  gap:12px;
-  align-items:center;
-  margin-top:14px;
-  flex-wrap:wrap;
-}
-#reports .result-btn {
-  padding:12px 20px; border-radius:12px; font-weight:800; background: var(--accent); color:#fff; border:0; cursor:pointer;
-  box-shadow: 0 18px 40px rgba(11,94,207,0.09);
-}
-#reports .manual-btn {
-  padding:10px 16px; border-radius:10px; border:1px solid rgba(11,24,48,0.06); background:transparent; cursor:pointer; font-weight:700;
-}
-#reports .manual-btn[disabled],
-#reports .result-btn[disabled] { opacity:.45; cursor:not-allowed; }
-
-/* report preview / status */
-#reports #reportPreview {
-  margin-top:18px;
-  padding:12px;
-  border-radius:10px;
-  background: linear-gradient(180deg, #fbfdff, #fff);
-  border:1px solid rgba(11,94,207,0.03);
-  min-height:140px;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-}
-#reports .preview-line { color:var(--muted); font-size:13px; }
-
-/* small report card inside preview */
-#reports .mini-report {
-  background: linear-gradient(180deg,#fff,#fbfdff);
-  border:1px solid var(--line);
-  padding:12px;
-  border-radius:10px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-}
-#reports .mini-report .meta { font-weight:700; color:var(--accent); }
-#reports .mini-report .when { color:var(--muted); font-size:13px; }
-
-/* pdf download link look */
-#reports a.download-link {
-  display:inline-flex;
-  gap:8px;
-  align-items:center;
-  padding:8px 12px;
-  border-radius:8px;
-  background: linear-gradient(90deg,var(--accent),var(--accent-2));
-  color:#fff;
-  font-weight:800;
-  text-decoration:none;
+*{
+  box-sizing: border-box;
 }
 
-/* spinner / progress */
-#reports .progress {
-  height:8px; width:100%; background: #eef6ff; border-radius:8px; overflow:hidden; margin-top:10px;
+body{
+  margin:0;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI";
+  background: var(--bg);
+  color: var(--text);
 }
-#reports .progress .bar { height:100%; width:0%; background: linear-gradient(90deg,var(--accent),var(--accent-2)); transition: width .28s ease; }
 
-/* responsiveness */
-@media (max-width:980px) {
-  #reports .card { margin: 18px 12px; padding:14px; }
-  #reports .actions { flex-direction:column; align-items:flex-start; }
+/* ================= Container ================= */
+
+.container{
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* ================= Report Section ================= */
+
+.report-section{
+  margin-bottom: 30px;
+}
+
+.report-card{
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 22px;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+}
+
+.report-card h2{
+  margin:0;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.report-card .muted{
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* ================= Buttons ================= */
+
+.primary-btn{
+  margin-top: 18px;
+  padding: 14px 20px;
+  border-radius: 14px;
+  border: none;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  color: white;
+
+  background: linear-gradient(135deg,var(--accent),var(--accent-2));
+  box-shadow: 0 16px 32px rgba(37,99,235,0.18);
+  transition: all .2s ease;
+}
+
+.primary-btn:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 20px 40px rgba(37,99,235,0.22);
+}
+
+.primary-btn:disabled{
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ================= History Section ================= */
+
+.history-section{
+  margin-top: 20px;
+}
+
+/* Header */
+
+.section-header h2{
+  font-size: 26px;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.section-header .muted{
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* ================= Grid ================= */
+
+.history-grid{
+  margin-top: 30px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+/* ================= Card ================= */
+
+.history-card{
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 18px;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+  transition: all .25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Glow effect */
+
+.history-card::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(37,99,235,0.05), rgba(124,58,237,0.05));
+  opacity: 0;
+  transition: .3s ease;
+}
+
+.history-card:hover{
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.history-card:hover::before{
+  opacity: 1;
+}
+
+/* ================= Header ================= */
+
+.card-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.card-header .date{
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--accent);
+}
+
+.card-header .time{
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ================= Body ================= */
+
+.card-body{
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ================= Disease Row ================= */
+
+.disease-row{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(37,99,235,0.04);
+}
+
+/* Disease */
+
+.disease-name{
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .5px;
+}
+
+/* ================= Risk ================= */
+
+.risk-info{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.risk-percent{
+  font-weight: 800;
+  font-size: 14px;
+}
+
+/* Labels */
+
+.risk-label{
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* Low */
+.risk-label.low{
+  background: rgba(34,197,94,0.1);
+  color: #16a34a;
+}
+
+/* Moderate */
+.risk-label.moderate{
+  background: rgba(234,179,8,0.12);
+  color: #ca8a04;
+}
+
+/* High */
+.risk-label.high{
+  background: rgba(239,68,68,0.12);
+  color: #dc2626;
+}
+
+/* ================= Empty State ================= */
+
+.empty-state{
+  margin-top: 30px;
+  padding: 30px;
+  text-align: center;
+  border-radius: var(--radius);
+  background: var(--card);
+  border: 1px dashed var(--line);
+  color: var(--muted);
+}
+
+/* ================= Responsive ================= */
+
+@media (max-width:640px){
+
+  .section-header h2{
+    font-size: 22px;
+  }
+
+  .history-grid{
+    gap: 16px;
+  }
+
+  .history-card{
+    padding: 14px;
+  }
+
+  .primary-btn{
+    width: 100%;
+  }
 }
