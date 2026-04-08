@@ -1,5 +1,3 @@
-# backend/routes/manual_entry.py
-
 from flask import Blueprint, request, jsonify, session, current_app
 from datetime import datetime
 from autocare_utils.logging import logging
@@ -90,20 +88,20 @@ def manual_entry():
         session["latest_prediction"] = prediction_data
 
         # -------------------------
-        # 🔥 Save to MongoDB History
+        # Save to MongoDB History
         # -------------------------
         user_email = session.get("user")
-
         if user_email:
-            db = current_app.config["DB"]
-            history_col = db["history"]
-
-            history_col.insert_one({
-                "user_email": user_email,
-                "input_data": raw_input,
-                "prediction": prediction_data,
-                "created_at": datetime.utcnow()
-            })
+            history_col = current_app.config.get("history_col")
+            if history_col is not None:
+                history_col.insert_one({
+                    "user_email": user_email,
+                    "input_data": raw_input,
+                    "prediction": prediction_data,
+                    "created_at": datetime.utcnow()
+                })
+            else:
+                logging.warning("history_col not configured; skipping history insert")
 
         logging.info("Prediction stored in session and MongoDB")
 

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="AutoCare — Clinical AI dashboard for risk, explanations and reports." />
+  <meta name="theme-color" content="#ffffff" />
+
+  <title>{% block title %}AutoCare{% endblock %}</title>
+
+  <!-- Inter font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Global CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">
+
+  <!-- Page-specific CSS -->
+  {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+  <!-- ================= TOPBAR ================= -->
+  <header class="topbar" role="banner">
+    <div class="topbar-inner">
+
+      <!-- Brand -->
+      <div class="brand" role="img" aria-label="AutoCare — Clinical AI">
+        <img src="{{ url_for('static', filename='images/gpt_autocare.png') }}"
+             alt="AutoCare logo"
+             class="logo-img" />
+        <div class="app-title">
+          <span class="app-name">AutoCare</span>
+          <span class="app-sub">Clinical AI · Risk · Reports</span>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="topnav" role="navigation" aria-label="Primary navigation">
+        <a class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}"
+           href="{{ url_for('dashboard') }}">Dashboard</a>
+
+        <a class="nav-link {% if request.endpoint == 'dataupload' %}active{% endif %}"
+           href="{{ url_for('dataupload') }}">Data Upload</a>
+
+        <a class="nav-link {% if request.endpoint == 'advice' %}active{% endif %}"
+           href="{{ url_for('advice') }}">Advice</a>
+
+        <a class="nav-link {% if request.endpoint == 'chat' %}active{% endif %}"
+           href="{{ url_for('chat') }}">Chat</a>
+
+        <a class="nav-link {% if request.endpoint == 'report' %}active{% endif %}"
+           href="{{ url_for('report') }}">Reports</a>
+      </nav>
+
+      <!-- User Info -->
+      <div class="right-controls">
+        <div class="user-info">
+          <div class="avatar">
+            {{ user_name[0]|upper if user_name else "U" }}
+          </div>
+          <div class="user-name" title="{{ user_name if user_name else 'User' }}">
+            {{ user_name if user_name else "User" }}
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ================= PAGE CONTENT ================= -->
+  <div class="container">
+    {% block content %}{% endblock %}
+  </div>
+
+  <!-- ================= GLOBAL SCRIPTS ================= -->
+
+  <!-- Optional shared data -->
+  {% block global_data %}{% endblock %}
+
+  <!-- Page-specific JS -->
+  {% block extra_js %}{% endblock %}
+
+</body>
+</html>
