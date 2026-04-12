@@ -31,6 +31,7 @@ Requires-Dist: motor==3.7.1
 Requires-Dist: google-generativeai==0.8.5
 Requires-Dist: httpx==0.24.1
 Requires-Dist: PyMuPDF
+Requires-Dist: reportlab
 Dynamic: author
 Dynamic: author-email
 Dynamic: requires-dist
