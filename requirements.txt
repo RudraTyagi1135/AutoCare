@@ -48,6 +48,6 @@ httpx==0.24.1
 
 PyMuPDF
 
-
+reportlab
 # Local Project Setup - MUST BE LAST
 -e .

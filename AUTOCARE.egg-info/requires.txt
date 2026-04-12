@@ -26,3 +26,4 @@ motor==3.7.1
 google-generativeai==0.8.5
 httpx==0.24.1
 PyMuPDF
+reportlab
