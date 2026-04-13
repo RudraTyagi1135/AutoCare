@@ -14,68 +14,135 @@
 </head>
 
 <body>
+
+<!-- ================= TOPBAR ================= -->
 <header class="topbar">
-  <div class="brand">
-    <div class="mark">
-      <svg viewBox="0 0 24 24" fill="none" width="26" height="26">
-        <path d="M12 2C10.9 2 10 2.9 10 4v1.2C8.3 5.7 7.2 7.2 7.2 9c0 2.5 2.3 4.2 4.8 4.2S16.8 11.5 16.8 9c0-1.8-1.1-3.3-2.8-3.8V4c0-1.1-.9-2-2-2Z" fill="white"/>
-      </svg>
-    </div>
-    <div class="app-title">
-      <strong>AutoCare</strong>
-      <div class="sub small">Clinical AI · Risk · Reports</div>
-    </div>
-  </div>
+  <div class="topbar-inner">
 
-  <!-- ✅ ROUTE BASED NAVIGATION -->
-  <nav class="topnav">
-    <a href="/dashboard" class="nav-link">Dashboard</a>
-    <a href="/dataupload" class="nav-link">Data Upload</a>
-    <a href="/advice" class="nav-link">Advice</a>
-    <a href="/chat" class="nav-link">Chat</a>
-    <a href="/report" class="nav-link active">Reports</a>
-  </nav>
+    <div class="brand">
+      <img src="/static/images/gpt_autocare.png" class="logo-img" />
+      <div class="app-title">
+        <span class="app-name">AutoCare</span>
+        <span class="app-sub">Clinical AI · Risk · Reports</span>
+      </div>
+    </div>
 
-  <div class="right-controls">
-    <a href="/logout" class="nav-link">Logout</a>
+    <nav class="topnav">
+      <a href="/dashboard" class="nav-link">Dashboard</a>
+      <a href="/dataupload" class="nav-link">Data Upload</a>
+      <a href="/advice" class="nav-link">Advice</a>
+      <a href="/chat" class="nav-link">Chat</a>
+      <a href="/report" class="nav-link active">Reports</a>
+    </nav>
+
+    <div class="right-controls">
+      <div class="user-info">
+        <div class="avatar">PT</div>
+        <div class="user-name">Paras</div>
+      </div>
+    </div>
+
   </div>
 </header>
 
+
+<!-- ================= MAIN ================= -->
 <div class="container">
   <main class="workspace">
-    <section aria-label="Reports">
-      <div class="card">
-        <h2>📄 Health Risk Reports</h2>
-        <p class="small muted">
-          Generate downloadable reports based on your latest health assessment.
+
+    <!-- ===== REPORT ACTION ===== -->
+    <section class="report-section">
+
+      <div class="report-card">
+        <h2>📄 Health Report</h2>
+        <p class="muted">
+          Download a complete clinical report based on your latest prediction.
         </p>
 
-        <div class="actions">
-          <button class="result-btn" id="genReport">Generate PDF</button>
-          <a class="manual-btn" id="dlReport" disabled>Download</a>
+        <button id="downloadReportBtn" class="primary-btn">
+          Download Report
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- ===== HISTORY ===== -->
+    <section class="history-section">
+
+      <div class="section-header">
+        <h2>Prediction History</h2>
+        <p class="muted">Your previous AI-generated health assessments</p>
+      </div>
+
+      {% if records|length == 0 %}
+        <div class="empty-state">
+          No history records found.
+        </div>
+      {% else %}
+
+        <div class="history-grid">
+
+          {% for record in records %}
+          <div class="history-card">
+
+            <div class="card-header">
+              <span class="date">
+                {{ record.created_at.strftime("%d %b %Y") }}
+              </span>
+              <span class="time">
+                {{ record.created_at.strftime("%I:%M %p") }}
+              </span>
+            </div>
+
+            <div class="card-body">
+
+              {% for disease, data in record["prediction"]["predictions"].items() %}
+              <div class="disease-row">
+
+                <div class="disease-name">
+                  {{ disease.upper() }}
+                </div>
+
+                <div class="risk-info">
+                  <span class="risk-percent">
+                    {{ data["risk_percent"] }}%
+                  </span>
+
+                  <span class="risk-label
+                    {% if data['risk_label'] == 'High' %}
+                      high
+                    {% elif data['risk_label'] == 'Moderate' %}
+                      moderate
+                    {% else %}
+                      low
+                    {% endif %}
+                  ">
+                    {{ data["risk_label"] }}
+                  </span>
+                </div>
+
+              </div>
+              {% endfor %}
+
+            </div>
+
+          </div>
+          {% endfor %}
+
         </div>
 
-        <div id="reportPreview">
-          <div class="preview-line muted">
-            No report generated yet.
-          </div>
-        </div>
-      </div>
+      {% endif %}
+
     </section>
+
   </main>
 </div>
 
+
 <!-- JS -->
 <script src="/style/js/report.js"></script>
-
-<script>
-  // Highlight active nav
-  document.querySelectorAll('.topnav .nav-link').forEach(link => {
-    if (link.getAttribute('href') === location.pathname) {
-      link.classList.add('active');
-    }
-  });
-</script>
 
 </body>
 </html>

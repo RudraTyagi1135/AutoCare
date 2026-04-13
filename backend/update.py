@@ -90,7 +90,6 @@ app.config["users_col"] = users_col
 app.config["history_col"] = history_col
 
 
-
 # ==========================================
 # REGISTER BLUEPRINTS (DO NOT REMOVE)
 # ==========================================
@@ -113,6 +112,27 @@ def login_required(fn):
             return redirect("/login")
         return fn(*args, **kwargs)
     return wrapper
+
+
+# ==========================================
+# SHARED HISTORY LOADER
+# ==========================================
+def load_user_history(email, limit=None):
+    history_col = app.config["history_col"]
+
+    query = history_col.find({"user_email": email}).sort("created_at", -1)
+    if limit is not None:
+        query = query.limit(limit)
+
+    records = list(query)
+
+    # Convert UTC → IST for display
+    for r in records:
+        created_at = r.get("created_at")
+        if isinstance(created_at, datetime):
+            r["created_at"] = created_at + timedelta(hours=5, minutes=30)
+
+    return records
 
 
 # ==========================================
@@ -182,21 +202,10 @@ def logout():
 @app.route("/history")
 @login_required
 def history():
-    db = app.config["DB"]
-    history_col = db["history"]
     email = session["user"]
-
-    records = list(
-        history_col
-        .find({"user_email": email})
-        .sort("created_at", -1)
-    )
-        # Convert UTC → IST
-    for r in records:
-        if r.get("created_at"):
-            r["created_at"] = r["created_at"] + timedelta(hours=5, minutes=30)
-
+    records = load_user_history(email)
     return render_template("history.html", records=records)
+
 
 @app.route("/dashboard")
 @login_required
@@ -243,7 +252,17 @@ def dataupload():
 @app.route("/report")
 @login_required
 def report():
-    return render_template("report.html")
+    email = session["user"]
+    records = load_user_history(email)
+
+    user_doc = users_col.find_one({"email": email}) or {}
+    user_name = user_doc.get("name", "User")
+
+    return render_template(
+        "report.html",
+        records=records,
+        user_name=user_name
+    )
 
 
 

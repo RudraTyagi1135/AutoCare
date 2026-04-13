@@ -1,14 +1,17 @@
-// js/chat.js
-// Chat page → connects to GENERAL chatbot: /api/chat/general
+// ======================================================
+// AutoCare — Chat Page (FINAL CLEAN VERSION)
+// Matches Advice UI + Sidebar History
+// ======================================================
 
 (function () {
+
   function by(id) { return document.getElementById(id); }
 
-  function timeNow() {
-    const d = new Date();
-    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  }
+  let isLoading = false;
 
+  /* =========================
+     SAFE HTML
+  ========================= */
   function escapeHtml(unsafe) {
     return String(unsafe || '')
       .replaceAll('&', '&amp;')
@@ -18,9 +21,9 @@
       .replaceAll("'", '&#039;');
   }
 
-  // =========================
-  // BACKEND CALL (SAFE)
-  // =========================
+  /* =========================
+     API CALL
+  ========================= */
   async function callGeneralChat(question) {
     try {
       const res = await fetch("/api/chat/general", {
@@ -29,111 +32,134 @@
         body: JSON.stringify({ message: question })
       });
 
-      if (!res.ok) {
-        throw new Error("Server error: " + res.status);
-      }
+      if (!res.ok) throw new Error("Server error");
 
       const data = await res.json();
-      return data.reply || "⚠️ No reply field from server.";
+      return data.reply || "⚠️ No response from server.";
 
     } catch (err) {
       console.error("Chat API error:", err);
-      return "⚠️ Chat service unavailable. Please try again.";
+      return "⚠️ Chat service unavailable. Try again.";
     }
   }
 
-  // =========================
-  // UI HELPERS
-  // =========================
+  /* =========================
+     MESSAGE UI (MATCH ADVICE)
+  ========================= */
   function addMessage(messagesEl, text, role = 'assistant') {
     const el = document.createElement('div');
-    el.className = 'msg ' + (role === 'user' ? 'user' : 'assistant');
-
-    const meta = document.createElement('div');
-    meta.className = 'meta';
-    meta.textContent = role === 'user' ? 'You' : 'Assistant';
+    el.className = 'adv-msg ' + (role === 'user' ? 'user' : 'assistant');
 
     const body = document.createElement('div');
     body.innerHTML = escapeHtml(text).replace(/\n/g, '<br>');
 
-    const tm = document.createElement('div');
-    tm.className = 'time';
-    tm.textContent = timeNow();
-
-    el.appendChild(meta);
     el.appendChild(body);
-    el.appendChild(tm);
 
     messagesEl.appendChild(el);
     el.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }
 
-  // =========================
-  // MAIN INIT
-  // =========================
-  async function initPolishedChat() {
-    const userInput = by('polUserInput');
+  /* =========================
+     THINKING UI
+  ========================= */
+  function createThinking(messagesEl) {
+    const el = document.createElement('div');
+    el.className = 'adv-msg assistant';
+    el.innerHTML = `<div>Thinking...</div>`;
+
+    messagesEl.appendChild(el);
+    el.scrollIntoView({ behavior: 'smooth' });
+    return el;
+  }
+
+  /* =========================
+     INIT
+  ========================= */
+  function initChat() {
+
+    const input = by('polUserInput');
     const sendBtn = by('polSendBtn');
     const messages = by('polMessages');
     const chatList = by('polChatList');
     const newChatBtn = by('polNewChat');
 
-    if (!messages || !userInput || !sendBtn) return;
-    userInput.focus();
+    if (!messages || !input || !sendBtn) return;
 
+    input.focus();
+
+    /* -------------------------
+       SEND MESSAGE
+    ------------------------- */
     async function sendMessage() {
-      const text = (userInput.value || '').trim();
+
+      if (isLoading) return;
+
+      const text = input.value.trim();
       if (!text) return;
 
+      isLoading = true;
+
       addMessage(messages, text, 'user');
-      userInput.value = '';
+      input.value = '';
 
-      // Typing placeholder
-      const placeholder = document.createElement('div');
-      placeholder.className = 'msg assistant';
-      placeholder.innerHTML =
-        `<div class="meta">Assistant</div>
-         <div>Thinking <span class="typing"><span></span><span></span><span></span></span></div>
-         <div class="time">--</div>`;
-      messages.appendChild(placeholder);
-      placeholder.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      const thinking = createThinking(messages);
 
-      // API CALL
       const answer = await callGeneralChat(text);
 
-      placeholder.remove();
+      thinking.remove();
       addMessage(messages, answer, 'assistant');
 
-      // Sidebar history
+      /* -------------------------
+         SIDEBAR HISTORY
+      ------------------------- */
       if (chatList) {
         const item = document.createElement('div');
         item.className = 'chat-item';
         item.dataset.q = text;
-        item.innerHTML =
-          `<div class="icon"></div>
-           <div class="title">${escapeHtml(text)}</div>`;
+        item.innerHTML = `<div>${escapeHtml(text)}</div>`;
         chatList.prepend(item);
       }
+
+      isLoading = false;
     }
 
-    sendBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      sendMessage();
-    });
+    /* -------------------------
+       EVENTS
+    ------------------------- */
+    sendBtn.addEventListener('click', sendMessage);
 
-    userInput.addEventListener('keydown', (e) => {
+    input.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
         sendMessage();
       }
     });
 
-    newChatBtn && newChatBtn.addEventListener('click', () => {
-      messages.innerHTML = '';
-      userInput.value = '';
-      userInput.focus();
-    });
+    /* -------------------------
+       NEW CHAT
+    ------------------------- */
+    if (newChatBtn) {
+      newChatBtn.addEventListener('click', () => {
+        messages.innerHTML = '';
+        input.value = '';
+        input.focus();
+      });
+    }
+
+    /* -------------------------
+       CLICK HISTORY → REUSE
+    ------------------------- */
+    if (chatList) {
+      chatList.addEventListener('click', (e) => {
+        const item = e.target.closest('.chat-item');
+        if (item) {
+          input.value = item.dataset.q || '';
+          input.focus();
+        }
+      });
+    }
   }
 
-  document.addEventListener('DOMContentLoaded', initPolishedChat);
+  document.addEventListener('DOMContentLoaded', initChat);
+
 })();
