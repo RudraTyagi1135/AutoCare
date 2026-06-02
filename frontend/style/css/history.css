@@ -1,0 +1,220 @@
+/* ======================================================
+   AutoCare — Reports (Premium Unified UI)
+====================================================== */
+
+:root{
+  --text: #0f172a;
+  --muted: #64748b;
+
+  --accent: #2563eb;
+  --accent-2: #7c3aed;
+
+  --line: #e5edf6;
+
+  --shadow-sm: 0 10px 30px rgba(15,23,42,0.06);
+  --shadow-md: 0 16px 40px rgba(15,23,42,0.08);
+
+  --radius: 20px;
+}
+
+/* ================= Layout ================= */
+
+.report-section{
+  max-width: 700px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.report-card{
+  background: rgba(255,255,255,0.9);
+  border:1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 30px;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ================= Title ================= */
+
+.report-card h2{
+  margin:0;
+  font-size:26px;
+  font-weight:800;
+}
+
+.report-card p{
+  margin-top:10px;
+  color:var(--muted);
+}
+
+/* ================= Button ================= */
+
+.primary-btn{
+  margin-top:20px;
+  padding:14px 22px;
+  border:none;
+  border-radius:14px;
+  font-weight:700;
+  cursor:pointer;
+  color:#fff;
+  background: linear-gradient(135deg,var(--accent),var(--accent-2));
+  box-shadow: 0 14px 30px rgba(37,99,235,0.18);
+  transition: all .2s ease;
+}
+
+.primary-btn:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px rgba(37,99,235,0.22);
+}
+
+/* ================= History Section ================= */
+
+.history-section{
+  max-width: 1100px;
+  margin: 60px auto 0;
+}
+
+/* Header */
+
+.section-header{
+  margin-bottom:20px;
+}
+
+.section-header h2{
+  margin:0;
+  font-size:24px;
+  font-weight:800;
+}
+
+.section-header p{
+  margin-top:6px;
+  color:var(--muted);
+}
+
+/* ================= Grid ================= */
+
+.history-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap:20px;
+}
+
+/* ================= Card ================= */
+
+.history-card{
+  background: rgba(255,255,255,0.95);
+  border:1px solid var(--line);
+  border-radius: var(--radius);
+  padding:18px;
+  box-shadow: var(--shadow-sm);
+  transition: all .2s ease;
+}
+
+.history-card:hover{
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Header */
+
+.card-header{
+  display:flex;
+  justify-content:space-between;
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:12px;
+}
+
+/* Body */
+
+.card-body{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+/* Disease Row */
+
+.disease-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 12px;
+  border-radius:10px;
+  background: linear-gradient(180deg,#f8fbff,#ffffff);
+  border:1px solid var(--line);
+}
+
+/* Name */
+
+.disease-name{
+  font-weight:700;
+  letter-spacing:0.5px;
+}
+
+/* Risk */
+
+.risk-info{
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+
+.risk-percent{
+  font-weight:700;
+}
+
+/* Labels */
+
+.risk-label{
+  padding:4px 10px;
+  font-size:12px;
+  border-radius:999px;
+  font-weight:600;
+}
+
+/* Risk Colors */
+
+.low{
+  background: rgba(22,163,74,0.12);
+  color:#16a34a;
+}
+
+.moderate{
+  background: rgba(245,158,11,0.14);
+  color:#f59e0b;
+}
+
+.high{
+  background: rgba(239,68,68,0.12);
+  color:#ef4444;
+}
+
+/* ================= Empty ================= */
+
+.empty-state{
+  margin-top:20px;
+  padding:20px;
+  border-radius:14px;
+  border:1px dashed var(--line);
+  text-align:center;
+  color:var(--muted);
+  background: rgba(255,255,255,0.6);
+}
+
+/* ================= Responsive ================= */
+
+@media(max-width:768px){
+
+  .history-section{
+    margin-top:40px;
+    padding:0 10px;
+  }
+
+  .report-card{
+    padding:20px;
+  }
+
+  .history-grid{
+    grid-template-columns:1fr;
+  }
+}

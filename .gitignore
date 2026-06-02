@@ -1,0 +1,86 @@
+# ==========================
+# Python
+# ==========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+
+# ==========================
+# Virtual Environment
+# ==========================
+venv/
+env/
+ENV/
+
+# ==========================
+# Environment Variables
+# ==========================
+.env
+
+# ==========================
+# IDE
+# ==========================
+.vscode/
+.idea/
+
+# ==========================
+# OS Files
+# ==========================
+.DS_Store
+Thumbs.db
+
+# ==========================
+# Python Build
+# ==========================
+build/
+dist/
+*.egg-info/
+
+# ==========================
+# Logs
+# ==========================
+*.log
+backend/logs/
+machine_learning/training/**/logs/
+
+# ==========================
+# Cache
+# ==========================
+.pytest_cache/
+.mypy_cache/
+
+# ==========================
+# Jupyter
+# ==========================
+.ipynb_checkpoints/
+
+# ==========================
+# Temporary Files
+# ==========================
+*.tmp
+*.bak
+*.swp
+
+# ==========================
+# Local Testing
+# ==========================
+Auto_Test/
+
+# ==========================
+# Generated Files
+# ==========================
+requirements_frozen.txt
+
+# ==========================
+# Docker (Future)
+# ==========================
+.docker/
+
+# ==========================
+# ML Artifacts (Optional)
+# Uncomment if you don't want
+# to push trained models
+# ==========================
+# machine_learning/training/**/Artifacts/

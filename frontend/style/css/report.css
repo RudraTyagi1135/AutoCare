@@ -1,0 +1,522 @@
+/* ======================================================
+   AutoCare — Reports
+   Matches Advice Page Theme
+====================================================== */
+
+:root {
+  --text:      #0f172a;
+  --muted:     #64748b;
+  --accent:    #2563eb;
+  --accent-2:  #7c3aed;
+  --bg:        #f6f8fb;
+  --card:      #ffffff;
+  --line:      #e5edf6;
+  --shadow-sm: 0 10px 30px rgba(15,23,42,0.06);
+  --shadow-md: 0 16px 40px rgba(15,23,42,0.10);
+  --radius:    18px;
+  --radius-lg: 24px;
+}
+
+/* ================= Base ================= */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto,
+               "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  min-height: 100vh;
+}
+
+/* ================= Topbar ================= */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(246,248,251,0.82);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(229,237,246,0.9);
+}
+
+.topbar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* ================= Brand ================= */
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.brand-mark {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 14px 30px rgba(37,99,235,0.20);
+  flex: 0 0 auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.brand-mark::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(255,255,255,0.22), rgba(255,255,255,0));
+  transform: translateX(-35%);
+}
+
+.brand-mark-ac {
+  position: relative;
+  z-index: 1;
+  color: #fff;
+  font-weight: 800;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
+.app-title {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.app-name {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
+
+.app-sub {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+/* ================= Nav ================= */
+
+.topnav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 10px 14px;
+  border-radius: 999px;
+  transition: all .2s ease;
+  border: 1px solid transparent;
+}
+
+.nav-link:hover {
+  background: rgba(37,99,235,0.06);
+  color: var(--accent);
+}
+
+.nav-link.active {
+  background: linear-gradient(135deg, rgba(37,99,235,0.10), rgba(124,58,237,0.10));
+  border-color: rgba(37,99,235,0.14);
+  color: var(--accent);
+}
+
+/* ================= User Dropdown ================= */
+
+.right-controls {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.user-dropdown {
+  position: relative;
+}
+
+.user-dropdown > summary {
+  list-style: none;
+}
+
+.user-dropdown > summary::-webkit-details-marker {
+  display: none;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+  padding: 8px 10px;
+  border-radius: 16px;
+  transition: background .2s ease;
+}
+
+.user-info:hover {
+  background: rgba(37,99,235,0.06);
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 800;
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 12px 24px rgba(37,99,235,0.18);
+  flex: 0 0 auto;
+}
+
+.user-name {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.dropdown-caret {
+  color: var(--muted);
+  font-size: 12px;
+  margin-left: 2px;
+  transition: transform .2s ease;
+}
+
+.user-dropdown[open] .dropdown-caret {
+  transform: rotate(180deg);
+}
+
+.user-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  min-width: 220px;
+  background: rgba(255,255,255,0.96);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-md);
+  border-radius: 18px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 80;
+  transform-origin: top right;
+  animation: menuIn .16s ease-out;
+}
+
+@keyframes menuIn {
+  from { opacity: 0; transform: scale(0.96) translateY(-4px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0);    }
+}
+
+.user-menu a {
+  text-decoration: none;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 11px 12px;
+  border-radius: 12px;
+  transition: all .2s ease;
+}
+
+.user-menu a:hover {
+  background: rgba(37,99,235,0.07);
+  color: var(--accent);
+}
+
+.user-menu a.danger { color: #dc2626; }
+
+.user-menu a.danger:hover {
+  background: rgba(239,68,68,0.08);
+  color: #b91c1c;
+}
+
+.menu-divider {
+  height: 1px;
+  background: var(--line);
+  margin: 4px 6px;
+}
+
+/* ================= Layout ================= */
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.workspace {
+  min-height: calc(100vh - 120px);
+}
+
+/* ================= Report Card ================= */
+
+.report-section {
+  margin-bottom: 30px;
+}
+
+.report-card {
+  background: rgba(255,255,255,0.92);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+}
+
+.report-card h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.report-card .muted {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ================= Primary Button ================= */
+
+.primary-btn {
+  margin-top: 20px;
+  padding: 14px 28px;
+  border-radius: 16px;
+  border: none;
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 16px 32px rgba(37,99,235,0.18);
+  transition: all .2s ease;
+}
+
+.primary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 40px rgba(37,99,235,0.24);
+}
+
+.primary-btn:active { transform: translateY(0); }
+
+.primary-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ================= History Section ================= */
+
+.history-section {
+  margin-top: 20px;
+}
+
+.section-header h2 {
+  font-size: 26px;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -0.03em;
+}
+
+.section-header .muted {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* ================= History Grid ================= */
+
+.history-grid {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+/* ================= History Card ================= */
+
+.history-card {
+  background: rgba(255,255,255,0.92);
+  border-radius: var(--radius);
+  padding: 20px;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+  transition: all .25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.history-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg,
+    rgba(37,99,235,0.05),
+    rgba(124,58,237,0.05));
+  opacity: 0;
+  transition: opacity .3s ease;
+}
+
+.history-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.history-card:hover::before { opacity: 1; }
+
+/* ================= Card Header ================= */
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.card-header .date {
+  font-weight: 800;
+  font-size: 13px;
+  color: var(--accent);
+}
+
+.card-header .time {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ================= Card Body ================= */
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ================= Disease Row ================= */
+
+.disease-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(37,99,235,0.04);
+  border: 1px solid rgba(37,99,235,0.06);
+}
+
+.disease-name {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .5px;
+}
+
+/* ================= Risk Info ================= */
+
+.risk-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.risk-percent {
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.risk-label {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+
+.risk-label.low      { background: rgba(34,197,94,0.10);  color: #16a34a; }
+.risk-label.moderate { background: rgba(234,179,8,0.12);  color: #ca8a04; }
+.risk-label.high     { background: rgba(239,68,68,0.12);  color: #dc2626; }
+
+/* ================= Empty State ================= */
+
+.empty-state {
+  margin-top: 24px;
+  padding: 40px 30px;
+  text-align: center;
+  border-radius: var(--radius);
+  background: rgba(255,255,255,0.92);
+  border: 1px dashed var(--line);
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* ================= Responsive ================= */
+
+@media (max-width: 980px) {
+  .topbar-inner { flex-wrap: wrap; }
+
+  .topnav {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .right-controls { margin-left: auto; }
+}
+
+@media (max-width: 720px) {
+  .container    { padding: 14px; }
+  .topbar-inner { padding: 12px 14px; }
+  .brand        { gap: 10px; }
+
+  .brand-mark {
+    width: 42px;
+    height: 42px;
+    border-radius: 13px;
+  }
+
+  .app-name { font-size: 18px; }
+  .nav-link { padding: 9px 12px; font-size: 13px; }
+
+  .report-card  { padding: 24px 20px; }
+  .primary-btn  { width: 100%; }
+
+  .section-header h2 { font-size: 22px; }
+  .history-grid      { gap: 14px; }
+  .history-card      { padding: 16px; }
+}
+
+@media (max-width: 520px) {
+  .topnav         { gap: 6px; }
+  .nav-link       { padding: 8px 10px; font-size: 12px; }
+  .user-name      { display: none; }
+  .dropdown-caret { display: none; }
+  .user-menu      { min-width: 200px; }
+}

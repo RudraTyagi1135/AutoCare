@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>AutoCare — Reports</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/style/css/user.css">
+  <link rel="stylesheet" href="/style/css/report.css">
+</head>
+
+<body>
+
+  <!-- ================= TOPBAR ================= -->
+  <header class="topbar">
+    <div class="topbar-inner">
+
+      <!-- Brand -->
+      <div class="brand">
+        <div class="brand-mark">
+          <span class="brand-mark-ac">AC</span>
+        </div>
+
+        <div class="app-title">
+          <span class="app-name">AutoCare</span>
+          <span class="app-sub">Clinical AI · Risk · Reports</span>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="topnav">
+        <a href="{{ url_for('dashboard') }}" class="nav-link">Dashboard</a>
+        <a href="{{ url_for('dataupload') }}" class="nav-link">Data Upload</a>
+        <a href="{{ url_for('advice') }}" class="nav-link">Advice</a>
+        <a href="{{ url_for('chat') }}" class="nav-link">Chat</a>
+        <a href="{{ url_for('report') }}" class="nav-link active">Reports</a>
+      </nav>
+
+      <!-- User Dropdown -->
+      <div class="right-controls">
+        <details class="user-dropdown">
+          <summary class="user-info">
+
+            <div class="avatar">
+              {{ user_name[0]|upper if user_name else "U" }}
+            </div>
+
+            <div class="user-name">
+              {{ user_name if user_name else "User" }}
+            </div>
+
+            <span class="dropdown-caret">▾</span>
+
+          </summary>
+
+          <div class="user-menu">
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('dataupload') }}">Data Upload</a>
+            <a href="{{ url_for('advice') }}">Advice</a>
+            <a href="{{ url_for('chat') }}">Chat</a>
+            <a href="{{ url_for('report') }}">Reports</a>
+
+            <div class="menu-divider"></div>
+
+            <a href="{{ url_for('logout') }}" class="danger">
+              Logout
+            </a>
+          </div>
+        </details>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ================= MAIN ================= -->
+  <div class="container">
+    <main class="workspace">
+
+      <!-- ================= REPORT DOWNLOAD ================= -->
+      <section class="report-section">
+
+        <div class="report-card">
+          <h2>📄 Health Report</h2>
+
+          <p class="muted">
+            Download a complete clinical report generated from your latest AI prediction.
+          </p>
+
+          <button id="downloadReportBtn" class="primary-btn">
+            Download Report
+          </button>
+        </div>
+
+      </section>
+
+      <!-- ================= HISTORY ================= -->
+      <section class="history-section">
+
+        <div class="section-header">
+          <h2>Prediction History</h2>
+
+          <p class="muted">
+            Your previous AI-generated health assessments
+          </p>
+        </div>
+
+        {% if records|length == 0 %}
+
+          <div class="empty-state">
+            No history records found.
+          </div>
+
+        {% else %}
+
+          <div class="history-grid">
+
+            {% for record in records %}
+            <div class="history-card">
+
+              <div class="card-header">
+
+                <span class="date">
+                  {{ record.created_at.strftime("%d %b %Y") }}
+                </span>
+
+                <span class="time">
+                  {{ record.created_at.strftime("%I:%M %p") }}
+                </span>
+
+              </div>
+
+              <div class="card-body">
+
+                {% for disease, data in record["prediction"]["predictions"].items() %}
+
+                <div class="disease-row">
+
+                  <div class="disease-name">
+                    {{ disease.upper() }}
+                  </div>
+
+                  <div class="risk-info">
+
+                    <span class="risk-percent">
+                      {{ data["risk_percent"] }}%
+                    </span>
+
+                    <span class="risk-label
+                      {% if data['risk_label'] == 'High' %}
+                        high
+                      {% elif data['risk_label'] == 'Moderate' %}
+                        moderate
+                      {% else %}
+                        low
+                      {% endif %}">
+                      {{ data["risk_label"] }}
+                    </span>
+
+                  </div>
+
+                </div>
+
+                {% endfor %}
+
+              </div>
+
+            </div>
+            {% endfor %}
+
+          </div>
+
+        {% endif %}
+
+      </section>
+
+    </main>
+  </div>
+
+  <script src="/style/js/report.js"></script>
+
+</body>
+</html>

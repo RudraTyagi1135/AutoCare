@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>AutoCare</title>
+
+  <link rel="stylesheet" href="/style/css/login.css">
+</head>
+
+<body>
+
+<div class="login-card">
+
+  <!-- BRAND -->
+  <div class="brand">
+    <div class="logo-mark">AC</div>
+    <h1 class="title">AutoCare</h1>
+  </div>
+
+  <p class="subtitle">
+    Login or create your account
+  </p>
+
+  <!-- FLASH MESSAGES -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, msg in messages %}
+        <p class="flash {{ category }}">{{ msg }}</p>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <!-- TAB BUTTONS -->
+  <div class="tab-container">
+    <button type="button" id="loginTab" class="tab-btn active">
+      Login
+    </button>
+
+    <button type="button" id="registerTab" class="tab-btn">
+      Register
+    </button>
+  </div>
+
+  <!-- LOGIN FORM -->
+  <form
+    id="loginForm"
+    action="{{ url_for('login') }}"
+    method="POST"
+  >
+
+    <div class="form-group">
+      <label>Email</label>
+      <input
+        type="email"
+        name="email"
+        placeholder="you@example.com"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label>Password</label>
+      <input
+        type="password"
+        name="password"
+        placeholder="Enter your password"
+        required
+      />
+    </div>
+
+    <button type="submit" class="btn">
+      Login
+    </button>
+
+  </form>
+
+  <!-- REGISTER FORM -->
+  <form
+    id="registerForm"
+    action="{{ url_for('register') }}"
+    method="POST"
+    style="display:none;"
+  >
+
+    <div class="form-group">
+      <label>Full Name</label>
+      <input
+        type="text"
+        name="name"
+        placeholder="Enter your full name"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label>Email</label>
+      <input
+        type="email"
+        name="email"
+        placeholder="you@example.com"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label>Password</label>
+      <input
+        type="password"
+        name="password"
+        placeholder="Create a password"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label>Confirm Password</label>
+      <input
+        type="password"
+        name="confirm_password"
+        placeholder="Confirm your password"
+        required
+      />
+    </div>
+
+    <button type="submit" class="btn">
+      Create Account
+    </button>
+
+  </form>
+
+  <p class="footer-text">
+    © 2026 AutoCare. All rights reserved.
+  </p>
+
+</div>
+
+<script>
+const loginTab = document.getElementById("loginTab");
+const registerTab = document.getElementById("registerTab");
+
+const loginForm = document.getElementById("loginForm");
+const registerForm = document.getElementById("registerForm");
+
+loginTab.addEventListener("click", () => {
+    loginForm.style.display = "block";
+    registerForm.style.display = "none";
+
+    loginTab.classList.add("active");
+    registerTab.classList.remove("active");
+});
+
+registerTab.addEventListener("click", () => {
+    loginForm.style.display = "none";
+    registerForm.style.display = "block";
+
+    registerTab.classList.add("active");
+    loginTab.classList.remove("active");
+});
+</script>
+
+</body>
+</html>

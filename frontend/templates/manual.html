@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AutoCare — Manual Entry</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/style/css/user.css">
+  <link rel="stylesheet" href="/style/css/manual.css">
+</head>
+
+<body>
+
+  <!-- ================= MAIN ================= -->
+  <div class="container">
+    <main class="workspace">
+
+      <section class="manual-wrapper">
+
+        <!-- ================= FORM ================= -->
+        <div class="manual-card">
+
+          <h2>Manual Health Assessment</h2>
+
+          <form id="healthForm" autocomplete="off">
+
+            <!-- ===== BASIC ===== -->
+            <div class="section">
+              <h3>Basic Details</h3>
+
+              <div class="grid">
+
+                <label>
+                  Gender
+                  <select id="gender">
+                    <option value="">Select</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </select>
+                </label>
+
+                <label>
+                  Age
+                  <input type="number" id="age" min="0">
+                </label>
+
+                <label>
+                  Height (cm)
+                  <input type="number" id="height" min="0">
+                </label>
+
+                <label>
+                  Weight (kg)
+                  <input type="number" id="weight" min="0">
+                </label>
+
+              </div>
+
+              <div id="bmiBox" class="bmi-box">
+                BMI: —
+              </div>
+
+            </div>
+
+            <!-- ===== METRICS ===== -->
+            <div class="section">
+              <h3>Health Metrics</h3>
+
+              <div class="grid">
+
+                <label>
+                  Systolic (mmHg)
+                  <input type="number" id="systolic">
+                </label>
+
+                <label>
+                  Diastolic (mmHg)
+                  <input type="number" id="diastolic">
+                </label>
+
+                <label>
+                  Sleep (hours)
+                  <input type="number" id="sleep" step="0.1">
+                </label>
+
+              </div>
+            </div>
+
+            <!-- ===== HISTORY ===== -->
+            <div class="section">
+              <h3>Medical History</h3>
+
+              <div class="checkbox-grid">
+                <label><input type="checkbox" id="chk_chest"> Chest pain</label>
+                <label><input type="checkbox" id="chk_heart"> Prior heart attack</label>
+                <label><input type="checkbox" id="chk_chol"> High cholesterol</label>
+                <label><input type="checkbox" id="chk_walk"> Walking difficulty</label>
+                <label><input type="checkbox" id="chk_activity"> Physical activity</label>
+                <label><input type="checkbox" id="chk_alcohol"> Alcohol</label>
+                <label><input type="checkbox" id="smoking"> Smoking</label>
+              </div>
+
+              <label>
+                Stress Level
+                <select id="stress">
+                  <option value="">Select</option>
+                  <option value="0">No Stress</option>
+                  <option value="0.5">Mild</option>
+                  <option value="1">Moderate</option>
+                  <option value="1.5">High</option>
+                  <option value="2">Severe</option>
+                </select>
+              </label>
+
+            </div>
+
+            <!-- ===== SUBMIT ===== -->
+            <button type="submit" class="submit-btn">
+              Submit Assessment
+            </button>
+
+          </form>
+
+        </div>
+
+
+        <!-- ================= LIVE SUMMARY ================= -->
+        <aside class="summary-card">
+
+          <h3>Live Health Summary</h3>
+
+          <!-- MAIN STATUS -->
+          <div class="summary-main">
+            <div id="genEmoji" class="emoji">💖</div>
+            <div id="genText" class="status">Excellent</div>
+          </div>
+
+          <!-- METRICS -->
+          <div class="summary-grid">
+
+            <div class="summary-item">
+              <span>Body Mass Index</span>
+              <strong id="s_bmi">—</strong>
+            </div>
+
+            <div class="summary-item">
+              <span>Blood Pressure</span>
+              <strong id="s_bp">—</strong>
+            </div>
+
+            <div class="summary-item">
+              <span>Alcohol Usage</span>
+              <strong id="s_alcohol">—</strong>
+            </div>
+
+          </div>
+
+          <!-- BMI STATUS -->
+          <div id="bmiStatus" class="bmi-status">
+            Status: —
+          </div>
+
+        </aside>
+
+      </section>
+
+    </main>
+  </div>
+
+  <!-- JS -->
+  <script src="/style/js/manual.js" defer></script>
+
+</body>
+</html>

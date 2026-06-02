@@ -1,0 +1,19 @@
+# ==========================================================
+# ❤️ AutoCare Heart Disease Training Schema (FINAL v6)
+# ==========================================================
+
+columns:
+  age_category: int               # 1–13 encoded age bucket
+  gender: object                  # 'Male' or 'Female'
+  obesity: int                    # 1 = BMI ≥ 30, else 0
+  hypertension: int               # 1 = Yes, 0 = No
+  highchol: int                   # 1 = Yes, 0 = No
+  heart_attack_history: int       # 1 = Yes, 0 = No
+  chest_pain: int                 # Encoded (0/1 checkbox → keep int)
+  smoking: int                    # 1 = smoker, 0 = non-smoker
+  alcohol: int                    # 1 = Yes, 0 = No
+  physactivity: int               # 1 = Yes, 0 = No
+  stress_category: int            # 0 = none → 4 = severe
+  heart_disease: int              # TARGET: 1 = disease, 0 = healthy
+
+target_column: heart_disease

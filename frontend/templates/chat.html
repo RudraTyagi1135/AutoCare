@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>AutoCare — Chat</title>
+
+  <!-- Inter Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/style/css/user.css">
+  <link rel="stylesheet" href="/style/css/chat.css">
+</head>
+
+<body>
+
+  <!-- ================= TOPBAR ================= -->
+  <header class="topbar">
+    <div class="topbar-inner">
+
+      <!-- Brand -->
+      <div class="brand">
+        <div class="brand-mark">
+          <span class="brand-mark-ac">AC</span>
+        </div>
+
+        <div class="app-title">
+          <span class="app-name">AutoCare</span>
+          <span class="app-sub">Clinical AI · Risk · Reports</span>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="topnav">
+        <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a class="nav-link" href="{{ url_for('dataupload') }}">Data Upload</a>
+        <a class="nav-link" href="{{ url_for('advice') }}">Advice</a>
+        <a class="nav-link active" href="{{ url_for('chat') }}">Chat</a>
+        <a class="nav-link" href="{{ url_for('report') }}">Reports</a>
+      </nav>
+
+      <!-- User Dropdown -->
+      <div class="right-controls">
+        <details class="user-dropdown">
+          <summary class="user-info">
+
+            <div class="avatar">
+              {{ user_name[0]|upper if user_name else "U" }}
+            </div>
+
+            <div class="user-name">
+              {{ user_name if user_name else "User" }}
+            </div>
+
+            <span class="dropdown-caret">▾</span>
+
+          </summary>
+
+          <div class="user-menu">
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('dataupload') }}">Data Upload</a>
+            <a href="{{ url_for('advice') }}">Advice</a>
+            <a href="{{ url_for('chat') }}">Chat</a>
+            <a href="{{ url_for('report') }}">Reports</a>
+
+            <div class="menu-divider"></div>
+
+            <a href="{{ url_for('logout') }}" class="danger">
+              Logout
+            </a>
+          </div>
+        </details>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ================= MAIN ================= -->
+  <div class="container">
+    <main class="workspace">
+
+      <section class="chat-layout">
+
+        <!-- ================= SIDEBAR ================= -->
+        <aside id="chatSidebar" class="chat-sidebar">
+
+          <div class="sidebar-top">
+            <button id="polNewChat" class="new-chat-btn">
+              + New Chat
+            </button>
+          </div>
+
+          <div id="polChatList" class="chat-history"></div>
+
+        </aside>
+
+        <!-- ================= CHAT AREA ================= -->
+        <div class="chat-main">
+
+  <div class="chat-main">
+
+  <!-- Toolbar -->
+  <div class="chat-toolbar">
+    <button
+      id="toggleSidebar"
+      class="toggle-sidebar"
+      aria-label="Toggle Chat History"
+      title="Toggle Chat History">
+      ☰ History
+    </button>
+  </div>
+
+  <!-- Messages -->
+  <div id="polMessages" class="chat-messages">
+            <div class="adv-msg assistant">
+              <div>
+                👋 Welcome to <strong>AutoCare AI</strong>.
+                <br><br>
+
+                I can help you with:
+                <br>• Diabetes risk analysis
+                <br>• Heart disease risk analysis
+                <br>• Stroke risk analysis
+                <br>• Understanding your prediction results
+                <br>• General health-related questions
+
+                <br><br>
+                Ask a question below to get started.
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Input Area -->
+          <div class="chat-input-area">
+
+            <input
+              id="polUserInput"
+              type="text"
+              placeholder="Ask a health question..."
+              autocomplete="off"
+              aria-label="Message Input"
+            />
+
+            <button
+              id="polSendBtn"
+              aria-label="Send Message">
+              Send
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ================= SIDEBAR TOGGLE ================= -->
+  <script>
+    const toggleBtn = document.getElementById("toggleSidebar");
+    const sidebar = document.getElementById("chatSidebar");
+
+    if (toggleBtn && sidebar) {
+      toggleBtn.addEventListener("click", () => {
+        sidebar.classList.toggle("collapsed");
+      });
+    }
+  </script>
+
+  <!-- ================= CHAT LOGIC ================= -->
+  <script src="/style/js/chat.js" defer></script>
+
+</body>
+</html>

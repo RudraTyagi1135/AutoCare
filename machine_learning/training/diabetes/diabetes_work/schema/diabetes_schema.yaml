@@ -1,0 +1,18 @@
+# ==========================================================
+# 🧬 AutoCare Diabetes Training Data Schema (FINAL v6)
+# ==========================================================
+
+columns:
+  age_category: int              # Encoded age bucket (1–13)
+  gender: object                 # 'Male' or 'Female'
+  bmi: float                     # Body Mass Index
+  hypertension: int              # 1 = Yes, 0 = No
+  smoking: int                   # 1 = Yes, 0 = No
+  alcohol: int                   # 1 = Yes, 0 = No
+  highchol: int                  # 1 = Yes, 0 = No
+  diffwalk: int                  # 1 = difficulty walking, 0 = normal
+  stress_category: int           # 0 = none → 4 = severe
+  physactivity: int              # 1 = Yes, 0 = No
+  diabetes: int                  # TARGET: 1 = diabetic, 0 = healthy
+
+target_column: diabetes

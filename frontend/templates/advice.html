@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>AutoCare — Advice</title>
+
+  <!-- Inter font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/style/css/user.css">
+  <link rel="stylesheet" href="/style/css/advice.css">
+</head>
+<body>
+
+  <!-- ================= TOPBAR ================= -->
+  <header class="topbar">
+    <div class="topbar-inner">
+
+      <!-- Brand -->
+      <div class="brand">
+        <div class="brand-mark">
+          <span class="brand-mark-ac">AC</span>
+        </div>
+        <div class="app-title">
+          <span class="app-name">AutoCare</span>
+          <span class="app-sub">Clinical AI · Risk · Reports</span>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="topnav">
+        <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a class="nav-link" href="{{ url_for('dataupload') }}">Data Upload</a>
+        <a class="nav-link active" href="{{ url_for('advice') }}">Advice</a>
+        <a class="nav-link" href="{{ url_for('chat') }}">Chat</a>
+        <a class="nav-link" href="{{ url_for('report') }}">Reports</a>
+      </nav>
+
+      <!-- User Dropdown -->
+      <div class="right-controls">
+        <details class="user-dropdown">
+          <summary class="user-info">
+
+            <div class="avatar">
+              {{ user_name[0]|upper if user_name else "U" }}
+            </div>
+
+            <div class="user-name">
+              {{ user_name if user_name else "User" }}
+            </div>
+
+            <span class="dropdown-caret">▾</span>
+
+          </summary>
+
+          <div class="user-menu">
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('dataupload') }}">Data Upload</a>
+            <a href="{{ url_for('advice') }}">Advice</a>
+            <a href="{{ url_for('chat') }}">Chat</a>
+            <a href="{{ url_for('report') }}">Reports</a>
+
+            <div class="menu-divider"></div>
+
+            <a href="{{ url_for('logout') }}" class="danger">
+              Logout
+            </a>
+          </div>
+        </details>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ================= MAIN ================= -->
+  <div class="container">
+    <main class="workspace">
+
+      <section class="chat-wrapper">
+
+        <!-- Header -->
+        <div class="chat-header">
+          <div>
+            <h1 class="chat-title">Health Advice</h1>
+            <p class="chat-subtitle">
+              Ask questions about your latest prediction and clinical data.
+            </p>
+          </div>
+        </div>
+
+        <!-- Messages -->
+        <div id="advMessages" class="chat-messages">
+          <div class="adv-msg assistant">
+            <div>
+              👋 Ask me for health advice based on your clinical data.
+            </div>
+          </div>
+        </div>
+
+        <!-- History -->
+        <aside id="advHistory" class="advice-history"></aside>
+
+        <!-- Input -->
+        <div class="chat-input-area">
+          <input
+            id="advInput"
+            type="text"
+            placeholder="Ask anything about patient health..."
+          />
+          <button id="advSendBtn">Send</button>
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+
+  <!-- JS -->
+  <script src="/style/js/advice.js" defer></script>
+
+</body>
+</html>
