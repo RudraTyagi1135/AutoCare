@@ -1,0 +1,18 @@
+forgeai:
+  version: "1"
+
+project:
+  language: python
+  framework: flask
+
+dependencies:
+  manager: pip
+  manifests:
+    - requirements.txt
+
+testing:
+  framework: pytest
+  test_paths: []
+
+repair:
+  enabled: true
