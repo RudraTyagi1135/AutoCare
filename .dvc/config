@@ -1,0 +1,4 @@
+[core]
+    remote = autocare_s3
+['remote "autocare_s3"']
+    url = s3://autocare-ml-bucket/dvc
